@@ -1,0 +1,15 @@
+{
+  "name": "co-learn-backend",
+  "version": "1.0.0",
+  "description": "Backend ExpressJS framework for co-learn",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tanjimul Bhuiyan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1"
+  }
+}
