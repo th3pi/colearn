@@ -1,9 +1,10 @@
 .DS_Store
 node_modules
 /dist
+
+test.js
 persons_repository.js
 models/
-./backend/test.js
 
 # local env files
 .env.local
