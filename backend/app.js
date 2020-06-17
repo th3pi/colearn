@@ -1,8 +1,29 @@
-const Dao = require('./dao');
-const Masterrepository = require('./repositories/master_repository');
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
 
-// Initialize required files
-const db = new Dao('./database/test1.sqlite3')
-const repo = new Masterrepository(db)
+const sqlRoutes = require('./routes/sql_routes')
 
-repo.sendCommand(`INSERT INTO Persons (PersonIDint, LastName, FirstName, Address, City) VALUES(1, 'Bhuiyan', 'Tanjimul', 'Highland Ave', 'NY');`)
+const app = express();
+
+app.use(cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/sql', sqlRoutes);
+
+app.listen(8282);
+
+/**
+ * Backend run checker
+ * Send get request to http://localhost:8282/
+ * returns HELLO WORLD!
+ */
+app.get('', (req, res) => {
+    res.send("HELLO WORLD!");
+})
+
+
+module.exports = app;

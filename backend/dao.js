@@ -6,6 +6,8 @@ class Dao {
      * @param {String} dbFilePath A valid filepath to store the database file in - must end in .db
      */
     constructor(dbFilePath) {
+        console.log("RECEIVED DATABASE FILEPATH: " + dbFilePath);
+
         this.db = new sqlite3.Database(dbFilePath, (err) => {
             if (err) {
                 console.log("FAILED: Could not connect to database", err);
@@ -59,9 +61,9 @@ class Dao {
      * @param {SQL} sql SQL commands to get multiple results
      * @param {Array} params Parameters to be plugged into the SQL Query
      */
-    all(sql, params = []) {
+    all(sql, params) {
         return new Promise((resolve, reject) => {
-            this.db.get(sql, params, (err, results) => {
+            this.db.all(sql, params, (err, results) => {
                 if (err) {
                     console.log("SQL ERROR: " + sql);
                     console.log(err);
