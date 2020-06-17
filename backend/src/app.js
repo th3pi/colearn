@@ -1,16 +1,17 @@
-const express = require('express');
+const app = require('express')();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
 const cors = require('cors');
 const path = require('path');
 
 const sqlRoutes = require('../routes/sql_routes')
 
-const app = express();
-
 app.use(cors());
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('express').json());
+app.use(require('express').urlencoded({ extended: false }));
+app.use(require('express').static(path.join(__dirname, 'public')));
 
 app.use('/sql', sqlRoutes);
 
@@ -25,5 +26,18 @@ app.get('', (req, res) => {
     res.send("HELLO WORLD!");
 })
 
+server.listen(3000, () => {
+    console.log('Listening on port *: 3000');
+
+})
+
+io.on('connection', (socket) => {
+    console.log("Someone just connected");
+
+    socket.on('disconnect', () => {
+        console.log("New user joined");
+
+    })
+})
 
 module.exports = app;

@@ -22,14 +22,13 @@ class SqlRepository {
             return this.db.run(command);
         }
 
-        //TODO: WORK ON THIS. MAKE THIS MORE EFFICIENT AND FULL PROOF
         //RegEx match "SELECT" commands that return multiple results
-        else if (command.match(/SELECT */i)) {
+        else if (command.match(/SELECT/i)) {
             console.log("RECEIVED (ALL): " + command);
             return this.db.all(command);
         } else {
             console.log("RECEIVED (GET): " + command);
-            return this.db.all(command);
+            return this.db.get(command);
         }
     }
 

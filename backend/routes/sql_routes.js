@@ -15,7 +15,7 @@ const app = express.Router();
  */
 app.get('/sql-query', (req, res) => {
     const sql = req.query.sql;
-    console.log("RECEIVED SQL: " + sql);
+    console.log("API REQUEST ON: /sql/sql-query");
 
     repo.sendCommand(sql).then((result) => {
         res.json(result);
