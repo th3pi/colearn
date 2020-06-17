@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-const sqlRoutes = require('./routes/sql_routes')
+const sqlRoutes = require('../routes/sql_routes')
 
 const app = express();
 

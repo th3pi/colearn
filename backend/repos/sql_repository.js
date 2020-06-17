@@ -11,17 +11,25 @@ class SqlRepository {
         this.db = db;
     }
 
+    /**
+     * Sends command, API handles the command and returns back result
+     * @param {String} command a valid sql command
+     */
     sendCommand(command) {
-        console.log(command);
+        //RegEx match "CREATE" commands, because database.run(...) only accepts these
         if (command.match(/INSERT/i) || command.match(/CREATE/i)) {
-            console.log("Received a RUN command");
+            console.log("RECEIVED (RUN): " + command);
             return this.db.run(command);
-        } else if (command.match(/SELECT */i)) {
-            console.log("Received an ALL command");
+        }
+
+        //TODO: WORK ON THIS. MAKE THIS MORE EFFICIENT AND FULL PROOF
+        //RegEx match "SELECT" commands that return multiple results
+        else if (command.match(/SELECT */i)) {
+            console.log("RECEIVED (ALL): " + command);
             return this.db.all(command);
         } else {
-            console.log("Received a GET command");
-            return this.db.get(command);
+            console.log("RECEIVED (GET): " + command);
+            return this.db.all(command);
         }
     }
 

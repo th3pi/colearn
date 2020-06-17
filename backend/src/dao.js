@@ -6,7 +6,7 @@ class Dao {
      * @param {String} dbFilePath A valid filepath to store the database file in - must end in .db
      */
     constructor(dbFilePath) {
-        console.log("RECEIVED DATABASE FILEPATH: " + dbFilePath);
+        console.log("DAO: DATABASE FILEPATH = " + dbFilePath);
 
         this.db = new sqlite3.Database(dbFilePath, (err) => {
             if (err) {

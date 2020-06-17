@@ -1,6 +1,6 @@
 const express = require('express');
 
-const Dao = require('../dao');
+const Dao = require('../src/dao');
 const SqlRepository = require('../repos/sql_repository');
 
 // Database location
