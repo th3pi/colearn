@@ -32,15 +32,16 @@ server.listen(4113, () => {
 })
 
 io.on('connect', (socket) => {
-    console.log("Connected to socket");
-
     socket.on('test', (data) => {
         console.log(data);
     })
-
-    socket.on('send', data=> {
+    socket.on("typing", (data) => {
+        console.log("User is typing");
+        io.emit("typing", data);
+    })
+    socket.on('send', data => {
         console.log("Received send");
-        
+
         io.emit('results', data);
         socket.emit('results', data);
     })

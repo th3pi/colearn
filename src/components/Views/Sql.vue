@@ -1,9 +1,6 @@
 <template>
   <div>
     <input v-model="statement" type="text" @keyup.enter="sendStatement(statement)" />
-    <div v-for="(result, index) in results" :key="index">
-      <p>{{result}}</p>
-    </div>
   </div>
 </template>
 
@@ -16,6 +13,29 @@
  */
 export default {
   name: "sql-view",
+  sockets: {
+    /**
+     * Called on successful connection to the server
+     */
+    connect() {
+      console.log("Socket connected on the browser");
+    },
+
+    /**
+     * Called on disconnection from the session
+     */
+    disconnect() {
+      console.log("Socket disconnected from the browser");
+    },
+
+    /**
+     * Synchronizes the SQL command input field between all users in the session
+     * @param {String} data Transmitted sql command being typed by someone into the field
+     */
+    typing(data) {
+      this.statement = data;
+    }
+  },
   data() {
     return {
       route: "/sql/sql-query",
@@ -23,8 +43,7 @@ export default {
       results: []
     };
   },
-  created() {    
-  },
+  created() {},
   methods: {
     /**
      * Method to send the statement to backend
@@ -37,18 +56,17 @@ export default {
           }
         })
         .then(res => {
-          this.$socket.emit('test','TEST');
           console.log(res.data);
-          
         });
-    },
-
+    }
   },
   watch: {
     results: function(newValue, oldValue) {
-    console.log(newValue);
-    console.log(oldValue);
-
+      console.log(newValue);
+      console.log(oldValue);
+    },
+    statement(newValue) {
+      this.$socket.client.emit("typing", newValue);
     }
   }
 };
