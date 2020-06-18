@@ -9,7 +9,10 @@ import SqlView from "@/components/Views/Sql.vue";
 
 export default {
   name: "App",
-  components: { SqlView }
+  components: { SqlView },
+  created(){
+    this.$socket.emit('test', "TEST")
+  }
 };
 </script>
 

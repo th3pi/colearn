@@ -15,7 +15,7 @@ app.use(require('express').static(path.join(__dirname, 'public')));
 
 app.use('/sql', sqlRoutes);
 
-app.listen(8282);
+// app.listen(8282);
 
 /**
  * Backend run checker
@@ -26,14 +26,24 @@ app.get('', (req, res) => {
     res.send("HELLO WORLD!");
 })
 
-server.listen(3000, () => {
-    console.log('Listening on port *: 3000');
+server.listen(4113, () => {
+    console.log('Listening on port *: 4113');
 
 })
 
-io.on('connection', (socket) => {
-    console.log("Someone just connected");
+io.on('connect', (socket) => {
+    console.log("Connected to socket");
 
+    socket.on('test', (data) => {
+        console.log(data);
+    })
+
+    socket.on('send', data=> {
+        console.log("Received send");
+        
+        io.emit('results', data);
+        socket.emit('results', data);
+    })
     socket.on('disconnect', () => {
         console.log("DISCONNECTED");
 

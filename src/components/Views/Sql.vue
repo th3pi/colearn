@@ -1,6 +1,9 @@
 <template>
   <div>
     <input v-model="statement" type="text" @keyup.enter="sendStatement(statement)" />
+    <div v-for="(result, index) in results" :key="index">
+      <p>{{result}}</p>
+    </div>
   </div>
 </template>
 
@@ -13,14 +16,6 @@
  */
 export default {
   name: "sql-view",
-  sockets: {
-    connect: function() {
-      console.log("Socket connected");
-    },
-    test: function() {
-      this.statement = "NOOO";
-    }
-  },
   data() {
     return {
       route: "/sql/sql-query",
@@ -28,7 +23,8 @@ export default {
       results: []
     };
   },
-  created() {},
+  created() {    
+  },
   methods: {
     /**
      * Method to send the statement to backend
@@ -41,10 +37,18 @@ export default {
           }
         })
         .then(res => {
-          console.log("LOGGING:");
+          this.$socket.emit('test','TEST');
           console.log(res.data);
-          this.$socket.emit("test");
+          
         });
+    },
+
+  },
+  watch: {
+    results: function(newValue, oldValue) {
+    console.log(newValue);
+    console.log(oldValue);
+
     }
   }
 };
