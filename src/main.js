@@ -1,19 +1,21 @@
 import Vue from 'vue'
 import App from './App.vue'
 import axios from 'axios'
-import io from 'socket.io-client'
+import VueSocketIO from 'vue-socket.io'
 
 Vue.config.productionTip = false
 
 //Establish connection to backend
 const http = axios.create({ baseURL: 'http://192.168.1.15:8282' })
 
-//Create a socket
-const socket = io('http://localhost');
-
 Vue.prototype.$http = http;
 
+
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'http://localhost:3000'
+}))
+
 new Vue({
-  socket,
   render: h => h(App),
 }).$mount('#app')

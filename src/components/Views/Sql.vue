@@ -13,6 +13,14 @@
  */
 export default {
   name: "sql-view",
+  sockets: {
+    connect: function() {
+      console.log("Socket connected");
+    },
+    test: function() {
+      this.statement = "NOOO";
+    }
+  },
   data() {
     return {
       route: "/sql/sql-query",
@@ -34,8 +42,8 @@ export default {
         })
         .then(res => {
           console.log("LOGGING:");
-
           console.log(res.data);
+          this.$socket.emit("test");
         });
     }
   }

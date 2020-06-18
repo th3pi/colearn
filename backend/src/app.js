@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
     console.log("Someone just connected");
 
     socket.on('disconnect', () => {
-        console.log("New user joined");
+        console.log("DISCONNECTED");
 
     })
 })
