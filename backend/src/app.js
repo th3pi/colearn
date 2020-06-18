@@ -15,6 +15,10 @@ app.use(require('express').static(path.join(__dirname, 'public')));
 
 app.use('/sql', sqlRoutes);
 
+/**
+ * app.listen(8282) has been deprecated since socket.io and express is 
+ * sharing the same port now
+ */
 // app.listen(8282);
 
 /**
@@ -34,6 +38,10 @@ server.listen(4113, () => {
 io.on('connect', (socket) => {
     socket.on('test', (data) => {
         console.log(data);
+    })
+    socket.on("sqlTyping", (data) => {
+        console.log("User is typing");
+        io.emit("sqlTyping", data);
     })
     socket.on("typing", (data) => {
         console.log("User is typing");

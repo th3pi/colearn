@@ -1,0 +1,38 @@
+//OpenSans font
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;0,800;1,400;1,700;1,800&display=swap');
+
+:root {
+    //Primary color swatch
+    --primary: #94C595;
+    --secondary: #687E60;
+    --light: #A1E8AF;
+    --dark: #3C362A;
+    --danger: #ED1C24;
+    --danger-light: #EF3138;
+    --danger-lighter: #F0444A;
+
+    //Gray shaded primary color swatch
+    --g-primary: #4F759B;
+    --g-secondary: #6C809A;
+
+    //Sql color swatch
+    --sql-primary: #8EE3EF;
+    --sql-secondary: #37718E;
+    --sql-dark: #254E70;
+}
+
+h1, h2, h3, h4, h5, p {
+    margin: 0;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.extra-bold {
+    font-weight: 800;
+}
+
+.italic {
+    font-style: italic;
+}

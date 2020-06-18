@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <input v-model="statement" type="text" @keyup.enter="sendStatement(statement)" />
+  <div id="sqlView">
+    <!-- <h1 class="sql font">HELLO!!!</h1> -->
+    <sql-input @send-sql="fetchSql" />
   </div>
 </template>
 
 <script>
+import sqlInput from "@/components/Sql/sql-input.vue";
 /**
  * Main view for SQL collaborations
  * @param {String} route holds the route to backend sql query api
@@ -13,50 +15,46 @@
  */
 export default {
   name: "sql-view",
+  components: {
+    "sql-input": sqlInput
+  },
   sockets: {
     /**
      * Called on successful connection to the server
      */
     connect() {
-      console.log("Socket connected on the browser");
+      console.log("Socket connected to the SQL channel");
     },
 
     /**
      * Called on disconnection from the session
      */
     disconnect() {
-      console.log("Socket disconnected from the browser");
-    },
-
-    /**
-     * Synchronizes the SQL command input field between all users in the session
-     * @param {String} data Transmitted sql command being typed by someone into the field
-     */
-    typing(data) {
-      this.statement = data;
+      console.log("Socket disconnected disconnected from the SQL channel");
     }
   },
   data() {
     return {
       route: "/sql/sql-query",
-      statement: "",
       results: []
     };
   },
   created() {},
   methods: {
     /**
-     * Method to send the statement to backend
+     * GETs the result of the sql command from the backend
+     * @param {String} command SQL command that is received from the input and send to the backend
      */
-    sendStatement(statement) {
+    fetchSql(command) {
       this.$http
         .get("/sql/sql-query", {
           params: {
-            sql: statement
+            sql: command
           }
         })
         .then(res => {
-          console.log(res.data);
+          this.results = res.data;
+          console.log(this.results);
         });
     }
   },
@@ -71,3 +69,16 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.sql.font {
+  font-family: "Open Sans", sans-serif;
+}
+
+#sqlView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+</style>
