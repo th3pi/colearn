@@ -3,9 +3,9 @@
     <textarea
       id="input"
       class="sql font"
+      :style="{'height':height+'rem'}"
       v-model="command"
-      type="text"
-      @keyup.enter="sendSql(command)"
+      @keyup.enter="createNewLine"
     ></textarea>
   </div>
 </template>
@@ -30,7 +30,9 @@ export default {
   },
   data() {
     return {
-      command: ""
+      command: "",
+      height: 1.2,
+      lines: 1
     };
   },
   methods: {
@@ -40,6 +42,9 @@ export default {
      */
     sendSql(data) {
       this.$emit("send-sql", data);
+    },
+    createNewLine() {
+      this.height += 1.2;
     }
   },
   watch: {
@@ -47,8 +52,9 @@ export default {
      * Watch the command param for changes, whenever it receives an input - transmit on the "sqlTyping" channel
      * to synchronize all connected sessions
      */
-    command(newValue) {
+    command(newValue, oldValue) {
       this.$socket.client.emit("sqlTyping", newValue);
+      console.log(newValue); // LAST WORKING ON THIS FINISH BACKSPACE HEIGHT ADJUSTMENT
     }
   }
 };
@@ -56,7 +62,6 @@ export default {
 
 <style lang="scss">
 #input {
-  height: auto;
   padding: 2rem 0.5rem 0rem 0.5rem;
   font-size: 1.2rem;
   width: 90vw; //90% of viewport
