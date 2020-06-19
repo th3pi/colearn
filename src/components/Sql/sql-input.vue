@@ -3,7 +3,7 @@
     <textarea
       id="input"
       class="sql font"
-      :style="{'height':height+'rem'}"
+      :style="{'rows':rows, 'height': height+'rem'}"
       v-model="command"
       @keyup.enter="createNewLine"
     ></textarea>
@@ -24,15 +24,33 @@ export default {
    * @param {String} data is the command that will overwrite, this.command
    */
   sockets: {
-    sqlTyping(data) {
-      this.command = data;
+    /**
+     * Socket listening for activities on the "sqlTyping" channel
+     */
+    sqlTyping(command, rows) {
+      if (command != "") {
+        this.command = command;
+        this.rows = rows;
+        this.height = this.rows * 1.6;
+      } else {
+        this.command = "";
+        this.rows = 1;
+        this.height = 1.5;
+      }
+    },
+    /**
+     * Socket listenting for text area height change on the "sqlNewLine" channel
+     */
+    sqlNewLine(rows, height) {
+      this.rows = rows;
+      this.height = height;
     }
   },
   data() {
     return {
       command: "",
-      height: 1.2,
-      lines: 1
+      height: 1.5, //Height of a single line
+      rows: 1 //Number of rows in the command box
     };
   },
   methods: {
@@ -44,7 +62,8 @@ export default {
       this.$emit("send-sql", data);
     },
     createNewLine() {
-      this.height += 1.2;
+      this.rows++;
+      this.height = this.rows * 1.6;
     }
   },
   watch: {
@@ -52,9 +71,13 @@ export default {
      * Watch the command param for changes, whenever it receives an input - transmit on the "sqlTyping" channel
      * to synchronize all connected sessions
      */
-    command(newValue, oldValue) {
-      this.$socket.client.emit("sqlTyping", newValue);
-      console.log(newValue); // LAST WORKING ON THIS FINISH BACKSPACE HEIGHT ADJUSTMENT
+    command() {
+      this.$socket.client.emit(
+        "sqlTyping",
+        this.command,
+        this.rows,
+        this.height
+      );
     }
   }
 };
@@ -62,7 +85,7 @@ export default {
 
 <style lang="scss">
 #input {
-  padding: 2rem 0.5rem 0rem 0.5rem;
+  padding: 5px;
   font-size: 1.2rem;
   width: 90vw; //90% of viewport
 
@@ -70,6 +93,13 @@ export default {
   outline: none;
   border: none;
   border-bottom: 2px solid var(--sql-primary);
+
+  //transition
+}
+
+textarea {
+  min-height: 2rem;
   resize: none;
+  overflow-y: auto;
 }
 </style>

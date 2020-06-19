@@ -1,6 +1,6 @@
 <template>
   <div id="sqlView">
-    <!-- <h1 class="sql font">HELLO!!!</h1> -->
+    <h1 class="sql font">HELLO!!!</h1>
     <sql-input @send-sql="fetchSql" />
   </div>
 </template>
