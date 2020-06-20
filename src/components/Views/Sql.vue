@@ -1,12 +1,22 @@
 <template>
   <div class="sql font" id="sqlView">
-    <h1>SQL</h1>
-    <sql-input @send-sql="fetchSql" />
+    <div id="inputSection" :style="toggleShowBar(showBar)">
+      <h1 class="tutorial">SQL</h1>
+      <sql-input class="sqlInput" @send-sql="fetchSql" />
+    </div>
+    <cheat-bar language="SQL" @update:showBar="showBar = $event">
+      <template #cheatSheet>
+        <li>
+          <strong>SELECT</strong> used to select data from a database
+        </li>
+      </template>
+    </cheat-bar>
   </div>
 </template>
 
 <script>
 import sqlInput from "@/components/Sql/sql-input.vue";
+import cheatBar from "@/components/General/cheat-bar.vue";
 /**
  * Main view for SQL collaborations
  * @param {String} route holds the route to backend sql query api
@@ -16,7 +26,8 @@ import sqlInput from "@/components/Sql/sql-input.vue";
 export default {
   name: "sql-view",
   components: {
-    "sql-input": sqlInput
+    "sql-input": sqlInput,
+    "cheat-bar": cheatBar
   },
   sockets: {
     /**
@@ -36,7 +47,9 @@ export default {
   data() {
     return {
       route: "/sql/sql-query",
-      results: []
+      results: [],
+      showBar: false,
+      width: 0
     };
   },
   created() {},
@@ -56,6 +69,24 @@ export default {
           this.results = res.data;
           console.log(this.results);
         });
+    },
+    toggleShowBar(showBar) {
+      if (showBar) {
+        switch (this.$mq) {
+          case "sm":
+            return {
+              width: "60vw"
+            };
+          case "md":
+            return {
+              width: "60vw"
+            };
+          case "lg":
+            return {
+              width: "75vw"
+            };
+        }
+      }
     }
   },
   watch: {
@@ -71,10 +102,13 @@ export default {
 </script>
 
 <style lang="scss">
-#sqlView {
-  display: flex;
+#inputSection {
+  display: inline-flex;
+  width: 85vw;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: 0.2s;
+  float: left;
 }
 </style>

@@ -12,14 +12,19 @@
       @blur="focus = false"
     ></textarea>
     <transition name="fade">
-
-    <label class="placeholder" v-if="!focus && command == ''" for="commandInput">Enter a SQL command</label>
-</transition>
+      <label
+        class="placeholder"
+        v-if="!focus && command == ''"
+        for="commandInput"
+      >Enter a SQL command</label>
+    </transition>
 
     <transition name="fade">
-    
-    <label class="hint" v-if="focus || command != ''" for="commandInput">// <strong>Shift + Enter</strong> to share what you have typed</label>
-</transition>
+      <label class="hint" v-if="focus || command != ''" for="commandInput">
+        //
+        <strong>Shift + Enter</strong> to share what you have typed
+      </label>
+    </transition>
   </div>
 </template>
 
@@ -64,7 +69,7 @@ export default {
       command: "",
       height: 1.5, //Height of a single line
       rows: 1, //Number of rows in the command box
-      focus: false,
+      focus: false
     };
   },
   methods: {
@@ -90,7 +95,7 @@ export default {
         this.rows,
         this.height
       );
-    },
+    }
   },
   watch: {
     /**
@@ -120,10 +125,13 @@ export default {
 </script>
 
 <style lang="scss">
+#inputBox {
+  width: 100%;
+}
 #commandInput {
   padding: 5px;
   font-size: 1.2rem;
-  width: 90vw; //90% of viewport
+  width: 100%; //90% of viewport
 
   //border stylign
   outline: none;
@@ -150,18 +158,16 @@ textarea {
 
 label {
   position: absolute;
+  top: 4rem;
   background-color: transparent;
-  left: 5.5vw;
-  margin-top: 1rem;
   color: rgba($color: #000000, $alpha: 0.4);
 }
 
-.hint{
+.hint {
   position: absolute;
+  top: 1.5rem;
   background-color: var(--sql-dark);
-  left: 5.5vw;
-  margin-top: -1.6rem;
-  padding: 2px 10px 8px 10px;
+  padding: 2px 10px 15px 10px;
   z-index: -1;
 
   border-radius: 5px;
@@ -169,6 +175,6 @@ label {
   box-shadow: 0 -2px 6px rgba($color: #000000, $alpha: 0.2);
 
   color: white;
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 </style>
