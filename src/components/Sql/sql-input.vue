@@ -1,12 +1,17 @@
 <template>
   <div id="inputBox">
     <textarea
-      id="input"
+      id="commandInput"
+      name="commandInput"
       class="sql font"
       :style="{'rows':rows, 'height': height+'rem'}"
       v-model="command"
       @keyup.enter="createNewLine"
+      @keyup.shift.space="emitMessage"
+      @focus="labelMsg = '// Shift + Enter to share what you typed'"
+      @blur="labelMsg = 'Some SQL statement'"
     ></textarea>
+    <label for="commandInput">{{labelMsg}}</label>
   </div>
 </template>
 
@@ -50,7 +55,8 @@ export default {
     return {
       command: "",
       height: 1.5, //Height of a single line
-      rows: 1 //Number of rows in the command box
+      rows: 1, //Number of rows in the command box
+      labelMsg: "Some SQL statement"
     };
   },
   methods: {
@@ -64,6 +70,22 @@ export default {
     createNewLine() {
       this.rows++;
       this.height = this.rows * 1.6;
+    },
+
+    /**
+     * Called on shift+space, emits on the "sqlTyping" channel on shift+space
+     */
+    emitMessage() {
+      this.$socket.client.emit(
+        "sqlTyping",
+        this.command,
+        this.rows,
+        this.height
+      );
+    },
+    isFocus(bool) {
+      if (bool) console.log("isFocused");
+      else console.log("not focused");
     }
   },
   watch: {
@@ -71,35 +93,68 @@ export default {
      * Watch the command param for changes, whenever it receives an input - transmit on the "sqlTyping" channel
      * to synchronize all connected sessions
      */
-    command() {
-      this.$socket.client.emit(
-        "sqlTyping",
-        this.command,
-        this.rows,
-        this.height
-      );
+    /**
+     * Deprecated, causes performance issues
+     */
+    // command() {
+    //   this.$socket.client.emit(
+    //     "sqlTyping",
+    //     this.command,
+    //     this.rows,
+    //     this.height
+    //   );
+    // }
+    command(newValue) {
+      if (newValue == "") {
+        this.rows = 1;
+        this.height = 1.5;
+        this.emitMessage();
+      }
     }
   }
 };
 </script>
 
 <style lang="scss">
-#input {
+#commandInput {
   padding: 5px;
   font-size: 1.2rem;
   width: 90vw; //90% of viewport
 
   //border stylign
   outline: none;
-  border: none;
-  border-bottom: 2px solid var(--sql-primary);
 
   //transition
+  transition: box-shadow 0.3s, border-radius 0.4s, border-color 0.5s;
 }
 
 textarea {
   min-height: 2rem;
   resize: none;
   overflow-y: auto;
+  border: 2px solid;
+  border-radius: 3px;
+  border-color: transparent;
+  border-bottom: 2px solid var(--sql-primary);
+}
+
+textarea:focus {
+  border-color: var(--sql-secondary);
+  border-radius: var(--border-radius);
+  box-shadow: 0 1px 4px rgba($color: #000000, $alpha: 0.2);
+}
+
+label {
+  position: absolute;
+  background-color: transparent;
+  left: 5.5vw;
+  margin-top: 1rem;
+  transition: 0.3s;
+  color: rgba($color: #000000, $alpha: 0.4);
+}
+
+textarea:focus + label {
+  font-size: 0.8rem;
+  transform: translateY(-2.5rem);
 }
 </style>

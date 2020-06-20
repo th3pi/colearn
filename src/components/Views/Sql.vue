@@ -1,6 +1,6 @@
 <template>
-  <div id="sqlView">
-    <h1 class="sql font">HELLO!!!</h1>
+  <div class="sql font" id="sqlView">
+    <h1>SQL</h1>
     <sql-input @send-sql="fetchSql" />
   </div>
 </template>
@@ -71,10 +71,6 @@ export default {
 </script>
 
 <style lang="scss">
-.sql.font {
-  font-family: "Open Sans", sans-serif;
-}
-
 #sqlView {
   display: flex;
   flex-direction: column;

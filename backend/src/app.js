@@ -39,28 +39,20 @@ io.on('connect', (socket) => {
     socket.on('test', (data) => {
         console.log(data);
     })
+
+    /**
+     * SQL Sockets
+     */
+    /**
+     * Emits a message to everyone connected to the socket
+     */
     socket.on("sqlTyping", (command, rows, height) => {
         console.log("User is typing");
-        io.emit("sqlTyping", command, rows, height);
+        io.volatile.emit("sqlTyping", command, rows, height);
     })
-    socket.on("sqlNewLine", (rows, height) => {
-        console.log("Received create a new line");
 
-        io.emit("sqlNewLine", (rows, height));
-    })
-    socket.on("typing", (data) => {
-        console.log("User is typing");
-        io.emit("typing", data);
-    })
-    socket.on('send', data => {
-        console.log("Received send");
-
-        io.emit('results', data);
-        socket.emit('results', data);
-    })
     socket.on('disconnect', () => {
         console.log("DISCONNECTED");
-
     })
 })
 
