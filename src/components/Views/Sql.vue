@@ -32,8 +32,17 @@
         </li>
       </template>
     </cheat-bar>
-    <div v-for="(result, index) in results" :key="index">
-      <p>{{Object.keys(result)}}</p>
+    <div>
+      <table>
+        <tr>
+          <th>#</th>
+          <th v-for="(key, index) in keys" :key="index">{{key}}</th>
+        </tr>
+        <tr v-for="(row, index) in results" :key="index">
+          <td>{{index+1}}</td>
+          <td v-for="(value, key) in row" :key="key">{{value}}</td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -92,8 +101,9 @@ export default {
      * @param {String} command SQL command that is received from the input and send to the backend
      */
     fetchSql(command) {
+      command = "SELECT * FROM PERSONS"; //ONLY FOR TESTING PURPOSES. REMOVE this from build
       this.$http
-        .get("/sql/sql-query", {
+        .get(this.route, {
           params: {
             sql: command
           }
@@ -101,8 +111,6 @@ export default {
         .then(res => {
           this.results = res.data;
           this.keys = Object.keys(this.results[0]);
-          console.log(this.keys);
-          // console.log(this.results);
         });
     }
   },
