@@ -33,8 +33,6 @@ export default {
                             'font-size': sm
                         };
                     case "md":
-                        console.log(this.$mq);
-
                         return {
                             'font-size': md
                         };

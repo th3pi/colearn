@@ -6,7 +6,7 @@
     <!-- Side bar help guide activation button -->
     <button id="cheatButton" @click="showBar = true" :style="{'opacity' : showBar ? 0 : 1}">
       <transition name="fade" mode="out-in">
-        <p v-if="this.$mq == 'lg'"> Cheat Sheet </p>
+        <p v-if="this.$mq == 'lg'" style="font-size:.95rem;">Cheat Sheet</p>
         <i v-else class="fas fa-info"></i>
       </transition>
     </button>
@@ -72,18 +72,20 @@ export default {
 </script>
 
 <style lang="scss">
+// Entire component
 #cheat {
   position: fixed;
   right: -5px;
 }
 
+// Cheat bar open button
 #cheatButton {
   height: 2rem;
   width: 8vw;
   max-width: 15rem;
   background-color: rgba($color: #ffffff, $alpha: 1);
 
-  margin-top: 3rem;
+  margin-top: 1.5rem;
 
   border: 1px solid rgba($color: #254e70, $alpha: 0.4);
   border-right: none;
@@ -96,13 +98,14 @@ export default {
 }
 
 #cheatButton:hover {
-  background-color: rgba($color: #37718e, $alpha: 1);
+  background-color: rgba(var(--sql-dark-v), 1);
 
   box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.3);
 
   color: white;
 }
 
+// Cheat bar
 .cheatBar {
   position: absolute;
   top: 0rem;
@@ -126,10 +129,12 @@ export default {
   box-shadow: 0 2px 12px rgba($color: #000000, $alpha: 0.3);
 }
 
+// Cheatbar box-shadow class
 .showBar {
   box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.2);
 }
 
+// Cheat bar content body
 #content {
   margin: 0.2rem 0.5rem 0.2rem 0.5rem;
   margin-top: 0.2rem;
@@ -137,6 +142,7 @@ export default {
   transition: 0.4s;
 }
 
+// Cheat bar header
 #header {
   display: flex;
   flex: nowrap;
@@ -147,9 +153,14 @@ export default {
   font-size: 1.5rem;
 }
 
+// Cheat bar close button
 #closeBarButton {
-  font-size: 1.6rem;
   margin-top: 0.2rem;
+
+  font-size: 1.6rem;
+
+  cursor: pointer;
+
   transition: transform 0.8s ease-in, color 0.4s, text-shadow 1s;
 }
 

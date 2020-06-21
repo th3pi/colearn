@@ -30,7 +30,7 @@ export default {
   border: 2px solid rgba($color: #524c40, $alpha: 1);
   border-radius: 5px;
 
-  color: var(--sql-primary);
+  color: var(--sql-light);
 }
 
 #snippetBody strong {

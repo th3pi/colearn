@@ -1,19 +1,29 @@
 <template>
   <div class="sql font" id="sqlView">
     <div id="inputSection" :style="getWidth(showBar,'45vw', '55vw', '65vw')">
-      <h1 class="tutorial">SQL</h1>
+      <!-- SQL view title -->
+      <!-- Display only the language title if on a mobile device or something with a very small display -->
+      <transition name="fade-fast" mode="out-in">
+        <h1 v-if="showBar && this.$mq == 'sm'" class="title bungee-shade">SQL</h1>
+        <h1 v-else class="title bungee">
+          Co-learn
+          <span class="bungee-shade">SQL</span>
+        </h1>
+      </transition>
       <sql-input class="sqlInput" @send-sql="fetchSql" />
     </div>
 
     <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
-    data passed from child component, which is a boolean value -->
+    data passed from child component, which is a boolean value-->
     <cheat-bar language="SQL" @update:showBar="showBar = $event">
+      <!-- Cheat sheet body -->
       <template #cheatSheet>
+        <!-- Each cheat is its own bullet point using the li tag -->
         <li>
           <strong>SELECT</strong> used to select data from a database
           <code-snippet language="SQL">
-            <strong >SELECT</strong> *
-            <strong >FROM</strong> table;
+            <strong>SELECT</strong> *
+            <strong>FROM</strong> table;
           </code-snippet>
           <p>
             Gets all the rows from the
