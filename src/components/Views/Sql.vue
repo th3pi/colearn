@@ -32,6 +32,9 @@
         </li>
       </template>
     </cheat-bar>
+    <div v-for="(result, index) in results" :key="index">
+      <p>{{Object.keys(result)}}</p>
+    </div>
   </div>
 </template>
 
@@ -76,6 +79,8 @@ export default {
     return {
       route: "/sql/sql-query",
       results: [],
+      keys: [],
+      values: [],
       showBar: false,
       width: 0
     };
@@ -95,15 +100,13 @@ export default {
         })
         .then(res => {
           this.results = res.data;
-          console.log(this.results);
+          this.keys = Object.keys(this.results[0]);
+          console.log(this.keys);
+          // console.log(this.results);
         });
     }
   },
   watch: {
-    results: function(newValue, oldValue) {
-      console.log(newValue);
-      console.log(oldValue);
-    },
     statement(newValue) {
       this.$socket.client.emit("typing", newValue);
     }

@@ -18,7 +18,7 @@ app.get('/sql-query', (req, res) => {
     console.log("API REQUEST ON: /sql/sql-query");
 
     repo.sendCommand(sql).then((result) => {
-        res.json(result);
+        res.send(result);
     })
 })
 

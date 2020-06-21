@@ -53,7 +53,11 @@
       >Update</button>
 
       <!-- Run button compiles the code and fetches result from the compiler -->
-      <button class="sql font" :style="getFontSize(true,'.9rem','.9rem','1rem')">
+      <button
+        class="sql font"
+        :style="getFontSize(true,'.9rem','.9rem','1rem')"
+        @click="sendSql(command)"
+      >
         <i id="runArrows" class="fas fa-angle-double-right"></i> Run
       </button>
     </div>
