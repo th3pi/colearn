@@ -10,11 +10,13 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "highlight.js": "^10.1.1",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "vue": "^2.6.11",
+    "vue-highlight.js": "^3.1.0",
     "vue-mq": "^1.0.1",
     "vue-socket.io": "^3.0.9",
     "vue-socket.io-extended": "^4.0.3"

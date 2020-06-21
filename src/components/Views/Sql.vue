@@ -1,6 +1,6 @@
 <template>
   <div class="sql font" id="sqlView">
-    <div id="inputSection" :style="toggleShowBar(showBar)">
+    <div id="inputSection" :style="getWidth(showBar,'45vw', '55vw', '65vw')">
       <h1 class="tutorial">SQL</h1>
       <sql-input class="sqlInput" @send-sql="fetchSql" />
     </div>
@@ -9,14 +9,27 @@
         <li>
           <strong>SELECT</strong> used to select data from a database
         </li>
+        <code-snippet language="SQL">
+          <strong class="code">SELECT</strong> *
+          <strong class="code">FROM</strong> table;
+        </code-snippet>
+        <p>
+          Gets all the rows from the
+          <strong>table</strong>
+        </p>
       </template>
     </cheat-bar>
   </div>
 </template>
 
 <script>
+//Component imports
 import sqlInput from "@/components/Sql/sql-input.vue";
 import cheatBar from "@/components/General/cheat-bar.vue";
+import codeSnippet from "@/components/General/code-snippet.vue";
+
+//Mixin imports
+import responsive from "@/mixins/responsive";
 /**
  * Main view for SQL collaborations
  * @param {String} route holds the route to backend sql query api
@@ -25,9 +38,11 @@ import cheatBar from "@/components/General/cheat-bar.vue";
  */
 export default {
   name: "sql-view",
+  mixins: [responsive],
   components: {
     "sql-input": sqlInput,
-    "cheat-bar": cheatBar
+    "cheat-bar": cheatBar,
+    "code-snippet": codeSnippet
   },
   sockets: {
     /**
@@ -69,24 +84,6 @@ export default {
           this.results = res.data;
           console.log(this.results);
         });
-    },
-    toggleShowBar(showBar) {
-      if (showBar) {
-        switch (this.$mq) {
-          case "sm":
-            return {
-              width: "60vw"
-            };
-          case "md":
-            return {
-              width: "60vw"
-            };
-          case "lg":
-            return {
-              width: "75vw"
-            };
-        }
-      }
     }
   },
   watch: {

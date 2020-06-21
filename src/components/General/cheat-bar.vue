@@ -7,22 +7,29 @@
     <button id="cheatButton" @click="showBar = true" :style="{'opacity' : showBar ? 0 : 1}">
       <i class="fas fa-info"></i>
     </button>
-
     <!-- Cheat bar section -->
-    <div :class="{ 'cheatBar' : true, 'showBar' : showBar ? true : false}">
+    <div
+      :class="{ 'cheatBar' : true, 'showBar' : showBar ? true : false}"
+      :style="getWidth(showBar, '50vw', '40vw','30vw')"
+    >
       <div id="content" :style="{'opacity' : showBar ? 1 : 0}">
         <!-- Header section-->
         <div id="header">
-          <p>
+          <p :style="getFontSize(showBar, '0.95rem', '1.2rem','1.4rem')">
             <!-- Header prop for language -->
             <strong>{{language}}</strong> Cheat Sheet
           </p>
 
           <!-- Help guide close button -->
-          <i id="closeBarButton" class="far fa-times-circle" @click="showBar = false"></i>
+          <i
+            id="closeBarButton"
+            class="far fa-times-circle"
+            @click="showBar = false"
+            :style="getFontSize(showBar, '0.95rem', '1.4rem','1.8rem')"
+          ></i>
         </div>
         <br />
-        <div id="body">
+        <div id="body" :style="getFontSize(showBar, '0.85rem', '.9rem','1rem')">
           <p>
             <!-- Header prop for language -->
             At a glance
@@ -35,8 +42,11 @@
 </template>
 
 <script>
+//Mixin imports
+import responsive from "@/mixins/responsive";
 export default {
   name: "cheat-bar",
+  mixins: [responsive],
   props: {
     language: String
   },
@@ -65,37 +75,46 @@ export default {
 }
 
 #cheatButton {
-  margin-top: 3rem;
-  background-color: rgba($color: #ffffff, $alpha: 1);
-  width: 8vw;
   height: 2rem;
+  width: 8vw;
+  background-color: rgba($color: #ffffff, $alpha: 1);
+
+  margin-top: 3rem;
+
   border: 1px solid rgba($color: #254e70, $alpha: 0.4);
   border-right: none;
   border-radius: 5px 0 0 5px;
   outline: none;
+
+  box-shadow: 0 0 4px rgba($color: #000000, $alpha: 0.2);
 
   transition: background-color 0.3s, color 0.4s, box-shadow 0.4s, width 0.4s;
 }
 
 #cheatButton:hover {
   background-color: rgba($color: #37718e, $alpha: 1);
-  box-shadow: 0 2px 4px rgba($color: #000000, $alpha: 0.3);
+
+  box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.3);
+
   color: white;
 }
 
 .cheatBar {
   position: absolute;
-  height: 100vh;
-  width: 0;
-  max-width: 40rem;
-  z-index: 1;
   top: 0rem;
   right: 0;
+  z-index: 1;
+
+  height: 100vh;
+  width: 0;
   background-color: white;
+
   border: 3px solid rgba($color: #254e70, $alpha: 0.2);
   border-radius: 10px 0 0 10px;
-  box-shadow: 0 0 0px rgba($color: #000000, $alpha: 0.3);
   overflow-x: hidden;
+
+  box-shadow: 0 0 0px rgba($color: #000000, $alpha: 0.3);
+
   transition: width 0.2s, box-shadow 2s;
 }
 
@@ -104,7 +123,6 @@ export default {
 }
 
 .showBar {
-  width: 40vw;
   box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.2);
 }
 
