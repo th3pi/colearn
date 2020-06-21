@@ -15,35 +15,26 @@
 
     <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
     data passed from child component, which is a boolean value-->
-    <cheat-bar language="SQL" @update:showBar="showBar = $event">
-      <!-- Cheat sheet body -->
-      <template #cheatSheet>
-        <!-- Each cheat is its own bullet point using the li tag -->
-        <li>
-          <strong>SELECT</strong> used to select data from a database
-          <code-snippet language="SQL">
-            <strong>SELECT</strong> *
-            <strong>FROM</strong> table;
-          </code-snippet>
-          <p>
-            Gets all the rows from the
-            <strong>table</strong>
-          </p>
-        </li>
-      </template>
-    </cheat-bar>
-    <div>
-      <table>
-        <tr>
-          <th>#</th>
-          <th v-for="(key, index) in keys" :key="index">{{key}}</th>
-        </tr>
-        <tr v-for="(row, index) in results" :key="index">
-          <td>{{index+1}}</td>
-          <td v-for="(value, key) in row" :key="key">{{value}}</td>
-        </tr>
-      </table>
+    <div id="cheatBarDiv">
+      <cheat-bar language="SQL" @update:showBar="showBar = $event">
+        <!-- Cheat sheet body -->
+        <template #cheatSheet>
+          <!-- Each cheat is its own bullet point using the li tag -->
+          <li>
+            <strong>SELECT</strong> used to select data from a database
+            <code-snippet language="SQL">
+              <strong>SELECT</strong> *
+              <strong>FROM</strong> table;
+            </code-snippet>
+            <p>
+              Gets all the rows from the
+              <strong>table</strong>
+            </p>
+          </li>
+        </template>
+      </cheat-bar>
     </div>
+    <sql-result-table :results="results" :keys="keys"></sql-result-table>
   </div>
 </template>
 
@@ -52,6 +43,7 @@
 import sqlInput from "@/components/Sql/sql-input.vue";
 import cheatBar from "@/components/General/cheat-bar.vue";
 import codeSnippet from "@/components/General/code-snippet.vue";
+import sqlResultTable from "@/components/Sql/sql-result-table.vue";
 
 //Mixin imports
 import responsive from "@/mixins/responsive";
@@ -67,7 +59,8 @@ export default {
   components: {
     "sql-input": sqlInput,
     "cheat-bar": cheatBar,
-    "code-snippet": codeSnippet
+    "code-snippet": codeSnippet,
+    "sql-result-table": sqlResultTable
   },
   sockets: {
     /**
@@ -111,6 +104,7 @@ export default {
         .then(res => {
           this.results = res.data;
           this.keys = Object.keys(this.results[0]);
+          console.log(this.results);
         });
     }
   },
@@ -123,6 +117,9 @@ export default {
 </script>
 
 <style lang="scss">
+#sqlView {
+  display: block;
+}
 #inputSection {
   display: inline-flex;
   width: 85vw;
@@ -131,5 +128,10 @@ export default {
   justify-content: center;
   transition: 0.2s;
   float: left;
+}
+
+#cheatBarDiv {
+  position: absolute;
+  top: 0;
 }
 </style>

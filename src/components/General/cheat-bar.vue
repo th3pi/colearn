@@ -18,9 +18,9 @@
       <div id="content" :style="{'opacity' : showBar ? 1 : 0}">
         <!-- Header section-->
         <div id="header">
-          <p :style="getFontSize(showBar, '0.95rem', '1.2rem','1.4rem')">
+          <p :style="getFontSize(showBar, '1.2rem', '1.4rem','1.4rem')" class="bungee">
             <!-- Header prop for language -->
-            <strong>{{language}}</strong> Cheat Sheet
+            <strong class="bungee-shade">{{language}}</strong> Cheat Sheet
           </p>
 
           <!-- Help guide close button -->
@@ -28,7 +28,7 @@
             id="closeBarButton"
             class="far fa-times-circle"
             @click="showBar = false"
-            :style="getFontSize(showBar, '0.95rem', '1.4rem','1.8rem')"
+            :style="getFontSize(showBar, '1.2rem', '1.4rem','1.8rem')"
           ></i>
         </div>
         <br />
@@ -150,7 +150,7 @@ export default {
 }
 
 #header p {
-  font-size: 1.5rem;
+  margin-top: 3px;
 }
 
 // Cheat bar close button
