@@ -132,6 +132,7 @@ export default {
   padding: 5px;
   font-size: 1.2rem;
   width: 100%; //90% of viewport
+  
 
   //border stylign
   outline: none;

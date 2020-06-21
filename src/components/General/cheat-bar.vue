@@ -5,7 +5,10 @@
   <div id="cheat">
     <!-- Side bar help guide activation button -->
     <button id="cheatButton" @click="showBar = true" :style="{'opacity' : showBar ? 0 : 1}">
-      <i class="fas fa-info"></i>
+      <transition name="fade" mode="out-in">
+        <p v-if="this.$mq == 'lg'"> Cheat Sheet </p>
+        <i v-else class="fas fa-info"></i>
+      </transition>
     </button>
     <!-- Cheat bar section -->
     <div
@@ -77,6 +80,7 @@ export default {
 #cheatButton {
   height: 2rem;
   width: 8vw;
+  max-width: 15rem;
   background-color: rgba($color: #ffffff, $alpha: 1);
 
   margin-top: 3rem;

@@ -33,7 +33,7 @@ export default {
   color: var(--sql-primary);
 }
 
-#snippetBody > strong.code {
+#snippetBody strong {
   color: #ff5e5e;
 }
 </style>

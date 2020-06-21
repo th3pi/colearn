@@ -4,19 +4,22 @@
       <h1 class="tutorial">SQL</h1>
       <sql-input class="sqlInput" @send-sql="fetchSql" />
     </div>
+
+    <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
+    data passed from child component, which is a boolean value -->
     <cheat-bar language="SQL" @update:showBar="showBar = $event">
       <template #cheatSheet>
         <li>
           <strong>SELECT</strong> used to select data from a database
+          <code-snippet language="SQL">
+            <strong >SELECT</strong> *
+            <strong >FROM</strong> table;
+          </code-snippet>
+          <p>
+            Gets all the rows from the
+            <strong>table</strong>
+          </p>
         </li>
-        <code-snippet language="SQL">
-          <strong class="code">SELECT</strong> *
-          <strong class="code">FROM</strong> table;
-        </code-snippet>
-        <p>
-          Gets all the rows from the
-          <strong>table</strong>
-        </p>
       </template>
     </cheat-bar>
   </div>

@@ -5,8 +5,6 @@ import SocketIO from 'socket.io-client'
 import VueSocketIOExt from 'vue-socket.io-extended'
 import VueMq from 'vue-mq'
 
-import 'highlight.js/styles/default.css';
-
 Vue.config.productionTip = false
 
 //Establish connection to backend
