@@ -1,5 +1,5 @@
 <template>
-  <div id="sqlResults">
+  <div id="sqlResults" class="neumorphic">
     <!-- Query result table -->
     <transition name="dropdown-animation" mode="out-in">
       <div v-if="results.length > 0" key="stats">
@@ -18,24 +18,26 @@
           </dropdown>
         </div>
 
-        <table v-if="results.length > 0" key="table">
-          <!-- Table header row -->
-          <tr>
-            <!-- Row count column -->
-            <th>#</th>
-            <!-- Dynamically generated header columns (keys) -->
-            <th v-for="(key, index) in keys" :key="index">{{key}}</th>
-          </tr>
+        <div id="tableSection">
+          <table v-if="results.length > 0" key="table">
+            <!-- Table header row -->
+            <tr>
+              <!-- Row count column -->
+              <th>#</th>
+              <!-- Dynamically generated header columns (keys) -->
+              <th v-for="(key, index) in keys" :key="index">{{key}}</th>
+            </tr>
 
-          <!-- Entry rows -->
-          <tr v-for="(row, no) in results" :key="no">
-            <!-- Entry row index column -->
-            <td>{{no+1}}</td>
+            <!-- Entry rows -->
+            <tr v-for="(row, no) in results" :key="no" class="tr">
+              <!-- Entry row index column -->
+              <td>{{no+1}}</td>
 
-            <!-- Dynamically generated entry columns -->
-            <td v-for="(value, key) in row" :key="key">{{value}}</td>
-          </tr>
-        </table>
+              <!-- Dynamically generated entry columns -->
+              <td v-for="(value, key) in row" :key="key">{{value}}</td>
+            </tr>
+          </table>
+        </div>
       </div>
       <div id="emptyResultBox" v-else>
         <p>Run a SQL command to display result here</p>
@@ -76,11 +78,7 @@ export default {
   border: 2px solid rgba(var(--sql-dark-v), 0.2);
   border-radius: var(--border-radius);
 
-  box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.2);
-
   color: white;
-
-  overflow-x: auto;
 }
 
 .tableStats {
@@ -110,6 +108,10 @@ export default {
   text-shadow: 0 4px 8px rgba($color: #000000, $alpha: 0.2);
 }
 
+#tableSection {
+  overflow: auto;
+}
+
 #sqlResults table {
   width: 100%;
 
@@ -119,12 +121,13 @@ export default {
 }
 
 #sqlResults th {
-  padding: 5px 5px;
+  padding: 2px 5px;
+
   border-bottom: 2px solid white;
 }
 
 #sqlResults td {
-  padding: 5px 5px;
+  padding: 2px 5px;
   border-bottom: 1px solid rgba(var(--sql-light-v), $alpha: 0.5);
 }
 
@@ -142,11 +145,28 @@ export default {
   background-color: rgba(var(--sql-light-primary-v), $alpha: 0.2);
 
   border-radius: 0 10px 10px 0;
-  border-left: 5px solid rgba(var(--sql-light-primary-v), $alpha: 1);
 
   font-size: 0.9rem;
 }
 #emptyResultBox p {
-  margin-left: 5px;
+  text-align: center;
+}
+
+@media screen and (min-width: 470px) {
+  #sqlResults th {
+    padding: 5px 10px;
+  }
+  #sqlResults td {
+    padding: 5px 10px;
+  }
+}
+
+@media screen and (min-width: 470px) {
+  #sqlResults th {
+    padding: 5px 10px;
+  }
+  #sqlResults td {
+    padding: 5px 10px;
+  }
 }
 </style>

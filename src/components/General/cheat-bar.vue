@@ -4,9 +4,14 @@
   -->
   <div id="cheat">
     <!-- Side bar help guide activation button -->
-    <button id="cheatButton" @click="showBar = true" :style="{'opacity' : showBar ? 0 : 1}">
+    <button
+      id="cheatButton"
+      class="button"
+      @click="showBar = true"
+      :style="{'opacity' : showBar ? 0 : 1}"
+    >
       <transition name="fade" mode="out-in">
-        <p v-if="this.$mq == 'lg'" style="font-size:.95rem;">Cheat Sheet</p>
+        <p v-if="!showBar && this.$mq == 'lg'" style="font-size:.95rem;">Cheat Sheet</p>
         <i v-else class="fas fa-info"></i>
       </transition>
     </button>
@@ -18,21 +23,16 @@
       <div id="content" :style="{'opacity' : showBar ? 1 : 0}">
         <!-- Header section-->
         <div id="header">
-          <p :style="getFontSize(showBar, '1.4rem', '1.6rem','2rem')" class="bungee">
+          <p class="bungee">
             <!-- Header prop for language -->
             <strong class="bungee-shade">{{language}}</strong> Cheat Sheet
           </p>
 
           <!-- Help guide close button -->
-          <i
-            id="closeBarButton"
-            class="far fa-times-circle"
-            @click="showBar = false"
-            :style="getFontSize(showBar, '1.2rem', '1.4rem','1.8rem')"
-          ></i>
+          <i id="closeBarButton" class="far fa-times-circle" @click="showBar = false"></i>
         </div>
         <br />
-        <div id="body" :style="getFontSize(showBar, '0.85rem', '.9rem','1rem')">
+        <div id="body" class="sql font">
           <p>
             <!-- Header prop for language -->
             At a glance
@@ -75,7 +75,7 @@ export default {
 // Entire component
 #cheat {
   position: fixed;
-  right: -5px;
+  right: 0;
 }
 
 // Cheat bar open button
@@ -92,7 +92,8 @@ export default {
   border-radius: 5px 0 0 5px;
   outline: none;
 
-  box-shadow: 0 0 4px rgba($color: #000000, $alpha: 0.2);
+  box-shadow: 6px 6px 12px 0 rgba(0, 0, 0, 0.2),
+    -6px -6px 12px 0 rgba(255, 255, 255, 0.5);
 
   transition: background-color 0.3s, color 0.4s, box-shadow 0.4s, width 0.4s;
 }
@@ -105,11 +106,16 @@ export default {
   color: white;
 }
 
+#cheat .button:active {
+  box-shadow: inset 3px 3px 12px 0 rgba(0, 0, 0, 0.2),
+    inset -3px -3px 12px 0 rgba(0, 0, 0, 0.2);
+}
+
 // Cheat bar
 .cheatBar {
-  position: absolute;
+  position: fixed;
   top: 0;
-  right: 0;
+  right: -5px;
   z-index: 1;
 
   height: 100vh;
@@ -120,7 +126,8 @@ export default {
   border-radius: 10px 0 0 10px;
   overflow-x: hidden;
 
-  box-shadow: 0 0 0px rgba($color: #000000, $alpha: 0.3);
+  box-shadow: 6px 6px 12px 0 rgba(0, 0, 0, 0.2),
+    -6px -6px 12px 0 rgba(255, 255, 255, 0.5);
 
   transition: width 0.2s, box-shadow 2s;
 }
@@ -151,13 +158,14 @@ export default {
 
 #header p {
   margin-top: 3px;
+  font-size: 1.2rem;
 }
 
 // Cheat bar close button
 #closeBarButton {
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
 
-  font-size: 1.6rem;
+  font-size: 1.4rem;
 
   cursor: pointer;
 
@@ -167,5 +175,38 @@ export default {
 #closeBarButton:hover {
   color: var(--danger);
   text-shadow: 0 2px 4px rgba($color: #ed1c24, $alpha: 0.4);
+}
+
+#body {
+  font-size: 0.85rem;
+}
+
+//Medium sized screens
+@media screen and (min-width: 500px) {
+  #header p {
+    font-size: 1.4rem;
+  }
+
+  #body {
+    font-size: 0.9rem;
+  }
+
+  #closeBarButton {
+    font-size: 1.4rem;
+  }
+}
+
+// large screens
+@media screen and (min-width: 1250px) {
+  #header p {
+    font-size: 2rem;
+  }
+  #body {
+    font-size: 1rem;
+  }
+  #closeBarButton {
+    margin-top: 0.6rem;
+    font-size: 1.6rem;
+  }
 }
 </style>

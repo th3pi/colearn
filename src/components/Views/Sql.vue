@@ -1,20 +1,24 @@
 <template>
   <div id="view">
     <div class="sql font" id="sqlView" :style="{top: (results.length == 0) ? '35%' : 0}">
-      <div id="inputSection" :style="getWidth(showBar,'45vw', '55vw', '65vw')">
+      <div id="inputSection" :style="getWidth(showBar,'50%', '60%', '70')">
         <!-- SQL view title -->
         <!-- Display only the language title if on a mobile device or something with a very small display -->
         <transition name="fade-fast" mode="out-in">
-          <h1 v-if="showBar && this.$mq == 'sm'" class="title bungee-shade">{SQL}</h1>
-          <h1 v-else class="title bungee">
-            Co-learn
-            <span class="bungee-shade" style="color: var(--dark);">{SQL}</span>
-          </h1>
+          <div id="pageTitle">
+            <h1 v-if="showBar && this.$mq == 'sm'" class="title bungee-shade">{SQL}</h1>
+            <h1 v-else class="title bungee">
+              Co-learn
+              <span class="bungee-shade">{SQL}</span>
+            </h1>
+          </div>
         </transition>
         <sql-input class="sqlInput" @send-sql="fetchSql" @reset-sql="reset" />
       </div>
 
-      <sql-result-table :results="results" :keys="keys"></sql-result-table>
+      <div id="resultSection">
+        <sql-result-table :results="results" :keys="keys"></sql-result-table>
+      </div>
     </div>
     <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
     data passed from child component, which is a boolean value-->
@@ -111,7 +115,9 @@ export default {
           console.log(this.results);
         });
     },
-
+    /**
+     * Resets arrays to become empty when child compononent emits "reset-sql"
+     */
     reset() {
       this.results = [];
       this.keys = [];
@@ -127,22 +133,64 @@ export default {
 
 <style lang="scss">
 #sqlView {
-  display: block;
-  position: absolute;
+  display: inline-block;
+  width: 100%;
+
+  position: fixed;
+  left: 0;
+
   transition: top 0.4s ease-in-out;
 }
+
+#pageTitle {
+  font-size: 1rem;
+}
+
+#pageTitle .bungee-shade {
+  color: var(--dark);
+}
+
 #inputSection {
   display: inline-flex;
-  width: 85vw;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   transition: 0.2s;
-  float: left;
 }
 
 #cheatBarDiv {
-  position: absolute;
+  position: fixed;
   top: 0;
+}
+
+#resultSection {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+//Medium sized screens
+@media screen and (min-width: 470px) {
+  #pageTitle {
+    font-size: 1.1rem;
+  }
+}
+
+//Medium+ sized screens
+@media screen and (min-width: 580px) {
+  #pageTitle {
+    font-size: 1.2rem;
+  }
+}
+
+// large screens
+@media screen and (min-width: 1250px) {
+  #pageTitle {
+    font-size: 1.6rem;
+  }
 }
 </style>
