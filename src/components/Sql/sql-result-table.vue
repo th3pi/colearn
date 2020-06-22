@@ -98,6 +98,8 @@ export default {
   border-radius: var(--border-radius);
 
   color: white;
+
+  transition: background-color 0.3s;
 }
 
 .tableStats {

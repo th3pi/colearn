@@ -116,6 +116,7 @@ export default {
             this.keys = Object.keys(this.results[0]);
           } else {
             this.errMessage = res.data;
+            this.$emit("error-sql", this.errMessage);
             console.log(this.errMessage);
           }
 
