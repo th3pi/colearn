@@ -19,7 +19,11 @@ app.get('/sql-query', (req, res) => {
 
     repo.sendCommand(sql).then((result) => {
         res.send(result);
-    })
+    }).catch((err) => {
+        console.log(err);
+        res.send(err);
+
+    });
 })
 
 module.exports = app;

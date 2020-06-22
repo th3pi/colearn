@@ -3,8 +3,20 @@
     <!-- If the dropdown button is a text, then pass in a title to the title property -->
     <slot></slot>
 
-    <!-- button icon is a font awesome class -->
-    <i :class="button"></i>
+    <transition name="spin-transition" mode="out-in">
+      <!-- Open dropdown -->
+      <!-- Pass in button prop that is a font awesome class name -->
+      <!-- Used if no title is included -->
+      <div v-if="!show" key="dots">
+        <i :class="button"></i>
+      </div>
+
+      <!-- Close button -->
+      <!-- Pass in button prop that is a font awesome class name -->
+      <div v-else key="cross">
+        <i :class="closeButton"></i>
+      </div>
+    </transition>
     <transition name="dropdown-animation">
       <!-- Dropdown content slot holds the dropdown menu options -->
       <div class="dropdown-content" v-if="show">
@@ -18,12 +30,15 @@
 /**
  * Custom dropdown element w/ custom styling
  * @prop {String} title The default text/button for the dropdown
+ * @prop {String} button Open button for dropdown - is a font awesome class name
+ * @prop {String} closeButton close button for dropdown - is a font awesome class name
  */
 export default {
   name: "dropdown",
   props: {
     title: String,
-    button: String
+    button: String,
+    closeButton: String
   },
   data() {
     return {
@@ -40,6 +55,8 @@ export default {
      */
     show: function(newValue) {
       this.titleText = newValue ? "// Close" : this.title;
+      if (newValue) this.$emit("dropdown-show", true);
+      else this.$emit("dropdown-show", false);
     },
 
     /**
@@ -111,7 +128,7 @@ export default {
   color: black;
   text-decoration: none;
 
-  transition: 0.1s;
+  transition: 0.3s;
 
   cursor: pointer;
 }

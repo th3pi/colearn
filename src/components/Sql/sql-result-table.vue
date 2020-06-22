@@ -1,15 +1,27 @@
 <template>
-  <div id="sqlResults" class="neumorphic">
+  <div
+    id="sqlResults"
+    class="neumorphic"
+    :style="{'background-color' : error == '' ? 'var(--sql-lighter-dark)' : 'var(--danger)'}"
+  >
     <!-- Query result table -->
     <transition name="dropdown-animation" mode="out-in">
+      <!-- Table stats - only shown when results array is populated -->
       <div v-if="results.length > 0" key="stats">
+        <!-- Table stats -->
         <div class="tableStats">
           <p>
             Showing
             <strong>{{results.length}}</strong> results
           </p>
-          <dropdown>
-            <i class="fas fa-ellipsis-v"></i>
+
+          <!-- Result options dropdown -->
+          <dropdown
+            @dropdown-show="dropdownShow = dropdownShow ? false : true"
+            button="fas fa-ellipsis-v"
+            closeButton="fas fa-times"
+          >
+            <!-- Dropdown options -->
             <template #content>
               <a>Save</a>
               <a>Share</a>
@@ -18,6 +30,7 @@
           </dropdown>
         </div>
 
+        <!-- Table section -->
         <div id="tableSection">
           <table v-if="results.length > 0" key="table">
             <!-- Table header row -->
@@ -39,12 +52,14 @@
           </table>
         </div>
       </div>
+
+      <!-- Empty result box message -->
+      <!-- Only shown when results array is empty -->
       <div id="emptyResultBox" v-else>
-        <p>Run a SQL command to display result here</p>
+        <p v-if="error == ''">Run a SQL command to display result here</p>
+        <p v-else>{{error}}</p>
       </div>
     </transition>
-
-    <!-- Message display if there are no results to display -->
   </div>
 </template>
 
@@ -55,16 +70,20 @@ import dropdown from "@/components/General/dropdown.vue";
  * Disection of keys and results are done in the parent component
  * @prop {Array} results takes an array of results from parent as a property
  * @prop {Array} keys takes the array of field names of the result table from query result as property
+ * @prop {String} error gets a value if there's an error
  */
 export default {
   name: "sql-result-table",
   components: { dropdown },
   props: {
     results: Array,
-    keys: Array
+    keys: Array,
+    error: String
   },
   data() {
-    return {};
+    return {
+      dropdownShow: false
+    };
   }
 };
 </script>
@@ -115,6 +134,8 @@ export default {
 #sqlResults table {
   width: 100%;
 
+  font-size: 0.9rem;
+
   text-align: left;
 
   border-collapse: collapse;
@@ -153,20 +174,24 @@ export default {
 }
 
 @media screen and (min-width: 470px) {
+  #sqlResults table {
+    font-size: 1rem;
+  }
+
   #sqlResults th {
     padding: 5px 10px;
   }
   #sqlResults td {
-    padding: 5px 10px;
+    padding: 8px 10px;
   }
 }
 
-@media screen and (min-width: 470px) {
+@media screen and (min-width: 1250px) {
   #sqlResults th {
-    padding: 5px 10px;
+    padding: 8px 10px;
   }
   #sqlResults td {
-    padding: 5px 10px;
+    padding: 10px 10px;
   }
 }
 </style>

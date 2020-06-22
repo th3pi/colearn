@@ -128,3 +128,53 @@
       transform-origin: 100% 0%;
   }
 }
+
+/**
+ * ----------------------------------------
+ * class dropdown-animation
+ * ----------------------------------------
+ */
+
+ .spin-transition-enter-active {
+  animation: spin-transition .1s ease-in-out;
+
+}
+
+.spin-transition-leave-active {
+	animation: spin-transition .1s reverse ease-in-out;
+}
+
+/**
+ * ----------------------------------------
+ * keyframes dropdown-animation
+ * ----------------------------------------
+ */
+ @-webkit-keyframes spin-transition {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            opacity: 0;
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+            opacity: 1;
+  }
+}
+@keyframes spin-transition {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            opacity: 0;
+
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+            opacity: 1;
+
+
+  }
+}

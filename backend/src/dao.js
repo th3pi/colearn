@@ -48,7 +48,7 @@ class Dao {
                 if (err) {
                     console.log("SQL ERROR: " + sql);
                     console.log(err);
-                    reject(err);
+                    reject(err.message);
                 } else {
                     resolve(result);
                 }
@@ -61,13 +61,15 @@ class Dao {
      * @param {SQL} sql SQL commands to get multiple results
      * @param {Array} params Parameters to be plugged into the SQL Query
      */
-    all(sql, params) {
+    all(sql) {
+
         return new Promise((resolve, reject) => {
-            this.db.all(sql, params, (err, results) => {
+            this.db.all(sql, [], (err, results) => {
+                console.log("RESULTS: " + results);
                 if (err) {
-                    console.log("SQL ERROR: " + sql);
-                    console.log(err);
-                    reject(err);
+                    console.log("SQL ERROR: " + err.message);
+                    console.log(err.message);
+                    reject(err.message);
                 } else {
                     resolve(results);
                 }

@@ -17,7 +17,7 @@
       </div>
 
       <div id="resultSection">
-        <sql-result-table :results="results" :keys="keys"></sql-result-table>
+        <sql-result-table :error="errMessage" :results="results" :keys="keys"></sql-result-table>
       </div>
     </div>
     <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
@@ -91,6 +91,7 @@ export default {
       results: [],
       keys: [],
       values: [],
+      errMessage: "",
       showBar: false,
       width: 0
     };
@@ -102,7 +103,7 @@ export default {
      * @param {String} command SQL command that is received from the input and send to the backend
      */
     fetchSql(command) {
-      command = "SELECT * FROM PERSONS"; //ONLY FOR TESTING PURPOSES. REMOVE this from build
+      // command = "SELECT * FROM PERSONS"; //ONLY FOR TESTING PURPOSES. REMOVE this from build
       this.$http
         .get(this.route, {
           params: {
@@ -110,9 +111,18 @@ export default {
           }
         })
         .then(res => {
-          this.results = res.data;
-          this.keys = Object.keys(this.results[0]);
-          console.log(this.results);
+          if (Array.isArray(res.data)) {
+            this.results = res.data;
+            this.keys = Object.keys(this.results[0]);
+          } else {
+            this.errMessage = res.data;
+            console.log(this.errMessage);
+          }
+
+          // console.log(this.results);
+        })
+        .catch(err => {
+          console.log(err);
         });
     },
     /**
@@ -121,6 +131,7 @@ export default {
     reset() {
       this.results = [];
       this.keys = [];
+      this.errMessage = "";
     }
   },
   watch: {
