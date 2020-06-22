@@ -18,7 +18,7 @@
       <div id="content" :style="{'opacity' : showBar ? 1 : 0}">
         <!-- Header section-->
         <div id="header">
-          <p :style="getFontSize(showBar, '1.2rem', '1.4rem','1.4rem')" class="bungee">
+          <p :style="getFontSize(showBar, '1.4rem', '1.6rem','2rem')" class="bungee">
             <!-- Header prop for language -->
             <strong class="bungee-shade">{{language}}</strong> Cheat Sheet
           </p>

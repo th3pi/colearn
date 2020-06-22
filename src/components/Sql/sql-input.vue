@@ -46,18 +46,10 @@
     <!-- Action buttons for the input field -->
     <div id="actionButtons">
       <!-- Update button does exactly the same as Shift + Enter keyup, shares the latest value of command -->
-      <button
-        class="sql font"
-        @click="emitMessage()"
-        :style="getFontSize(true,'.9rem','.9rem','1rem')"
-      >Update</button>
+      <button class="sql font" @click="emitMessage()">Update</button>
 
       <!-- Run button compiles the code and fetches result from the compiler -->
-      <button
-        class="sql font"
-        :style="getFontSize(true,'.9rem','.9rem','1rem')"
-        @click="sendSql(command)"
-      >
+      <button class="sql font" @click="sendSql(command)">
         <i id="runArrows" class="fas fa-angle-double-right"></i> Run
       </button>
     </div>
@@ -239,7 +231,7 @@ textarea {
 #actionButtons button {
   margin-right: 0.5rem;
 
-  padding: 1rem;
+  padding: 0.8rem 1.2rem;
 
   background-color: var(--sql-lighter-dark);
 
@@ -255,6 +247,34 @@ textarea {
     padding-left 0.4s ease-in-out, padding-right 0.4s ease-in-out;
 }
 
+#actionButtons button:last-child:hover {
+  padding: 0.8rem 1.8rem;
+}
+
+//Medium screens >= 470px
+@media only screen and (min-width: 470px) {
+  #actionButtons button {
+    padding: 0.8rem 2rem;
+
+    font-size: 0.95rem;
+  }
+  #actionButtons button:last-child:hover {
+    padding: 0.8rem 2.4rem;
+  }
+}
+
+//Large screens >= 1250px
+@media only screen and (min-width: 1250px) {
+  #actionButtons button {
+    padding: 0.9rem 2.4rem;
+    font-size: 1rem;
+  }
+
+  #actionButtons button:last-child:hover {
+    padding: 0.9rem 2.7rem;
+  }
+}
+
 // Run button
 #actionButtons button:last-child {
   margin-right: 0;
@@ -267,12 +287,5 @@ textarea {
   background-color: rgba(var(--sql-lighter-dark-v), 0.8);
 
   box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.2);
-}
-
-// Run button hover
-#actionButtons button:last-child:hover {
-  padding-left: 2rem;
-  padding-right: 2rem;
-  background-color: rgba(var(--sql-light-primary-v), 1);
 }
 </style>
