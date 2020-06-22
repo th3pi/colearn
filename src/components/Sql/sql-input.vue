@@ -6,51 +6,53 @@
     <!-- Creates a new line on enter keyup -->
     <!-- Emits message to everyone on the channel on Shift + space keyup -->
     <!-- Updates focus boolean variable on gain or loss of focus -->
-    <textarea
-      id="commandInput"
-      name="commandInput"
-      :class="{'sql' : true, 'font' : true, 'focus': (focus || command != '') ? true : false}"
-      :style="{'rows':rows, 'height': height+'rem'}"
-      v-model="command"
-      @keyup.enter="createNewLine"
-      @keyup.shift.space="emitMessage"
-      @focus="focus = true"
-      @blur="focus = false"
-    ></textarea>
+    <div id="commandBox">
+      <textarea
+        id="commandInput"
+        name="commandInput"
+        :class="{'sql' : true, 'font' : true, 'focus': (focus || command != '') ? true : false}"
+        :style="{'rows':rows, 'height': height+'rem', 'width' : (focus || command != '') ? '100%' : '50%'}"
+        v-model="command"
+        @keyup.enter="createNewLine"
+        @keyup.shift.space="emitMessage"
+        @focus="focus = true"
+        @blur="focus = false"
+      ></textarea>
 
-    <!-- Label displayed when input field is out of focus or input field is empty -->
-    <transition name="fade">
-      <label
-        class="placeholder"
-        v-if="!focus && command == ''"
-        for="commandInput"
-      >Enter a SQL command</label>
-    </transition>
-
-    <!-- Label displayed when input field is in focus or command is NOT empty -->
-    <!-- Font size is adjusted responsively -->
-    <div v-if="this.$mq != 'sm'">
-      <transition name="fade-fast">
+      <!-- Command box label -->
+      <!-- Displayed when commandbox is empty -->
+      <transition name="fade">
         <label
-          class="hint"
-          v-if="focus || command != ''"
+          class="placeholder"
+          v-if="!focus && command == ''"
           for="commandInput"
-          :style="getFontSize(true, '.85rem', '.9rem', '.95rem')"
-        >
-          //
-          <strong>Shift + Enter</strong> to update what you have typed
-        </label>
+        >Enter a SQL command</label>
       </transition>
     </div>
 
+    <!-- Instruction label -->
+    <!-- Displayed when commandbox is in focus and not empty -->
+    <transition name="gainleft-animation">
+      <div class="hint" v-if="(focus || command != '')">
+        //
+        <strong>Shift + Enter</strong> to update what you have typed
+      </div>
+    </transition>
     <!-- Action buttons for the input field -->
     <div id="actionButtons">
       <!-- Update button does exactly the same as Shift + Enter keyup, shares the latest value of command -->
       <button class="sql font" @click="emitMessage()">Update</button>
 
-      <!-- Run button compiles the code and fetches result from the compiler -->
+      <!-- Run button  -->
+      <!-- Compiles and runs code then fetches result -->
       <button class="sql font" @click="sendSql(command)">
         <i id="runArrows" class="fas fa-angle-double-right"></i> Run
+      </button>
+
+      <!-- Reset button -->
+      <!-- Clears everything -->
+      <button class="sql font" @click="reset">
+        <i class="fas fa-undo-alt"></i> Reset
       </button>
     </div>
   </div>
@@ -122,6 +124,15 @@ export default {
         this.rows,
         this.height
       );
+    },
+
+    /**
+     * Resets all the parameters to default values
+     * Emits "reset-sql" event to parent component
+     */
+    reset() {
+      this.command = "";
+      this.$emit("reset-sql");
     }
   },
   watch: {
@@ -163,28 +174,36 @@ export default {
   margin-top: 1rem;
 }
 
-// Input field styling
-#commandInput {
-  padding: 5px;
-  font-size: 1.2rem;
-  width: 100%;
-
-  //border stylign
-  outline: none;
-
-  //transition
-  transition: box-shadow 0.3s, border-radius 0.4s, border-color 0.5s;
+// Command box body
+#commandBox {
+  display: flex;
+  align-content: center;
+  justify-content: center;
 }
 
 // Input field styling
 textarea {
   min-height: 2rem;
-  resize: none;
+  width: 50%;
+
+  padding: 5px;
+
   overflow-y: auto;
+
   border: 2px solid;
   border-radius: 3px;
   border-color: transparent;
   border-bottom: 2px solid var(--sql-secondary);
+
+  font-size: 1.2rem;
+
+  resize: none;
+
+  //border stylign
+  outline: none;
+
+  //transition
+  transition: box-shadow 0.3s, border-radius 0.4s, border-color 0.5s, width 0.4s;
 }
 
 // Input field focus styling
@@ -206,10 +225,10 @@ textarea {
 // Input field hint
 .hint {
   position: absolute;
-  top: 3.8rem;
+  top: 3.4rem;
   background-color: var(--sql-dark);
-  padding: 2px 10px 15px 10px;
   z-index: -1;
+  padding: 2px 2px 15px 2px;
 
   border-radius: 5px;
   border: 2px solid var(--sql-secondary);
@@ -247,19 +266,12 @@ textarea {
     padding-left 0.4s ease-in-out, padding-right 0.4s ease-in-out;
 }
 
-#actionButtons button:last-child:hover {
-  padding: 0.8rem 1.8rem;
-}
-
 //Medium screens >= 470px
 @media only screen and (min-width: 470px) {
   #actionButtons button {
     padding: 0.8rem 2rem;
 
     font-size: 0.95rem;
-  }
-  #actionButtons button:last-child:hover {
-    padding: 0.8rem 2.4rem;
   }
 }
 
@@ -269,16 +281,10 @@ textarea {
     padding: 0.9rem 2.4rem;
     font-size: 1rem;
   }
-
-  #actionButtons button:last-child:hover {
-    padding: 0.9rem 2.7rem;
-  }
 }
 
 // Run button
-#actionButtons button:last-child {
-  margin-right: 0;
-
+#actionButtons button:nth-last-child(2) {
   background-color: var(--sql-primary);
 }
 
@@ -287,5 +293,27 @@ textarea {
   background-color: rgba(var(--sql-lighter-dark-v), 0.8);
 
   box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.2);
+}
+
+#actionButtons button:last-child {
+  padding: 0 1rem;
+
+  background-color: white;
+
+  color: var(--dark);
+
+  transition: 0.2s;
+}
+
+#actionButtons button:last-child:hover {
+  color: var(--danger);
+}
+
+#actionButtons button:last-child i {
+  transition: 0.3s;
+}
+
+#actionButtons button:last-child:hover i {
+  transform: rotate(-360deg);
 }
 </style>

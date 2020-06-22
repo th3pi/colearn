@@ -17,13 +17,27 @@
 
 :root {
     //Primary color swatch
-    --primary: #94C595;
-    --secondary: #687E60;
-    --light: #A1E8AF;
-    --dark: #3C362A;
-    --danger: #ED1C24;
-    --danger-light: #EF3138;
-    --danger-lighter: #F0444A;
+    --primary: rgb(148, 197, 149);
+    --primary-v: 148, 197, 149;
+    
+    --secondary: rgb(104, 126, 96);
+    --secondary-v: 104, 126, 96;
+
+    --light: rgb(161, 232, 175);
+    --light-v: 161, 232, 175;
+
+    --dark: rgb(60, 54, 42);
+    --dark-v: 60, 54, 42;
+
+    --danger: rgb(237, 28, 36);
+    --danger-v: 237,28,36;
+
+    --danger-light: rgb(239, 49, 56);
+    --danger-light-v: 239, 49, 56;
+
+    --danger-lighter: rgb(240, 68, 74);
+    --danger-lighter-v: 240, 68, 74;
+
 
     //Gray shaded primary color swatch
     --g-primary: #4F759B;

@@ -1,18 +1,21 @@
 <template>
-  <div class="sql font" id="sqlView">
-    <div id="inputSection" :style="getWidth(showBar,'45vw', '55vw', '65vw')">
-      <!-- SQL view title -->
-      <!-- Display only the language title if on a mobile device or something with a very small display -->
-      <transition name="fade-fast" mode="out-in">
-        <h1 v-if="showBar && this.$mq == 'sm'" class="title bungee-shade">SQL</h1>
-        <h1 v-else class="title bungee">
-          Co-learn
-          <span class="bungee-shade">SQL</span>
-        </h1>
-      </transition>
-      <sql-input class="sqlInput" @send-sql="fetchSql" />
-    </div>
+  <div id="view">
+    <div class="sql font" id="sqlView" :style="{top: (results.length == 0) ? '35%' : 0}">
+      <div id="inputSection" :style="getWidth(showBar,'45vw', '55vw', '65vw')">
+        <!-- SQL view title -->
+        <!-- Display only the language title if on a mobile device or something with a very small display -->
+        <transition name="fade-fast" mode="out-in">
+          <h1 v-if="showBar && this.$mq == 'sm'" class="title bungee-shade">{SQL}</h1>
+          <h1 v-else class="title bungee">
+            Co-learn
+            <span class="bungee-shade" style="color: var(--dark);">{SQL}</span>
+          </h1>
+        </transition>
+        <sql-input class="sqlInput" @send-sql="fetchSql" @reset-sql="reset" />
+      </div>
 
+      <sql-result-table :results="results" :keys="keys"></sql-result-table>
+    </div>
     <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
     data passed from child component, which is a boolean value-->
     <div id="cheatBarDiv">
@@ -34,7 +37,6 @@
         </template>
       </cheat-bar>
     </div>
-    <sql-result-table :results="results" :keys="keys"></sql-result-table>
   </div>
 </template>
 
@@ -50,8 +52,10 @@ import responsive from "@/mixins/responsive";
 /**
  * Main view for SQL collaborations
  * @param {String} route holds the route to backend sql query api
- * @param {String} statement is the SQL statement that is to be sent
  * @param {Array} results is an array of results that was fed back by backend
+ * @param {Array} keys is an array of field names from the result table
+ * @param {Boolean} showBar is a boolean value that determines whether to show cheat bar
+ * @param {Number} width is the width of the cheat bar
  */
 export default {
   name: "sql-view",
@@ -106,6 +110,11 @@ export default {
           this.keys = Object.keys(this.results[0]);
           console.log(this.results);
         });
+    },
+
+    reset() {
+      this.results = [];
+      this.keys = [];
     }
   },
   watch: {
@@ -119,6 +128,8 @@ export default {
 <style lang="scss">
 #sqlView {
   display: block;
+  position: absolute;
+  transition: top 0.4s ease-in-out;
 }
 #inputSection {
   display: inline-flex;

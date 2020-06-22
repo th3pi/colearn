@@ -16,3 +16,115 @@
 .fade-fast-enter, .fade-fast-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
+
+/**
+ * ----------------------------------------
+ * class dropdown-animation
+ * ----------------------------------------
+ */
+
+ .dropdown-animation-enter-active {
+  animation: dropdown-animation .2s;
+
+}
+
+.dropdown-animation-leave-active {
+	animation: dropdown-animation .1s reverse;
+}
+
+/**
+ * ----------------------------------------
+ * keyframes dropdown-animation
+ * ----------------------------------------
+ */
+ @-webkit-keyframes dropdown-animation {
+  0% {
+    -webkit-transform: scaleY(0);
+            transform: scaleY(0);
+            opacity: 0;
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+            opacity: 1;
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+}
+@keyframes dropdown-animation {
+  0% {
+    -webkit-transform: scaleY(0);
+            transform: scaleY(0);
+            opacity: 0;
+
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+            opacity: 1;
+
+    -webkit-transform-origin: 100% 0%;
+            transform-origin: 100% 0%;
+  }
+}
+
+/**
+ * ----------------------------------------
+ * class gainleft-animation
+ * ----------------------------------------
+ */
+
+ .gainleft-animation-enter-active {
+  animation: gainleft-animation .1s;
+
+}
+
+.gainleft-animation-leave-active {
+	animation: gainleft-animation .2s reverse;
+}
+
+/**
+ * ----------------------------------------
+ * keyframes gainleft-animation
+ * ----------------------------------------
+ */
+ @-webkit-keyframes gainleft-animation {
+  0% {
+      -webkit-transform: scaleY(0);
+      transform: scaleY(0);
+      -webkit-transform: scaleX(0);
+      transform: scaleX(0);
+      opacity: 0;
+      -webkit-transform-origin: 100% 0%;
+      transform-origin: 100% 0%;
+  }
+  100% {
+      -webkit-transform: scaleY(1);
+      transform: scaleY(1);
+      -webkit-transform: scaleX(1);
+      transform: scaleX(1);
+      opacity: 1;
+      -webkit-transform-origin: 100% 0%;
+      transform-origin: 100% 0%;
+  }
+}
+@keyframes gainleft-animation {
+  0% {
+      -webkit-transform: scaleX(0);
+      transform: scaleX(0);
+
+      -webkit-transform-origin: 100% 0%;
+      transform-origin: 100% 0%;
+  }
+  100% {
+      -webkit-transform: scaleX(1);
+      transform: scaleX(1);
+
+      -webkit-transform-origin: 100% 0%;
+      transform-origin: 100% 0%;
+  }
+}

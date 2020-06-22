@@ -108,7 +108,7 @@ export default {
 // Cheat bar
 .cheatBar {
   position: absolute;
-  top: 0rem;
+  top: 0;
   right: 0;
   z-index: 1;
 
