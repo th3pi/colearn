@@ -13,8 +13,8 @@
         :class="{'sql' : true, 'font' : true, 'focus': (focus || command != '') ? true : false}"
         :style="{'rows':rows, 'height': height+'rem', 'width' : (focus || command != '') ? '100%' : '50%'}"
         v-model="command"
-        @keyup.enter="createNewLine"
         @keyup.shift.space="emitMessage"
+        @keyup.shift.enter.prevent="sendSql(command)"
         @focus="focus = true"
         @blur="focus = false"
       ></textarea>
@@ -157,6 +157,8 @@ export default {
      * @param {String} newValue Current value of the command variable
      */
     command(newValue) {
+      this.rows = newValue.split("\n").length;
+      this.height = this.rows * 1.6;
       if (newValue == "") {
         this.rows = 1;
         this.height = 1.5;
@@ -204,7 +206,8 @@ textarea {
   outline: none;
 
   //transition
-  transition: box-shadow 0.3s, border-radius 0.4s, border-color 0.5s, width 0.4s;
+  transition: box-shadow 0.3s, border-radius 0.4s, border-color 0.5s, width 0.4s,
+    height 0.3s;
 }
 
 // Input field focus styling

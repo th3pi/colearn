@@ -17,13 +17,13 @@ class SqlRepository {
      */
     sendCommand(command) {
         //RegEx match "CREATE" commands, because database.run(...) only accepts these
-        if (command.match(/INSERT/i) || command.match(/CREATE/i) || command.match(/UPDATE/i) || command.match(/DELETE/i)) {
+        if (command.match(/INSERT/i) || command.match(/CREATE/i) || command.match(/UPDATE/i) || command.match(/DELETE/i) || command.match(/ALTER/i)) {
             console.log("RECEIVED (RUN): " + command);
             return this.db.run(command);
         }
 
         //RegEx match "SELECT" commands that return multiple results
-        else if (command.match(/SELECT/i)) {
+        else if (command.match(/SELECT/i) || command.match(/PRAGMA/i)) {
             console.log("RECEIVED (ALL): " + command);
             return this.db.all(command);
         } else {
@@ -31,27 +31,6 @@ class SqlRepository {
             return this.db.get(command);
         }
     }
-
-    selectOne(command) {
-        console.log("RECEIVED: SELECT command");
-        return this.db.get(command);
-    }
-
-    select(command) {
-        console.log("RECEIVED: SELECT multiple command");
-        return this.db.all(command);
-    }
-
-    createTable(command) {
-        console.log("RECEIVED: CREATE TABLE command");
-        return this.db.run(command);
-    }
-
-    insertInto(command) {
-        console.log("RECEIVED: INSERT command");
-        return this.db.run(command);
-    }
-
 
 }
 

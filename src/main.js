@@ -16,9 +16,10 @@ const socket = SocketIO('http://192.168.1.15:4113');
 //Initialize vue socket client
 Vue.use(VueSocketIOExt, socket);
 Vue.prototype.$http = http;
+
+//VueMq breakpoints, to programmatically adjust components according to screen sizes
 Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } })
 
-// Vue.prototype.$socket = socket;
 new Vue({
   render: h => h(App),
 }).$mount('#app')

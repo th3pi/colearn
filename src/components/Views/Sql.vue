@@ -13,6 +13,7 @@
             </h1>
           </div>
         </transition>
+        <!-- SQL command input box -->
         <sql-input
           class="sqlInput"
           @send-sql="fetchSql"
@@ -20,6 +21,7 @@
         />
       </div>
 
+      <!-- Result table -->
       <div id="resultSection">
         <sql-result-table
           :error="message"
@@ -128,19 +130,19 @@ export default {
             this.message = "";
             this.resultBackground = "var(--sql-lighter-dark)";
           } else {
+            console.log(res.data);
+
             this.messageHandlier(res.data);
           }
         })
         .catch(err => {
-          console.log(err);
-          this.message = "No entries found";
-          this.resultBackground = "var(--sql-lighter-dark)";
-          this.$emit("no-result-sql", this.message);
-          console.log(this.message);
+          console.log(err.message);
         });
     },
     /**
-     * Resets arrays to become empty when child compononent emits "reset-sql"
+     * Resets arrays to become empty when child compononent emits "reset-sql", also used to update the result table message and background color of the component
+     * @param {String} message is the response from backend which will be displayed on the result table
+     * @param {String} background is a css variable, defined in the @/assets/styles/style.scss file
      */
     updateResultTable(message, background) {
       this.results = [];
@@ -148,22 +150,33 @@ export default {
       this.message = message;
       this.resultBackground = background;
     },
+
+    /**
+     * Checks backend response and updates, result table message and background color
+     * @param {String} message is the response from backend after a SQL command has been. Only populated when response is not an array
+     */
     messageHandlier(message) {
-      if (message.match(/SUCCESSFULLY/i)) {
-        this.updateResultTable(message, "var(--success)");
-      } else if (message.match(/DELETED/i)) {
-        this.updateResultTable(message, "var(--success)");
-      } else if (message.match(/UPDATED/i)) {
-        this.updateResultTable(message, "var(--sql-light-primary)");
-      } else if (message.match(/ERROR/i)) {
-        this.updateResultTable(message, "var(--danger)");
-      } else if (message.match(/NO MATCHING/i)) {
-        this.updateResultTable(message, "var(--danger-light)");
+      if (typeof message == "string") {
+        if (message.match(/SUCCESSFULLY/i)) {
+          this.updateResultTable(message, "var(--success)");
+        } else if (message.match(/DELETED/i)) {
+          this.updateResultTable(message, "var(--success)");
+        } else if (message.match(/UPDATED/i)) {
+          this.updateResultTable(message, "var(--sql-light-primary)");
+        } else if (message.match(/ERROR/i)) {
+          this.updateResultTable(message, "var(--danger)");
+        } else if (message.match(/NO MATCHING/i)) {
+          this.updateResultTable(message, "var(--danger-light)");
+        } else if (message.match(/Empty table/i)) {
+          this.updateResultTable(message, "var(--g-secondary)");
+        } else {
+          this.updateResultTable(
+            "Something went wrong, please reset and try again.",
+            "var(--dark)"
+          );
+        }
       } else {
-        this.updateResultTable(
-          "Something went wrong, please reset and try again.",
-          "var(--dark)"
-        );
+        this.updateResultTable("Invalid command", "var(--danger)");
       }
     }
   },

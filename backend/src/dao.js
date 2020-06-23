@@ -28,7 +28,7 @@ class Dao {
                 if (err) {
                     console.log("SQL ERROR: " + sql);
                     console.log(err);
-                    reject(err)
+                    reject(err.message)
                 } else {
                     //Send a delete response if received a delete command
                     if (sql.match(/DELETE/i)) {
@@ -46,6 +46,10 @@ class Dao {
                     //Send an insert response if received an insert command
                     else if (sql.match(/INSERT/i)) {
                         resolve("Successfully inserted row(s)");
+                    } else if (sql.match(/CREATE/i)) {
+                        resolve("Successfully created table(s)");
+                    } else if (sql.match(/ALTER/i)) {
+                        resolve("Successfully altered table(s)");
                     }
                 }
             })
@@ -85,7 +89,11 @@ class Dao {
                     console.log(err.message);
                     reject(err.message);
                 } else {
-                    resolve(results);
+                    if (results.length > 0) {
+                        resolve(results);
+                    } else {
+                        resolve("Empty table. Use PRAGMA table_info(table_name) to learn more about the table")
+                    }
                 }
             })
         })
