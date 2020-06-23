@@ -1,9 +1,5 @@
 <template>
-  <div
-    id="sqlResults"
-    class="neumorphic"
-    :style="{'background-color' : error == '' ? 'var(--sql-lighter-dark)' : 'var(--danger)'}"
-  >
+  <div id="sqlResults" class="neumorphic" :style="{'background-color' : background}">
     <!-- Query result table -->
     <transition name="dropdown-animation" mode="out-in">
       <!-- Table stats - only shown when results array is populated -->
@@ -78,13 +74,15 @@ export default {
   props: {
     results: Array,
     keys: Array,
-    error: String
+    error: String,
+    background: String
   },
   data() {
     return {
       dropdownShow: false
     };
-  }
+  },
+  methods: {}
 };
 </script>
 
@@ -108,7 +106,9 @@ export default {
   padding: 0.4rem 0.5rem 0.4rem 0.2rem;
   background-color: var(--sql-light-primary);
 
-  box-shadow: 0 -2px 8px rgba($color: #000000, $alpha: 0.2) inset;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 -2px 8px rgba($color: #000000, $alpha: 0.2) inset,
+    0 2px 8px rgba($color: #000000, $alpha: 0.2) inset;
 
   font-size: 0.9rem;
 }

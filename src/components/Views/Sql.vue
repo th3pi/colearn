@@ -17,7 +17,12 @@
       </div>
 
       <div id="resultSection">
-        <sql-result-table :error="errMessage" :results="results" :keys="keys"></sql-result-table>
+        <sql-result-table
+          :error="message"
+          :results="results"
+          :keys="keys"
+          :background="resultBackground"
+        ></sql-result-table>
       </div>
     </div>
     <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
@@ -58,6 +63,7 @@ import responsive from "@/mixins/responsive";
  * @param {String} route holds the route to backend sql query api
  * @param {Array} results is an array of results that was fed back by backend
  * @param {Array} keys is an array of field names from the result table
+ * @param {String} message returned error message string from backend
  * @param {Boolean} showBar is a boolean value that determines whether to show cheat bar
  * @param {Number} width is the width of the cheat bar
  */
@@ -90,9 +96,9 @@ export default {
       route: "/sql/sql-query",
       results: [],
       keys: [],
-      values: [],
-      errMessage: "",
+      message: "",
       showBar: false,
+      resultBackground: "",
       width: 0
     };
   },
@@ -111,19 +117,38 @@ export default {
           }
         })
         .then(res => {
+          //If response is an array, it means successful SELECT command was run
           if (Array.isArray(res.data)) {
             this.results = res.data;
             this.keys = Object.keys(this.results[0]);
+            this.message = "";
+            this.resultBackground = "var(--sql-lighter-dark)";
           } else {
-            this.errMessage = res.data;
-            this.$emit("error-sql", this.errMessage);
-            console.log(this.errMessage);
-          }
+            this.message = res.data;
 
-          // console.log(this.results);
+            // If response contains success it means successful CREATE operation was done
+            if (this.message.match(/SUCCESS/i)) {
+              this.results = [];
+              this.resultBackground = "var(--success)";
+              // If contains no results it means query didn't find anything
+            } else if (this.message.match(/no results/i)) {
+              this.results = [];
+              this.message = "No results found";
+              this.resultBackground = "var(--g-secondary)";
+              // If response contains error it means query was not executed
+            } else if (this.message.match(/ERROR/i)) {
+              this.results = [];
+              this.resultBackground = "var(--danger)";
+              this.$emit("error-sql", this.message);
+            }
+          }
         })
         .catch(err => {
           console.log(err);
+          this.message = "No entries found";
+          this.resultBackground = "var(--sql-lighter-dark)";
+          this.$emit("no-result-sql", this.message);
+          console.log(this.message);
         });
     },
     /**
@@ -132,7 +157,7 @@ export default {
     reset() {
       this.results = [];
       this.keys = [];
-      this.errMessage = "";
+      this.message = "";
     }
   },
   watch: {
