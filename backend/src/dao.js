@@ -11,7 +11,6 @@ class Dao {
         this.db = new sqlite3.Database(dbFilePath, (err) => {
             if (err) {
                 console.log("FAILED: Could not connect to database", err);
-
             } else {
                 console.log("SUCCESS: Connected to database");
             }
@@ -31,7 +30,23 @@ class Dao {
                     console.log(err);
                     reject(err)
                 } else {
-                    resolve("SUCCESS: " + sql);
+                    //Send a delete response if received a delete command
+                    if (sql.match(/DELETE/i)) {
+                        if (this.changes > 0) {
+                            resolve("Deleted " + this.changes + " row(s)");
+                        } else {
+                            resolve("No matching row(s) to delete")
+                        }
+                        //Send an update response if received an update command
+                    } else if (sql.match(/UPDATE/i)) {
+                        if (this.changes > 0) { resolve("Updated  " + this.changes + " row(s)"); } else {
+                            resolve("No matching row(s) to update");
+                        }
+                    }
+                    //Send an insert response if received an insert command
+                    else if (sql.match(/INSERT/i)) {
+                        resolve("Successfully inserted row(s)");
+                    }
                 }
             })
         })
@@ -62,7 +77,6 @@ class Dao {
      * @param {Array} params Parameters to be plugged into the SQL Query
      */
     all(sql) {
-
         return new Promise((resolve, reject) => {
             this.db.all(sql, [], (err, results) => {
                 console.log("RESULTS: " + results);

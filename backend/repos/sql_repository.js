@@ -17,7 +17,7 @@ class SqlRepository {
      */
     sendCommand(command) {
         //RegEx match "CREATE" commands, because database.run(...) only accepts these
-        if (command.match(/INSERT/i) || command.match(/CREATE/i)) {
+        if (command.match(/INSERT/i) || command.match(/CREATE/i) || command.match(/UPDATE/i) || command.match(/DELETE/i)) {
             console.log("RECEIVED (RUN): " + command);
             return this.db.run(command);
         }

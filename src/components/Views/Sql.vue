@@ -13,7 +13,11 @@
             </h1>
           </div>
         </transition>
-        <sql-input class="sqlInput" @send-sql="fetchSql" @reset-sql="reset" />
+        <sql-input
+          class="sqlInput"
+          @send-sql="fetchSql"
+          @reset-sql="updateResultTable('Run a SQL command to display result here','var(--sql-lighter-dark)')"
+        />
       </div>
 
       <div id="resultSection">
@@ -124,23 +128,7 @@ export default {
             this.message = "";
             this.resultBackground = "var(--sql-lighter-dark)";
           } else {
-            this.message = res.data;
-
-            // If response contains success it means successful CREATE operation was done
-            if (this.message.match(/SUCCESS/i)) {
-              this.results = [];
-              this.resultBackground = "var(--success)";
-              // If contains no results it means query didn't find anything
-            } else if (this.message.match(/no results/i)) {
-              this.results = [];
-              this.message = "No results found";
-              this.resultBackground = "var(--g-secondary)";
-              // If response contains error it means query was not executed
-            } else if (this.message.match(/ERROR/i)) {
-              this.results = [];
-              this.resultBackground = "var(--danger)";
-              this.$emit("error-sql", this.message);
-            }
+            this.messageHandlier(res.data);
           }
         })
         .catch(err => {
@@ -154,17 +142,32 @@ export default {
     /**
      * Resets arrays to become empty when child compononent emits "reset-sql"
      */
-    reset() {
+    updateResultTable(message, background) {
       this.results = [];
       this.keys = [];
-      this.message = "";
+      this.message = message;
+      this.resultBackground = background;
+    },
+    messageHandlier(message) {
+      if (message.match(/SUCCESSFULLY/i)) {
+        this.updateResultTable(message, "var(--success)");
+      } else if (message.match(/DELETED/i)) {
+        this.updateResultTable(message, "var(--success)");
+      } else if (message.match(/UPDATED/i)) {
+        this.updateResultTable(message, "var(--sql-light-primary)");
+      } else if (message.match(/ERROR/i)) {
+        this.updateResultTable(message, "var(--danger)");
+      } else if (message.match(/NO MATCHING/i)) {
+        this.updateResultTable(message, "var(--danger-light)");
+      } else {
+        this.updateResultTable(
+          "Something went wrong, please reset and try again.",
+          "var(--dark)"
+        );
+      }
     }
   },
-  watch: {
-    statement(newValue) {
-      this.$socket.client.emit("typing", newValue);
-    }
-  }
+  watch: {}
 };
 </script>
 
@@ -214,13 +217,6 @@ export default {
 @media screen and (min-width: 470px) {
   #pageTitle {
     font-size: 1.1rem;
-  }
-}
-
-//Medium+ sized screens
-@media screen and (min-width: 580px) {
-  #pageTitle {
-    font-size: 1.2rem;
   }
 }
 
