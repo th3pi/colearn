@@ -13,21 +13,24 @@
         :class="{'sql' : true, 'font' : true, 'focus': (focus || command != '') ? true : false}"
         :style="{'rows':rows, 'height': height+'rem', 'width' : (focus || command != '') ? '100%' : '50%'}"
         v-model="command"
+        :placeholder="focus ? '' : 'Enter a SQL command'"
         @keyup.shift.space="emitMessage"
-        @keyup.shift.enter.prevent="sendSql(command)"
+        @keyup.shift.enter="sendSql(command)"
         @focus="focus = true"
         @blur="focus = false"
       ></textarea>
 
       <!-- Command box label -->
       <!-- Displayed when commandbox is empty -->
-      <transition name="fade">
+
+      <!-- DEPRECATED: Using textarea's own placeholder now -->
+      <!-- <transition name="fade">
         <label
           class="placeholder"
           v-if="!focus && command == ''"
           for="commandInput"
         >Enter a SQL command</label>
-      </transition>
+      </transition>-->
     </div>
 
     <!-- Instruction label -->
@@ -177,6 +180,7 @@ export default {
 }
 
 // Command box body
+// Contains the input and hint label
 #commandBox {
   display: inline-flex;
   align-content: center;
@@ -210,6 +214,10 @@ textarea {
     height 0.3s;
 }
 
+textarea::placeholder {
+  text-align: center;
+  font-size: 1rem;
+}
 // Input field focus styling
 .focus {
   margin: 0 5px;
