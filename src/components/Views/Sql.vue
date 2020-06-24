@@ -131,7 +131,6 @@ export default {
             this.resultBackground = "var(--sql-lighter-dark)";
           } else {
             console.log(res.data);
-
             this.messageHandlier(res.data);
           }
         })
