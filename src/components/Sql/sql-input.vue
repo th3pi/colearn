@@ -11,9 +11,9 @@
         id="commandInput"
         name="commandInput"
         :class="{'sql' : true, 'font' : true, 'focus': (focus || command != '') ? true : false}"
-        :style="{'rows':rows, 'height': height+'rem', 'width' : (focus || command != '') ? '100%' : '50%'}"
+        :style="{'rows':rows, 'height': height+'rem', 'width' : (focus || command != '') ? '100%' : this.$mq == 'sm' ? '70%' : '50%'}"
         v-model="command"
-        :placeholder="focus ? '' : 'Enter a SQL command'"
+        :placeholder="focus ? '' : this.$mq == 'sm' ? 'Enter a command' : 'Enter a SQL command'"
         @keyup.shift.space="emitMessage"
         @keyup.shift.enter="sendSql(command)"
         @focus="focus = true"
@@ -32,15 +32,6 @@
         >Enter a SQL command</label>
       </transition>-->
     </div>
-
-    <!-- Instruction label -->
-    <!-- Displayed when commandbox is in focus and not empty -->
-    <transition name="gainleft-animation">
-      <div class="hint" v-if="(focus || command != '') && this.$mq !='sm'">
-        //
-        <strong>Shift + Enter</strong> to update what you have typed
-      </div>
-    </transition>
     <!-- Action buttons for the input field -->
     <div id="actionButtons">
       <!-- Update button does exactly the same as Shift + Enter keyup, shares the latest value of command -->
@@ -135,7 +126,11 @@ export default {
      */
     reset() {
       this.command = "";
-      this.$emit("reset-sql");
+      this.$emit(
+        "reset-sql",
+        "Run a SQL command to display result here",
+        "var(--sql-lighter-dark)"
+      );
     }
   },
   watch: {
@@ -166,6 +161,21 @@ export default {
         this.rows = 1;
         this.height = 1.5;
         this.emitMessage();
+      }
+    },
+    focus(newValue) {
+      if (newValue) {
+        this.$emit(
+          "focus-sql",
+          "Shift + Space to share what you have typed",
+          "var(--sql-light-primary)"
+        );
+      } else {
+        this.$emit(
+          "focus-sql",
+          "Run a SQL command to display result here",
+          "var(--sql-lighter-dark)"
+        );
       }
     }
   }
@@ -216,7 +226,8 @@ textarea {
 
 textarea::placeholder {
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  padding-top: 1rem;
 }
 // Input field focus styling
 .focus {
@@ -227,19 +238,10 @@ textarea::placeholder {
     -6px -6px 12px 0 rgba(255, 255, 255, 0.5) inset;
 }
 
-// Placeholder displayed while input field is out of focus and empty
-.placeholder {
-  position: absolute;
-  top: 6rem;
-  margin-left: 0.4rem;
-  background-color: transparent;
-  color: rgba($color: #000000, $alpha: 0.4);
-}
-
 // Input field hint
 .hint {
-  position: absolute;
-  top: 3.4rem;
+  position: fixed;
+  top: 6vw;
   background-color: var(--sql-dark);
   z-index: -1;
 
@@ -329,15 +331,14 @@ textarea::placeholder {
 @media only screen and (min-width: 470px) {
   #actionButtons button {
     padding: 0.5rem 1.5rem;
+
     font-size: 0.95rem;
   }
 
-  .placeholder {
-    top: 6.5rem;
-  }
+  textarea::placeholder {
+    padding-top: 0.5rem;
 
-  .hint {
-    top: 3.8rem;
+    font-size: 1rem;
   }
 }
 
@@ -345,15 +346,14 @@ textarea::placeholder {
 @media only screen and (min-width: 1250px) {
   #actionButtons button {
     padding: 0.9rem 2.4rem;
+
     font-size: 1rem;
   }
 
-  .placeholder {
-    top: 7rem;
-  }
+  textarea::placeholder {
+    padding-top: 0.5rem;
 
-  .hint {
-    top: 4.6rem;
+    font-size: 1rem;
   }
 }
 </style>

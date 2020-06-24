@@ -1,23 +1,16 @@
 <template>
   <div id="view">
-    <div class="sql font" id="sqlView" :style="{top: (results.length == 0) ? '35%' : 0}">
+    <div class="sql font" id="sqlView" :style="{top: (results.length == 0) ? '35vh' : 0}">
       <div id="inputSection" :style="getWidth(showBar,'50%', '60%', '70')">
-        <!-- SQL view title -->
+        <!-- Page title for SQL view -->
         <!-- Display only the language title if on a mobile device or something with a very small display -->
-        <transition name="fade-fast" mode="out-in">
-          <div id="pageTitle">
-            <h1 v-if="showBar && this.$mq == 'sm'" class="title bungee-shade">{SQL}</h1>
-            <h1 v-else class="title bungee">
-              Co-learn
-              <span class="bungee-shade">{SQL}</span>
-            </h1>
-          </div>
-        </transition>
+        <page-title :showBar="showBar" />
         <!-- SQL command input box -->
         <sql-input
           class="sqlInput"
           @send-sql="fetchSql"
-          @reset-sql="updateResultTable('Run a SQL command to display result here','var(--sql-lighter-dark)')"
+          @reset-sql="updateResultTable"
+          @focus-sql="updateResultTable"
         />
       </div>
 
@@ -57,6 +50,7 @@
 
 <script>
 //Component imports
+import pageTitle from "@/components/General/page-title.vue";
 import sqlInput from "@/components/Sql/sql-input.vue";
 import cheatBar from "@/components/General/cheat-bar.vue";
 import codeSnippet from "@/components/General/code-snippet.vue";
@@ -77,6 +71,7 @@ export default {
   name: "sql-view",
   mixins: [responsive],
   components: {
+    "page-title": pageTitle,
     "sql-input": sqlInput,
     "cheat-bar": cheatBar,
     "code-snippet": codeSnippet,
@@ -189,17 +184,10 @@ export default {
   width: 100%;
 
   position: fixed;
+  margin-top: 0.5rem;
   left: 0;
 
   transition: top 0.4s ease-in-out;
-}
-
-#pageTitle {
-  font-size: 1rem;
-}
-
-#pageTitle .bungee-shade {
-  color: var(--dark);
 }
 
 #inputSection {
@@ -223,19 +211,5 @@ export default {
   align-items: center;
   justify-content: center;
   width: 100%;
-}
-
-//Medium sized screens
-@media screen and (min-width: 470px) {
-  #pageTitle {
-    font-size: 1.1rem;
-  }
-}
-
-// large screens
-@media screen and (min-width: 1250px) {
-  #pageTitle {
-    font-size: 1.6rem;
-  }
 }
 </style>
