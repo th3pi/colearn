@@ -18,7 +18,7 @@
  * @prop {Boolean} showBar is used to determine whether to show to co-learn logo as well
  */
 export default {
-  name: "page-title",
+  name: "sql-page-title",
   props: {
     showBar: Boolean
   }

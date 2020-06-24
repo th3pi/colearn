@@ -1,17 +1,19 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
+  <div>
+    <h1 @click="$router.push({name: 'sql-view'})">We are home!</h1>
   </div>
 </template>
 
 <script>
 // import SqlView from "@/components/Views/Sql.vue";
+
 export default {
-  name: "App",
-  components: {}
+  name: "home",
+  components: {
+    // SqlView
+  }
 };
 </script>
 
 <style lang="scss">
-@import "@/assets/styles/style.scss";
 </style>

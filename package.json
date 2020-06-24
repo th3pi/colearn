@@ -17,6 +17,7 @@
     "socket.io-client": "^2.3.0",
     "vue": "^2.6.11",
     "vue-mq": "^1.0.1",
+    "vue-router": "^3.3.4",
     "vue-socket.io-extended": "^4.0.3"
   },
   "devDependencies": {

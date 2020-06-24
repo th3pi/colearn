@@ -170,9 +170,16 @@ export default {
   border-radius: 0 10px 10px 0;
 
   font-size: 0.9rem;
+
+  transition: box-shadow 1s;
 }
 #emptyResultBox p {
   text-align: center;
+}
+
+#emptyResultBox:hover {
+  box-shadow: 0 -4px 12px rgba($color: #d8d8d8, $alpha: 0.4) inset,
+    0 4px 12px rgba($color: #000000, $alpha: 0.2) inset;
 }
 
 @media screen and (min-width: 470px) {

@@ -5,6 +5,8 @@ import SocketIO from 'socket.io-client'
 import VueSocketIOExt from 'vue-socket.io-extended'
 import VueMq from 'vue-mq'
 
+import router from './router/router'
+
 Vue.config.productionTip = false
 
 //Establish connection to backend
@@ -21,5 +23,6 @@ Vue.prototype.$http = http;
 Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } })
 
 new Vue({
+  router,
   render: h => h(App),
 }).$mount('#app')
