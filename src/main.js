@@ -5,6 +5,7 @@ import SocketIO from 'socket.io-client'
 import VueSocketIOExt from 'vue-socket.io-extended'
 import VueMq from 'vue-mq'
 
+//Navigation router
 import router from './router/router'
 
 Vue.config.productionTip = false

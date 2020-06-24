@@ -90,6 +90,30 @@ export default {
      */
     disconnect() {
       console.log("Socket disconnected disconnected from the SQL channel");
+    },
+
+    /**
+     * Called when user in the session running a SQL command
+     */
+    sendSql(data) {
+      this.fetchSql(data);
+    },
+
+    /**
+     * Called when user in the session resetting SQL workspace
+     */
+    resetSql(command, message, resultBackground) {
+      this.updateResultTable(message, resultBackground);
+    },
+
+    /**
+     * Called when a non SELECT command is sent, to share only the message between users
+     * to avoid sending multiple modifying commands
+     */
+    handleMessage(message) {
+      console.log("RECEIVED MSG: " + message);
+
+      this.messageHandler(message);
     }
   },
   data() {
@@ -126,7 +150,7 @@ export default {
             this.resultBackground = "var(--sql-lighter-dark)";
           } else {
             console.log(res.data);
-            this.messageHandlier(res.data);
+            this.$socket.client.emit("handleMessage", res.data);
           }
         })
         .catch(err => {
@@ -149,7 +173,7 @@ export default {
      * Checks backend response and updates, result table message and background color
      * @param {String} message is the response from backend after a SQL command has been. Only populated when response is not an array
      */
-    messageHandlier(message) {
+    messageHandler(message) {
       if (typeof message == "string") {
         if (message.match(/SUCCESSFULLY/i)) {
           this.updateResultTable(message, "var(--success)");

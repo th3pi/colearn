@@ -85,6 +85,10 @@ export default {
         this.rows = 1;
         this.height = 1.5;
       }
+    },
+    resetSql(command, message, resultBackground) {
+      this.command = command;
+      this.$emit("reset-sql", message, resultBackground);
     }
   },
   data() {
@@ -97,11 +101,15 @@ export default {
   },
   methods: {
     /**
-     * Emits "send-line" event internally that is handled in the parent component to communicate with the backend
+     * Emits "send-sql" event internally that is handled in the parent component to communicate with the backend
      * @param data SQL command that is to be sent to the backend to get back a query result
      */
     sendSql(data) {
       this.$emit("send-sql", data);
+      this.emitMessage();
+      if (data.match(/SELECT/i)) {
+        this.$socket.client.emit("sendSql", data);
+      }
     },
     createNewLine() {
       this.rows++;
@@ -125,9 +133,9 @@ export default {
      * Emits "reset-sql" event to parent component
      */
     reset() {
-      this.command = "";
-      this.$emit(
-        "reset-sql",
+      this.$socket.client.emit(
+        "resetSql",
+        "",
         "Run a SQL command to display result here",
         "var(--sql-lighter-dark)"
       );
@@ -160,7 +168,6 @@ export default {
       if (newValue == "") {
         this.rows = 1;
         this.height = 1.5;
-        this.emitMessage();
       }
     },
     focus(newValue) {

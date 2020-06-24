@@ -1,3 +1,5 @@
+// This has been deprecated
+// This component is no longer in use. SQL view has been moved to @/view/Sql.vue
 <template>
   <div id="view">
     <div class="sql font" id="sqlView" :style="{top: (results.length == 0) ? '35vh' : 0}">

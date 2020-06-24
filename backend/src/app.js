@@ -47,8 +47,23 @@ io.on('connect', (socket) => {
      * Emits a message to everyone connected to the socket
      */
     socket.on("sqlTyping", (command, rows, height) => {
-        console.log("User is typing");
+        console.log("SOCKET: Updating input field");
         io.volatile.emit("sqlTyping", command, rows, height);
+    })
+
+    socket.on("sendSql", (data) => {
+        console.log("SOCKET: Running SQL command");
+        io.emit("sendSql", data)
+    })
+
+    socket.on("resetSql", (command, message, resultBackground) => {
+        console.log("SOCKET: Resetting session's workspace");
+        io.emit("resetSql", command, message, resultBackground)
+    })
+
+    socket.on("handleMessage", message => {
+        console.log("SOCKET: Updating result box message for sessions");
+        io.emit("handleMessage", message);
     })
 
     socket.on('disconnect', () => {
