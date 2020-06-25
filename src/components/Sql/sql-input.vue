@@ -14,6 +14,7 @@
         :style="{'rows':rows, 'height': height+'rem', 'width' : (focus || command != '') ? '100%' : this.$mq == 'sm' ? '70%' : '50%'}"
         v-model="command"
         :placeholder="focus ? '' : this.$mq == 'sm' ? 'Enter a command' : 'Enter a SQL command'"
+        @keydown.shift.enter.exact.prevent
         @keyup.shift.space="emitMessage"
         @keyup.shift.enter="sendSql(command)"
         @focus="focus = true"
@@ -171,7 +172,11 @@ export default {
       }
     },
     focus(newValue) {
+      console.log(newValue);
+      
       if (newValue) {
+        console.log("Emitting " + newValue);
+        
         this.$emit(
           "focus-sql",
           "Shift + Space to share what you have typed",

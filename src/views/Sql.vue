@@ -4,13 +4,13 @@
       <div id="inputSection" :style="getWidth(showBar,'50%', '60%', '70')">
         <!-- Page title for SQL view -->
         <!-- Display only the language title if on a mobile device or something with a very small display -->
-        <sql-page-title :showBar="showBar" />
+        <sql-page-title :showBar="showBar" :showTable="showTable" />
         <!-- SQL command input box -->
         <sql-input
           class="sqlInput"
           @send-sql="fetchSql"
           @reset-sql="updateResultTable"
-          @focus-sql="Array.isArray(results) ? null : updateResultTable"
+          @focus-sql="showTipOnFocus"
         />
       </div>
 
@@ -117,6 +117,7 @@ export default {
       keys: [],
       message: "",
       showBar: false,
+      showTable: false,
       resultBackground: "",
       width: 0
     };
@@ -142,6 +143,7 @@ export default {
             this.keys = Object.keys(this.results[0]);
             this.message = "";
             this.resultBackground = "var(--sql-lighter-dark)";
+            this.showTable = true;
           } else {
             console.log(res.data);
             this.$socket.client.emit("handleMessage", res.data);
@@ -159,6 +161,7 @@ export default {
     updateResultTable(message, background) {
       this.results = [];
       this.keys = [];
+      this.showTable = false;
       this.message = message;
       this.resultBackground = background;
     },
@@ -189,6 +192,11 @@ export default {
         }
       } else {
         this.updateResultTable("Invalid command", "var(--danger)");
+      }
+    },
+    showTipOnFocus(message, resultBackground){
+      if(!this.showTable){
+      this.updateResultTable(message, resultBackground);
       }
     }
   },
@@ -229,5 +237,9 @@ export default {
   align-items: center;
   justify-content: center;
   width: 100%;
+}
+
+#pageTitle{
+  transition: 0.4s;
 }
 </style>
