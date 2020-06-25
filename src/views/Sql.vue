@@ -10,7 +10,7 @@
           class="sqlInput"
           @send-sql="fetchSql"
           @reset-sql="updateResultTable"
-          @focus-sql="updateResultTable"
+          @focus-sql="Array.isArray(results) ? null : updateResultTable"
         />
       </div>
 
@@ -81,16 +81,12 @@ export default {
     /**
      * Called on successful connection to the server
      */
-    connect() {
-      console.log("Socket connected to the SQL channel");
-    },
+    connect() {},
 
     /**
      * Called on disconnection from the session
      */
-    disconnect() {
-      console.log("Socket disconnected disconnected from the SQL channel");
-    },
+    disconnect() {},
 
     /**
      * Called when user in the session running a SQL command
@@ -111,8 +107,6 @@ export default {
      * to avoid sending multiple modifying commands
      */
     handleMessage(message) {
-      console.log("RECEIVED MSG: " + message);
-
       this.messageHandler(message);
     }
   },

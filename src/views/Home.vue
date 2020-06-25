@@ -5,13 +5,9 @@
 </template>
 
 <script>
-// import SqlView from "@/components/Views/Sql.vue";
-
 export default {
   name: "home",
-  components: {
-    // SqlView
-  }
+  components: {}
 };
 </script>
 
