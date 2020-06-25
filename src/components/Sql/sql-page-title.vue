@@ -11,7 +11,7 @@
       <div v-else id="clSqlLogo" key="wholeLogo">
         <img
           id="clLogo"
-          src="../../assets/img/titles/co-learn.svg"
+          src="../../assets/img/titles/co-learn-sql.svg"
           :style="{width: showTable ? '20%' : ''}"
         />
         <img

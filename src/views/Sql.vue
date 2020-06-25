@@ -1,6 +1,6 @@
 <template>
-  <div id="view">
-    <div class="sql font" id="sqlView" :style="{top: (results.length == 0) ? '35vh' : 0}">
+  <div>
+    <div class="sql font" id="sqlBody" :style="{top: (results.length == 0) ? '35vh' : 0}">
       <div id="inputSection" :style="getWidth(showBar,'50%', '60%', '70')">
         <!-- Page title for SQL view -->
         <!-- Display only the language title if on a mobile device or something with a very small display -->
@@ -205,7 +205,7 @@ export default {
 </script>
 
 <style lang="scss">
-#sqlView {
+#sqlBody {
   display: inline-block;
   width: 100%;
 
