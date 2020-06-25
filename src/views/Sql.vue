@@ -26,7 +26,7 @@
     </div>
     <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
     data passed from child component, which is a boolean value-->
-    <div id="cheatBarDiv">
+    <div id="sidebar">
       <cheat-bar language="SQL" @update:showBar="showBar = $event">
         <!-- Cheat sheet body -->
         <template #cheatSheet>
@@ -194,9 +194,9 @@ export default {
         this.updateResultTable("Invalid command", "var(--danger)");
       }
     },
-    showTipOnFocus(message, resultBackground){
-      if(!this.showTable){
-      this.updateResultTable(message, resultBackground);
+    showTipOnFocus(message, resultBackground) {
+      if (!this.showTable) {
+        this.updateResultTable(message, resultBackground);
       }
     }
   },
@@ -226,11 +226,6 @@ export default {
   transition: 0.2s;
 }
 
-#cheatBarDiv {
-  position: fixed;
-  top: 0;
-}
-
 #resultSection {
   display: inline-flex;
   flex-direction: column;
@@ -239,7 +234,8 @@ export default {
   width: 100%;
 }
 
-#pageTitle{
-  transition: 0.4s;
+#sidebar {
+  position: fixed;
+  top: 0;
 }
 </style>

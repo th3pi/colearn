@@ -1,12 +1,24 @@
 <template>
   <div id="pageTitle">
     <transition name="fade-fast" mode="out-in">
-      <div v-if="showBar && this.$mq == 'sm'" key="onlySqlLogo">
-        <img id="onlySqlLogo" src="../../assets/img/titles/language-sql.svg" />
+      <div v-if="showBar && (this.$mq == 'sm' || this.$mq == 'md')" key="onlySqlLogo">
+        <img
+          id="onlySqlLogo"
+          src="../../assets/img/titles/language-sql.svg"
+          :style="{width: showTable ? '50%' : ''}"
+        />
       </div>
       <div v-else id="clSqlLogo" key="wholeLogo">
-        <img id="clLogo" src="../../assets/img/titles/co-learn.svg" :style="{width: showTable ? '20%' : ''}" />
-        <img id="sqlLogo" src="../../assets/img/titles/language-sql.svg" :style="{width: showTable ? '20%' : ''}" />
+        <img
+          id="clLogo"
+          src="../../assets/img/titles/co-learn.svg"
+          :style="{width: showTable ? '20%' : ''}"
+        />
+        <img
+          id="sqlLogo"
+          src="../../assets/img/titles/language-sql.svg"
+          :style="{width: showTable ? '20%' : ''}"
+        />
       </div>
     </transition>
   </div>
@@ -21,7 +33,7 @@ export default {
   name: "sql-page-title",
   props: {
     showBar: Boolean,
-    showTable: Boolean,
+    showTable: Boolean
   }
 };
 </script>
@@ -30,7 +42,6 @@ export default {
 #clSqlLogo {
   display: flex;
   flex-direction: row;
-
 }
 
 #clLogo {
@@ -53,7 +64,6 @@ export default {
   margin: auto;
   margin-left: 0;
   transition: 0.4s;
-
 }
 
 #onlySqlLogo {
