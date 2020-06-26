@@ -40,6 +40,9 @@
         </div>
 
         <div id="field">
+          <div id="requirementPopup">
+            <p>6 characters</p>
+          </div>
           <label
             for="password"
             :class="{'label' : true, 'label-right': (password.length > 0 || focus.password) ? true : false, 'valid' : validPassword.valid}"
@@ -260,6 +263,14 @@ input.valid {
 
 label.valid {
   color: var(--light-success);
+}
+
+#requirementPopup{
+  position: absolute;
+  transform: translateX(-10rem);
+    box-shadow:  3px 3px 12px 0 rgba(0, 0, 0, 0.2),
+     -3px -3px 12px 0 rgba(255, 255, 255, 0.123);
+
 }
 
 @media only screen and (min-width: 470px) {
