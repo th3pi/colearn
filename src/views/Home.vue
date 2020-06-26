@@ -5,7 +5,7 @@
         <logo class="logo" fill="#29251d" />
       </div>
       <div id="sessionButtons">
-        <button></button>
+        <button @click="$router.push({name: 'register'})"></button>
       </div>
     </div>
   </div>

@@ -4,6 +4,7 @@ import axios from 'axios'
 import SocketIO from 'socket.io-client'
 import VueSocketIOExt from 'vue-socket.io-extended'
 import VueMq from 'vue-mq'
+import * as firebase from "firebase"
 
 //Navigation router
 import router from './router/router'
@@ -19,6 +20,20 @@ const socket = SocketIO('http://192.168.1.15:4113');
 //Initialize vue socket client
 Vue.use(VueSocketIOExt, socket);
 Vue.prototype.$http = http;
+
+var firebaseConfig = {
+  apiKey: "AIzaSyCQ1ofiNqi57YO9TNi8zzljikkobALP1RE",
+  authDomain: "co-learn-a05d9.firebaseapp.com",
+  databaseURL: "https://co-learn-a05d9.firebaseio.com",
+  projectId: "co-learn-a05d9",
+  storageBucket: "co-learn-a05d9.appspot.com",
+  messagingSenderId: "159948318731",
+  appId: "1:159948318731:web:29bf2c7d4016fae29b3f0e",
+  measurementId: "G-HWLQMHVY9K"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
 //VueMq breakpoints, to programmatically adjust components according to screen sizes
 Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } })

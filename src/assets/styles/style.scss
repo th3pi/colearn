@@ -20,11 +20,14 @@
     --primary: rgb(148, 197, 149);
     --primary-v: 148, 197, 149;
     
-    --secondary: rgb(104, 126, 96);
+    --secondary: #687e60;
     --secondary-v: 104, 126, 96;
 
-    --success: rgb(109, 128, 105);
+    --success: #6d8069;
     --success-v: 109, 128, 105;
+
+    --light-success: #44b42e;
+    --light-success-v: 68, 180, 46;
 
     --light: rgb(161, 232, 175);
     --light-v: 161, 232, 175;
@@ -62,7 +65,7 @@
     --sql-dark: #254e70;
     --sql-dark-v: 37, 78, 112;
 
-    --sql-light-primary: rgb(7, 128, 227);
+    --sql-light-primary: #0780e3;
     --sql-light-primary-v: 7, 128, 227;
 
     //borders
@@ -76,6 +79,23 @@
 //SQL Font
 .sql.font {
     font-family: "Open Sans", sans-serif;
+}
+.open-sans {
+    font-family: "Open Sans", sans-serif;
+}
+
+.flex {
+    display: flex;
+
+}
+
+.flex.center {
+    justify-content: center;
+    align-items: center;
+}
+
+.columns{
+    flex-direction: column;    
 }
 
 h1, h2, h3, h4, h5, p {
