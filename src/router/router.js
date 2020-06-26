@@ -23,7 +23,7 @@ export default new VueRouter({
                 component: Authenticate,
             },
             {
-                path: '',
+                path: 'register',
                 name: 'register',
                 component: Register,
             },]

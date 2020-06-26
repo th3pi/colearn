@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="registerBody">
+    <div id="authenticationBody">
       <div id="registerLogo">
         <register-logo class="logo" fill="var(--sql-light-primary)" />
       </div>
@@ -118,17 +118,20 @@
           <i @click="registerWithGithub" class="fab fa-github neumorphic n-active"></i>
           <i @click="registerWithApple" class="fab fa-apple neumorphic n-active"></i>
         </div>
-        <div id="regButtons">
+        <div id="authenticationButtons">
           <button
             class="neumorphic button"
             @click="registerWithEmail"
             :disabled="(!validName.oneWord || !validPassword.valid || !validEmail.valid)"
           >Create Account</button>
         </div>
-        <div id="signIn" class="neumorphic inset">
+        <div id="alternate" class="neumorphic inset">
           <a>
             Already registered?
-            <span class="neumorphic n-active">Sign in!</span>
+            <span
+              class="neumorphic n-active"
+              @click="$router.push({name: 'authenticate'})"
+            >Sign in!</span>
           </a>
         </div>
       </div>
@@ -200,7 +203,7 @@ export default {
       let provider = new firebase.auth.GoogleAuthProvider();
       firebase
         .auth()
-        .signInWithPopup(provider)
+        .alternateWithPopup(provider)
         .then(data => {
           data.user.updateProfile({
             displayName: this.name
@@ -214,7 +217,7 @@ export default {
       let provider = new firebase.auth.FacebookAuthProvider();
       firebase
         .auth()
-        .signInWithPopup(provider)
+        .alternateWithPopup(provider)
         .then(data => {
           data.user.updateProfile({
             displayName: this.name
@@ -228,7 +231,7 @@ export default {
       let provider = new firebase.auth.GithubAuthProvider();
       firebase
         .auth()
-        .signInWithPopup(provider)
+        .alternateWithPopup(provider)
         .then(data => {
           data.user.updateProfile({
             displayName: this.name
@@ -242,7 +245,7 @@ export default {
       let provider = new firebase.auth.OAuthProvider("apple.com");
       firebase
         .auth()
-        .signInWithPopup(provider)
+        .alternateWithPopup(provider)
         .then(data => {
           data.user.updateProfile({
             displayName: this.name
@@ -349,12 +352,34 @@ export default {
 </script>
 
 <style lang="scss">
-#registerBody {
+input.valid {
+  box-shadow: 6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
+    -6px -6px 12px 2px rgba(var(--light-success-v), 0.1),
+    -6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
+    6px -6px 12px 2px rgba(var(--light-success-v), 0.1);
+}
+label.valid {
+  text-shadow: 3px 3px 10px rgba(var(--light-success-v), 0.2);
+
+  color: var(--light-success);
+}
+p.valid {
+  color: var(--light-success);
+}
+#authenticationBody {
   margin-top: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+#nameField.valid {
+  border: 2px solid rgba(var(--light-success-v), 1) !important;
+  box-shadow: 6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
+    -6px -6px 12px 2px rgba(var(--light-success-v), 0.1),
+    -6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
+    6px -6px 12px 2px rgba(var(--light-success-v), 0.1);
 }
 
 #registerLogo .logo {
@@ -366,142 +391,30 @@ export default {
   margin-bottom: 1rem;
 }
 
-#regButtons button {
-  margin-right: 0.5rem;
+#requirementPopup {
+  position: absolute;
 
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem 1rem;
 
-  background-color: var(--sql-light-primary);
+  background-color: white;
 
-  border: none;
   border-radius: 5px;
-  outline: none;
+  border: 2px solid rgba(var(--sql-light-v), 1);
 
-  font-size: 0.8rem;
-  color: white;
-
-  transition: background-color 0.3s, box-shadow 0.4s,
-    padding-left 0.4s ease-in-out, padding-right 0.4s ease-in-out;
-}
-
-#regButtons button:hover {
-  background-color: rgba(var(--sql-primary-v), 1);
-}
-
-#regButtons .button:active {
-  box-shadow: inset 3px 3px 12px 0 rgba(0, 0, 0, 0.2),
-    inset -3px -3px 12px 0 rgba(255, 255, 255, 0.123);
-}
-
-#regButtons button:disabled {
-  box-shadow: inset 3px 3px 12px 0 rgba(0, 0, 0, 0.2),
-    inset -3px -3px 12px 0 rgba(255, 255, 255, 0.123);
-  background-color: rgba(var(--sql-light-primary-v), 0.4);
-  cursor: not-allowed;
-}
-
-#field {
-  padding: 1rem 0;
-}
-
-.label {
-  z-index: -1;
-  position: absolute;
-
-  font-size: 0.95rem;
-  color: var(--g-secondary);
-
-  cursor: text;
-
-  transform: translateX(1rem);
-  transition: transform 0.5s ease-in-out, color 0.4s;
-}
-
-.label-go-top {
-  z-index: 1;
+  font-size: 0.85rem;
   color: var(--sql-light-primary);
-  transform: translateY(-2rem);
+
+  transform: translate(4rem, 3rem);
+
+  transition: opacity 0.3s, box-shadow 0.4s;
 }
 
-.label-behind {
-  z-index: -1;
-}
+#requirementPopup.valid {
+  border: 2px solid rgba(var(--light-success-v), 0.4) !important;
 
-#nameField.valid {
-  border: 2px solid rgba(var(--light-success-v), 1) !important;
   box-shadow: 6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
-    -6px -6px 12px 2px rgba(var(--light-success-v), 0.1),
-    -6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
-    6px -6px 12px 2px rgba(var(--light-success-v), 0.1);
-}
+    -6px -6px 12px 2px rgba(var(--light-success-v), 0.1);
 
-#passwordBox:focus {
-  border: 2px solid rgba(var(--sql-light-v), 1);
-}
-
-.peek {
-  position: absolute;
-  margin-left: -2.5rem;
-  margin-top: 0.7rem;
-
-  cursor: pointer;
-}
-
-#field input {
-  transition: 0.4s;
-}
-
-#field input:focus {
-  border: 2px solid rgba(var(--sql-light-v), 1);
-}
-
-.bottom {
-  border-bottom: 2px solid rgba(var(--light-success-v), 1) !important;
-}
-
-.left {
-  border-left: 2px solid rgba(var(--light-success-v), 1) !important;
-}
-
-.right {
-  border-right: 2px solid rgba(var(--light-success-v), 1) !important;
-}
-
-.top {
-  border-top: 2px solid rgba(var(--light-success-v), 1) !important;
-}
-
-input.valid {
-  box-shadow: 6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
-    -6px -6px 12px 2px rgba(var(--light-success-v), 0.1),
-    -6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
-    6px -6px 12px 2px rgba(var(--light-success-v), 0.1);
-}
-
-#field:hover input {
-  box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, 0.2),
-    -2px -2px 6px 0 rgba(255, 255, 255, 0.5);
-}
-
-label {
-  font-weight: 700;
-}
-
-label.valid {
-  text-shadow: 3px 3px 10px rgba(var(--light-success-v), 0.2);
-
-  color: var(--light-success);
-}
-
-i {
-  width: 1.2rem;
-}
-
-input {
-  z-index: 2;
-}
-
-p.valid {
   color: var(--light-success);
 }
 
@@ -543,69 +456,9 @@ p.valid {
   margin-right: 0;
 }
 
-#requirementPopup {
-  position: absolute;
-
-  padding: 0.5rem 1rem;
-
-  background-color: white;
-
-  border-radius: 5px;
-  border: 2px solid rgba(var(--sql-light-v), 1);
-
-  font-size: 0.85rem;
-  color: var(--sql-light-primary);
-
-  transform: translate(4rem, 3rem);
-
-  transition: opacity 0.3s, box-shadow 0.4s;
-}
-
-#requirementPopup.valid {
-  border: 2px solid rgba(var(--light-success-v), 0.4) !important;
-
-  box-shadow: 6px 6px 12px 2px rgba(var(--light-success-v), 0.1),
-    -6px -6px 12px 2px rgba(var(--light-success-v), 0.1);
-
-  color: var(--light-success);
-}
-
-#signIn {
-  margin-top: 0.5rem;
-
-  padding: 0.4rem 1rem;
-
-  border-radius: 5px;
-
-  background-color: white;
-}
-
-#signIn a {
-  font-size: 0.9rem;
-  color: var(--sql-primary);
-}
-
-#signIn a span {
-  padding: 0.2rem 0.6rem;
-
-  border-radius: 5px;
-
-  background-color: white;
-
-  cursor: pointer;
-}
-
-#signIn a:hover {
-}
-
 @media only screen and (min-width: 470px) {
   #registerLogo .logo {
     width: 21rem;
-  }
-  #regButtons button {
-    padding: 0.5rem 1.5rem;
-
-    font-size: 0.95rem;
   }
   #requirementPopup {
     font-size: 0.9rem;
@@ -615,12 +468,6 @@ p.valid {
 }
 
 @media only screen and (min-width: 1250px) {
-  #regButtons button {
-    padding: 0.9rem 2.4rem;
-
-    font-size: 1rem;
-  }
-
   #registerLogo .logo {
     width: 22rem;
   }

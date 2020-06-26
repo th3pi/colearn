@@ -6,6 +6,7 @@
       </div>
       <div id="sessionButtons">
         <button @click="$router.push({name: 'register'})"></button>
+        <button @click="$router.push({name: 'authenticate'})"></button>
       </div>
     </div>
   </div>
