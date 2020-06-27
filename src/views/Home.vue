@@ -3,6 +3,10 @@
     <div id="homeBody">
       <div id="coLearnLogo">
         <logo class="logo" fill="#29251d" />
+        <h1
+          @click="$router.push({name: 'sql-view'})"
+          v-if="user.authenticated"
+        >{{user.data.displayName}}</h1>
       </div>
       <div id="sessionButtons">
         <button @click="$router.push({name: 'register'})"></button>
@@ -14,10 +18,16 @@
 
 <script>
 import logo from "@/assets/img/titles/co-learn-logo.vue";
+import { mapGetters } from "vuex";
 export default {
   name: "home",
   components: {
     logo
+  },
+  computed: {
+    ...mapGetters({
+      user: "user"
+    })
   }
 };
 </script>

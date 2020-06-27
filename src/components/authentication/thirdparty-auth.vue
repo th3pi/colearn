@@ -1,6 +1,8 @@
 <template>
-  <div id="regOptions" class="neumorphic inset">
-    <p style="display: inline">{{msg}}</p>
+  <div id="authOptions" class="neumorphic inset">
+    <p style="display: inline">
+      <slot />
+    </p>
     <i @click="registerWithGoogle" class="fab fa-google neumorphic n-active"></i>
     <i @click="registerWithFacebook" class="fab fa-facebook-f neumorphic n-active"></i>
     <i @click="registerWithGithub" class="fab fa-github neumorphic n-active"></i>
@@ -76,3 +78,45 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+#authOptions {
+  margin-bottom: 1rem;
+
+  padding: 0.5rem 1rem;
+
+  border-radius: 5px;
+
+  color: var(--sql-light-primary);
+
+  background-color: white;
+}
+
+#authOptions p {
+  margin-right: 0.5rem;
+
+  font-size: 0.9rem;
+
+  text-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.5);
+}
+
+#authOptions i {
+  margin-right: 0.5rem;
+  padding: 0.5rem;
+
+  width: 1.2rem;
+
+  background-color: white;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  text-align: center;
+}
+
+#authOptions i:last-child {
+  margin-right: 0;
+}
+</style>

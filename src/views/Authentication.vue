@@ -1,5 +1,5 @@
 <template>
-  <div class="open-sans">
+  <div id="authenticationBody" class="open-sans">
     <transition name="slide-in-right" mode="out-in">
       <router-view></router-view>
     </transition>
@@ -14,32 +14,16 @@ export default {
 
 <style lang="scss">
 #authenticationBody {
-  margin-top: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-}
-input {
-  margin: 0 1rem;
-  padding: 10px 5px 10px 1rem;
 
-  width: 20rem;
-  border: 2px solid rgba(var(--sql-light-v), 0);
-  border-bottom: 2px solid rgba(var(--sql-light-v), 1);
-  border-radius: 5px;
-
-  background-color: transparent;
-
-  outline: none;
-
-  font-size: 1rem;
-
-  transition: border 0.4s, box-shadow 0.5s;
+  margin-top: 20vh;
 }
 
-label {
-  margin: 0.5rem 1rem 0.1rem 1rem;
+#coLearnLogo .logo {
+  width: 10rem;
 }
 
 #authenticationButtons button {
@@ -76,86 +60,6 @@ label {
   cursor: not-allowed;
 }
 
-#field {
-  padding: 1rem 0;
-}
-
-.label {
-  z-index: -1;
-  position: absolute;
-
-  font-size: 0.95rem;
-  color: var(--g-secondary);
-
-  cursor: text;
-
-  transform: translateX(1rem);
-  transition: transform 0.5s ease-in-out, color 0.4s;
-}
-
-.label-go-top {
-  z-index: 1;
-  color: var(--sql-light-primary);
-  transform: translateY(-2rem);
-}
-
-.label-behind {
-  z-index: -1;
-}
-
-#passwordBox:focus {
-  border: 2px solid rgba(var(--sql-light-v), 1);
-}
-
-.peek {
-  position: absolute;
-  margin-left: -2.5rem;
-  margin-top: 0.7rem;
-
-  cursor: pointer;
-}
-
-#field input {
-  transition: 0.4s;
-}
-
-#field input:focus {
-  border: 2px solid rgba(var(--sql-light-v), 1);
-}
-
-.bottom {
-  border-bottom: 2px solid rgba(var(--light-success-v), 1) !important;
-}
-
-.left {
-  border-left: 2px solid rgba(var(--light-success-v), 1) !important;
-}
-
-.right {
-  border-right: 2px solid rgba(var(--light-success-v), 1) !important;
-}
-
-.top {
-  border-top: 2px solid rgba(var(--light-success-v), 1) !important;
-}
-
-#field:hover input {
-  box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, 0.2),
-    -2px -2px 6px 0 rgba(255, 255, 255, 0.5);
-}
-
-label {
-  font-weight: 700;
-}
-
-i {
-  width: 1.2rem;
-}
-
-input {
-  z-index: 2;
-}
-
 #alternate {
   margin-top: 0.5rem;
 
@@ -184,11 +88,28 @@ input {
 #alternate a:hover {
 }
 
+.error {
+  color: var(--danger-light) !important;
+}
+
+.error span {
+  background-color: var(--danger-lighter) !important;
+
+  font-size: 0.85rem;
+  color: white;
+}
+
 @media only screen and (min-width: 470px) {
   #authenticationButtons button {
     padding: 0.5rem 1.5rem;
 
     font-size: 0.95rem;
+  }
+}
+
+@media screen and (min-height: 800px) {
+  #authenticationBody {
+    margin-top: 25vh;
   }
 }
 

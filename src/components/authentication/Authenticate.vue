@@ -1,71 +1,73 @@
 <template>
   <div>
-    <div id="authenticationBody">
+    <div id="authenticateBody">
+      <!-- Logo -->
+      <div id="coLearnLogo">
+        <logo class="logo" fill="var(--sql-light-primary)" />
+      </div>
       <div id="authLogo">
         <authenticate-logo class="logo" fill="var(--sql-light-primary)" />
       </div>
-      <div id="regForm" class="flex center columns">
-        <div id="field">
-          <label
-            for="email"
-            :class="{'label' : true, 'label-go-top': (email.length > 0 || focus.email) ? true : false}"
-          >Email or Phone</label>
-          <input
-            v-model="email"
-            name="email"
-            type="email"
-            class="input neumorphic"
-            @focus="focus.email = true"
-            @blur="focus.email = false"
-            placeholder
-            required
-          />
+
+      <!-- Input form -->
+      <div id="form" class="flex center columns">
+        <!-- Email input -->
+        <cl-input
+          type="email"
+          :validate="false"
+          @email="email = $event"
+          :tabindex="1"
+          :autofocus="true"
+        >Email</cl-input>
+
+        <!-- Password input -->
+        <cl-input
+          type="password"
+          :validate="false"
+          @password="password = $event"
+          :tabindex="2"
+        >Password</cl-input>
+
+        <!-- Thirdparty authentication options -->
+        <thirdparty-auth method="sign-in">Or sign in using,</thirdparty-auth>
+
+        <!-- Submit button -->
+        <div id="authenticationButtons">
+          <button class="neumorphic n-active bold button" @click="signInUsingEmail">Authenticate</button>
         </div>
 
-        <div id="field">
-          <label
-            for="password"
-            :class="{'label' : true, 'label-go-top': (password.length > 0 || focus.password) ? true : false}"
-          >Password</label>
-          <input
-            v-model="password"
-            id="passwordBox"
-            name="password"
-            :type="peekPassword.peek ? 'text' : 'password'"
-            class="input neumorphic"
-            @focus="focus.password = true"
-            @blur="focus.password = false"
-            placeholder
-            required
-          />
-          <transition name="scale-up-ver-center" mode="out-in">
-            <i
-              @click="peekPassword.peek = false"
-              v-if="peekPassword.peek"
-              class="fas fa-circle peek"
-              key="peek"
-            ></i>
-            <i v-else @click="peekPassword.peek = true" class="far fa-circle peek" key="dont-peek"></i>
-          </transition>
-        </div>
-        <div id="regOptions" class="neumorphic inset">
-          <p style="display: inline">Or authenticate using,</p>
-          <!-- <i @click="registerWithGoogle" class="fab fa-google neumorphic n-active"></i>
-          <i @click="registerWithFacebook" class="fab fa-facebook-f neumorphic n-active"></i>
-          <i @click="registerWithGithub" class="fab fa-github neumorphic n-active"></i>
-          <i @click="registerWithApple" class="fab fa-apple neumorphic n-active"></i>-->
-        </div>
-        <div id="authenticationButtons">
-          <button class="neumorphic button" @click="signInUsingEmail">Authenticate</button>
-        </div>
+        <!-- Swap to registraion form -->
         <div id="alternate" class="neumorphic inset">
-          <a>
-            Not registered?
-            <span
-              class="neumorphic n-active"
-              @click="$router.push({name: 'register'})"
-            >Register!</span>
-          </a>
+          <transition name="slide-in-right" mode="out-in">
+            <a v-if="error.noAccount" class="error" key="noAccount">
+              {{error.noAccount}}
+              <span
+                class="neumorphic n-active"
+                @click="routeToRegister"
+              >Get an account?</span>
+            </a>
+            <a v-else-if="error.incorrect" class="error" key="incorrect">
+              {{error.incorrect}}
+              <span
+                class="neumorphic n-active"
+                @click="routeToRegister"
+              >Try resetting?</span>
+            </a>
+            <a v-else-if="error.badEmail" class="error" key="badEmail">
+              {{error.badEmail}}
+              <span
+                class="neumorphic n-active"
+                @click="routeToRegister"
+              >Get an account?</span>
+            </a>
+            <a v-else key="noError">
+              Not registered?
+              <span
+                class="neumorphic n-active"
+                @click="routeToRegister"
+              >Create an account!</span>
+            </a>
+          </transition>
         </div>
       </div>
     </div>
@@ -73,38 +75,70 @@
 </template>
 
 <script>
+/**
+ * Component name: authenticate
+ * Usage: Login users
+ * @prop {String} email Holds user email
+ * @prop {String} password Holds user password
+ * @prop {String} error Holds the authentication error message
+ */
+
 import firebase from "firebase";
 
+import logo from "@/assets/img/titles/co-learn-logo.vue";
 import authenticateLogo from "@/assets/img/titles/authenticate-logo.vue";
+import thirdpartyAuth from "@/components/authentication/thirdparty-auth.vue";
+import clInput from "@/components/General/cl-input.vue";
 
 export default {
   name: "authenticate",
-  components: { "authenticate-logo": authenticateLogo },
+  components: {
+    "authenticate-logo": authenticateLogo,
+    logo,
+    "cl-input": clInput,
+    "thirdparty-auth": thirdpartyAuth
+  },
   data() {
     return {
       email: "",
       password: "",
-      error: null,
-      focus: {
-        email: false,
-        password: false
-      },
-      peekPassword: {
-        peek: false
+      error: {
+        noAccount: null,
+        incorrect: null,
+        badEmail: null,
+        badPassword: null
       }
     };
   },
   methods: {
+    //Sign in method using email
+    //Third party authentications are handled by the thirdparty authentication component
     signInUsingEmail() {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(data => {
           console.log(data);
+          this.$router.replace({ name: "home" });
         })
         .catch(err => {
-          this.error = err;
+          console.log(err.code);
+
+          if (err.code.match(/user-not-found/i)) {
+            this.error.noAccount = "Sorry you're not in our records!";
+          }
+          if (err.code.match(/wrong-password/i)) {
+            this.error.incorrect = "Incorrect email or password.";
+          }
+          if (err.code.match(/invalid-email/i)) {
+            this.error.badEmail = "That email doesn't look right.";
+          }
         });
+    },
+
+    //Navigation method for swapping to registration form
+    routeToRegister() {
+      this.$router.replace({ name: "register" });
     }
   },
   watch: {}
@@ -121,6 +155,18 @@ export default {
   margin-bottom: 1rem;
 }
 
+#authenticateBody {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+@media screen and (min-height: 800px) {
+  #authenticationBody {
+    margin-top: 25vh;
+  }
+}
+
 @media only screen and (min-width: 470px) {
   #authLogo .logo {
     width: 26rem;
@@ -133,14 +179,13 @@ export default {
 }
 
 @media only screen and (min-width: 1250px) {
+  #authLogo .logo {
+    width: 28rem;
+  }
   #authenticationButtons button {
     padding: 0.9rem 2.4rem;
 
     font-size: 1rem;
-  }
-
-  #authLogo .logo {
-    width: 28rem;
   }
 }
 </style>

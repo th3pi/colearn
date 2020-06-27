@@ -172,11 +172,7 @@ export default {
       }
     },
     focus(newValue) {
-      console.log(newValue);
-      
       if (newValue) {
-        console.log("Emitting " + newValue);
-        
         this.$emit(
           "focus-sql",
           "Shift + Space to share what you have typed",

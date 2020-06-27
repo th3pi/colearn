@@ -97,7 +97,7 @@ export default {
 
   color: white;
 
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.8s;
 }
 
 .tableStats {

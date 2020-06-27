@@ -128,7 +128,7 @@ export default {
             this.resultBackground = "var(--sql-lighter-dark)";
           } else {
             console.log(res.data);
-            this.messageHandlier(res.data);
+            this.messageHandler(res.data);
           }
         })
         .catch(err => {
@@ -151,7 +151,7 @@ export default {
      * Checks backend response and updates, result table message and background color
      * @param {String} message is the response from backend after a SQL command has been. Only populated when response is not an array
      */
-    messageHandlier(message) {
+    messageHandler(message) {
       if (typeof message == "string") {
         if (message.match(/SUCCESSFULLY/i)) {
           this.updateResultTable(message, "var(--success)");

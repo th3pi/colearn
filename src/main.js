@@ -9,7 +9,13 @@ import * as firebase from "firebase"
 //Navigation router
 import router from './router/router'
 
+//State management
+import store from './store/store'
+
 Vue.config.productionTip = false
+
+//Establish to communciate between components
+export const bus = new Vue();
 
 //Establish connection to backend
 const http = axios.create({ baseURL: 'http://192.168.1.15:4113' })
@@ -21,6 +27,7 @@ const socket = SocketIO('http://192.168.1.15:4113');
 Vue.use(VueSocketIOExt, socket);
 Vue.prototype.$http = http;
 
+//Firebase config
 var firebaseConfig = {
   apiKey: "AIzaSyCQ1ofiNqi57YO9TNi8zzljikkobALP1RE",
   authDomain: "co-learn-a05d9.firebaseapp.com",
@@ -35,10 +42,16 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
+//User authentication state management
+firebase.auth().onAuthStateChanged(user => {
+  store.dispatch("fetchUser", user);
+})
+
 //VueMq breakpoints, to programmatically adjust components according to screen sizes
 Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } })
 
 new Vue({
   router,
+  store,
   render: h => h(App),
 }).$mount('#app')

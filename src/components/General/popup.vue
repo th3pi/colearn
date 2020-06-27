@@ -22,6 +22,7 @@ export default {
 
 <style lang="scss">
 #popup {
+  z-index: 3;
   position: absolute;
 
   padding: 0.5rem 1rem;
@@ -34,7 +35,7 @@ export default {
   font-size: 0.85rem;
   color: var(--sql-light-primary);
 
-  transform: translate(4rem, 3rem);
+  transform: translate(4rem, -7.2rem);
 
   transition: opacity 0.3s, box-shadow 0.4s;
 }
@@ -46,5 +47,17 @@ export default {
     -6px -6px 12px 2px rgba(var(--light-success-v), 0.1);
 
   color: var(--light-success);
+}
+@media only screen and (min-width: 470px) {
+  #popup {
+    font-size: 0.9rem;
+    transform: translate(3.2rem, 3rem);
+  }
+}
+@media only screen and (min-width: 1250px) {
+  #popup {
+    font-size: 1rem;
+    transform: translate(3rem, 3rem);
+  }
 }
 </style>
