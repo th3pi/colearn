@@ -123,7 +123,7 @@ export default {
 
 @media only screen and (min-width: 470px) {
   #authLogo .logo {
-    width: 24rem;
+    width: 26rem;
   }
   #authenticationButtons button {
     padding: 0.5rem 1.5rem;
@@ -140,7 +140,7 @@ export default {
   }
 
   #authLogo .logo {
-    width: 26rem;
+    width: 28rem;
   }
 }
 </style>

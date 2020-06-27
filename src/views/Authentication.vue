@@ -1,6 +1,8 @@
 <template>
   <div class="open-sans">
-    <router-view></router-view>
+    <transition name="slide-in-right" mode="out-in">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
