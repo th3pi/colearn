@@ -22,8 +22,9 @@ export default {
   margin-top: 20vh;
 }
 
-#coLearnLogo .logo {
+#authenticationBody #coLearnLogo .logo {
   width: 10rem;
+  height: auto;
 }
 
 #authenticationButtons button {

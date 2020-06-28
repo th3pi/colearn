@@ -131,6 +131,10 @@ export default {
 
   margin-top: 0.25rem;
 }
+
+#profile #user {
+  margin-right: 1rem;
+}
 #profile .button {
   margin-right: 1rem;
 

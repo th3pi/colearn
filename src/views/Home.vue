@@ -2,15 +2,22 @@
   <div class="page">
     <div id="homeBody">
       <div id="coLearnLogo">
-        <logo class="logo" fill="#29251d" />
-        <h1
-          @click="$router.push({name: 'sql-view'})"
-          v-if="user.authenticated"
-        >{{user.data.displayName}}</h1>
+        <logo class="logo" fill="var(--sql-light-primary)" />
+        <p id="description" class="open-sans">
+          An online
+          <strong>co</strong>llaborative
+          <strong>learn</strong>ing platform for in-demand programming languages
+        </p>
       </div>
-      <div id="sessionButtons">
-        <button @click="$router.push({name: 'register'})"></button>
-        <button @click="$router.push({name: 'authenticate'})"></button>
+      <div id="intro">
+        <div id="message">
+          <h3 class="open-sans">Get started</h3>
+        </div>
+        <div id="sessionButtons">
+          <button class="bungee neumorphic n-active">{Java}</button>
+          <button class="bungee neumorphic n-active">{SQL}</button>
+          <button class="bungee neumorphic n-active">{Python}</button>
+        </div>
       </div>
     </div>
   </div>
@@ -31,21 +38,40 @@ export default {
   }
 };
 </script>
-
 <style lang="scss">
 #homeBody {
-  position: absolute;
-  left: 0;
-  top: 35%;
 }
 
 //Logo
-#coLearnLogo .logo {
-  display: block;
+#homeBody #coLearnLogo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15vh;
+  flex-direction: column;
+}
 
-  width: 35%;
+#homeBody #coLearnLogo #description {
+  margin-top: 1rem;
+
+  color: var(--dark);
+  text-align: center;
+  font-size: 1rem;
+}
+
+#homeBody #coLearnLogo .logo {
+  width: 18rem;
   height: auto;
-  margin: auto;
+}
+
+#homeBody #into #message {
+  display: inline;
+  color: var(--dark);
+}
+
+#homeBody #intro {
+  display: flex;
+  flex-direction: row;
 }
 
 #sessionButtons {
@@ -61,13 +87,13 @@ export default {
 
   padding: 0.5rem 0.5rem;
 
-  background-color: var(--sql-lighter-dark);
+  background-color: var(--sql-light-primary);
 
   border: none;
   border-radius: 5px;
   outline: none;
 
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: white;
 
   transition: background-color 0.3s, box-shadow 0.4s,
@@ -76,25 +102,19 @@ export default {
 
 //Medium sized screens
 @media screen and (min-width: 470px) {
-  #coLearnLogo .logo {
-    display: block;
-
-    width: 45%;
+  #homeBody #coLearnLogo .logo {
+    width: 16rem;
     height: auto;
-    margin-left: auto;
-    margin-right: auto;
   }
 }
 
 // large screens
 @media screen and (min-width: 1250px) {
-  #coLearnLogo .logo {
+  #homeBody #coLearnLogo .logo {
     display: block;
 
     width: 35%;
     height: auto;
-    margin-left: auto;
-    margin-right: auto;
   }
 }
 </style>
