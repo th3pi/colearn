@@ -93,7 +93,7 @@ export default {
   top: 1.4rem;
   right: -0.2rem;
 
-  background-color: #f9f9f9;
+  background-color: white;
 
   border-radius: 5px;
 

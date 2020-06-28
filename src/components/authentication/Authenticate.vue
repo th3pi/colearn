@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="authenticateBody">
+    <div id="authenticateBody" @keyup.enter="signInUsingEmail">
       <!-- Logo -->
       <div id="coLearnLogo">
         <logo class="logo" fill="var(--sql-light-primary)" />

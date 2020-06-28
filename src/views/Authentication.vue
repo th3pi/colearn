@@ -85,9 +85,6 @@ export default {
   cursor: pointer;
 }
 
-#alternate a:hover {
-}
-
 .error {
   color: var(--danger-light) !important;
 }
