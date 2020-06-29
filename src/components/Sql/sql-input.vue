@@ -72,26 +72,26 @@ export default {
    * the "sqlTyping" channel
    * @param {String} data is the command that will overwrite, this.command
    */
-  sockets: {
-    /**
-     * Socket listening for activities on the "sqlTyping" channel
-     */
-    sqlTyping(command, rows) {
-      if (command != "") {
-        this.command = command;
-        this.rows = rows;
-        this.height = this.rows * 1.6;
-      } else {
-        this.command = "";
-        this.rows = 1;
-        this.height = 1.5;
-      }
-    },
-    resetSql(command, message, resultBackground) {
-      this.command = command;
-      this.$emit("reset-sql", message, resultBackground);
-    }
-  },
+  // sockets: {
+  //   /**
+  //    * Socket listening for activities on the "sqlTyping" channel
+  //    */
+  //   sqlTyping(command, rows) {
+  //     if (command != "") {
+  //       this.command = command;
+  //       this.rows = rows;
+  //       this.height = this.rows * 1.6;
+  //     } else {
+  //       this.command = "";
+  //       this.rows = 1;
+  //       this.height = 1.5;
+  //     }
+  //   },
+  //   resetSql(command, message, resultBackground) {
+  //     this.command = command;
+  //     this.$emit("reset-sql", message, resultBackground);
+  //   }
+  // },
   data() {
     return {
       command: "", //Input field value
@@ -107,40 +107,40 @@ export default {
      */
     sendSql(data) {
       this.$emit("send-sql", data);
-      this.emitMessage();
-      if (data.match(/SELECT/i)) {
-        this.$socket.client.emit("sendSql", data);
-      }
+      // this.emitMessage();
+      // if (data.match(/SELECT/i)) {
+      //   this.$socket.client.emit("sendSql", data);
+      // }
     },
     createNewLine() {
       this.rows++;
       this.height = this.rows * 1.6;
-    },
+    }
 
     /**
      * Called on shift+space, emits on the "sqlTyping" channel on shift+space
      */
-    emitMessage() {
-      this.$socket.client.emit(
-        "sqlTyping",
-        this.command,
-        this.rows,
-        this.height
-      );
-    },
+    // emitMessage() {
+    //   this.$socket.client.emit(
+    //     "sqlTyping",
+    //     this.command,
+    //     this.rows,
+    //     this.height
+    //   );
+    // },
 
     /**
      * Resets all the parameters to default values
      * Emits "reset-sql" event to parent component
      */
-    reset() {
-      this.$socket.client.emit(
-        "resetSql",
-        "",
-        "Run a SQL command to display result here",
-        "var(--sql-lighter-dark)"
-      );
-    }
+    // reset() {
+    //   this.$socket.client.emit(
+    //     "resetSql",
+    //     "",
+    //     "Run a SQL command to display result here",
+    //     "var(--sql-lighter-dark)"
+    //   );
+    // }
   },
   watch: {
     /**

@@ -32,7 +32,6 @@ app.get('', (req, res) => {
 
 server.listen(4113, () => {
     console.log('Listening on port *: 4113');
-
 })
 
 io.on('connect', (socket) => {

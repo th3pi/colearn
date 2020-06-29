@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import axios from 'axios'
-import SocketIO from 'socket.io-client'
-import VueSocketIOExt from 'vue-socket.io-extended'
+// import SocketIO from 'socket.io-client'
+// import VueSocketIOExt from 'vue-socket.io-extended'
 import VueMq from 'vue-mq'
 import * as firebase from "firebase"
 
@@ -18,13 +18,13 @@ Vue.config.productionTip = false
 export const bus = new Vue();
 
 //Establish connection to backend
-const http = axios.create({ baseURL: 'http://192.168.1.15:4113' })
+const http = axios.create({ baseURL: 'https://us-central1-co-learn-a05d9.cloudfunctions.net/app' })
 
 //Establish a socket connection
-const socket = SocketIO('http://192.168.1.15:4113');
+// const socket = SocketIO('http://192.168.1.15:4113');
 
 //Initialize vue socket client
-Vue.use(VueSocketIOExt, socket);
+// Vue.use(VueSocketIOExt, socket);
 Vue.prototype.$http = http;
 
 //Firebase config

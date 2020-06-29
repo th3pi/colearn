@@ -77,39 +77,39 @@ export default {
     "code-snippet": codeSnippet,
     "sql-result-table": sqlResultTable
   },
-  sockets: {
-    /**
-     * Called on successful connection to the server
-     */
-    connect() {},
+  // sockets: {
+  //   /**
+  //    * Called on successful connection to the server
+  //    */
+  //   connect() {},
 
-    /**
-     * Called on disconnection from the session
-     */
-    disconnect() {},
+  //   /**
+  //    * Called on disconnection from the session
+  //    */
+  //   disconnect() {},
 
-    /**
-     * Called when user in the session running a SQL command
-     */
-    sendSql(data) {
-      this.fetchSql(data);
-    },
+  //   /**
+  //    * Called when user in the session running a SQL command
+  //    */
+  //   sendSql(data) {
+  //     this.fetchSql(data);
+  //   },
 
-    /**
-     * Called when user in the session resetting SQL workspace
-     */
-    resetSql(command, message, resultBackground) {
-      this.updateResultTable(message, resultBackground);
-    },
+  //   /**
+  //    * Called when user in the session resetting SQL workspace
+  //    */
+  //   resetSql(command, message, resultBackground) {
+  //     this.updateResultTable(message, resultBackground);
+  //   },
 
-    /**
-     * Called when a non SELECT command is sent, to share only the message between users
-     * to avoid sending multiple modifying commands
-     */
-    handleMessage(message) {
-      this.messageHandler(message);
-    }
-  },
+  //   /**
+  //    * Called when a non SELECT command is sent, to share only the message between users
+  //    * to avoid sending multiple modifying commands
+  //    */
+  //   handleMessage(message) {
+  //     this.messageHandler(message);
+  //   }
+  // },
   data() {
     return {
       route: "/sql/sql-query",
@@ -146,7 +146,7 @@ export default {
             this.showTable = true;
           } else {
             console.log(res.data);
-            this.$socket.client.emit("handleMessage", res.data);
+            // this.$socket.client.emit("handleMessage", res.data);
           }
         })
         .catch(err => {
