@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="sql font" id="sqlBody" :style="{top: (results.length == 0) ? '35vh' : 0}">
+    <div class="sql font" id="sqlBody" :style="{'margin-top': (results.length == 0) ? '25vh' : 0}">
       <div id="inputSection" :style="getWidth(showBar,'50%', '60%', '70')">
         <!-- Page title for SQL view -->
         <!-- Display only the language title if on a mobile device or something with a very small display -->
@@ -206,14 +206,13 @@ export default {
 
 <style lang="scss">
 #sqlBody {
-  display: inline-block;
   width: 100%;
 
-  position: fixed;
   margin-top: 0.5rem;
-  left: 0;
+  margin-left: auto;
+  margin-right: auto;
 
-  transition: top 0.4s ease-in-out;
+  transition: margin-top 0.4s ease-in-out;
 }
 
 #inputSection {
@@ -237,5 +236,20 @@ export default {
 #sidebar {
   position: fixed;
   top: 0;
+}
+
+@media screen and (min-width: 470px) {
+  #sqlBody {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+@media screen and (min-width: 1250px) {
+  #sqlBody {
+    width: 1250px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 </style>

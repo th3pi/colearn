@@ -6,6 +6,7 @@
     height="204.000000pt"
     viewBox="0 0 977.000000 204.000000"
     preserveAspectRatio="xMidYMid meet"
+    @click="$route.name != 'home' ? $router.push({name:'home'}) : ''"
   >
     <g
       transform="translate(0.000000,204.000000) scale(0.100000,-0.100000)"

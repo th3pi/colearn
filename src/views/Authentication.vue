@@ -19,7 +19,7 @@ export default {
   align-items: center;
   flex-direction: column;
 
-  margin-top: 20vh;
+  margin-top: 15vh;
 }
 
 #authenticationBody #coLearnLogo .logo {
@@ -103,11 +103,8 @@ export default {
 
     font-size: 0.95rem;
   }
-}
-
-@media screen and (min-height: 800px) {
   #authenticationBody {
-    margin-top: 25vh;
+    margin-top: 10vh;
   }
 }
 
@@ -116,6 +113,10 @@ export default {
     padding: 0.9rem 2.4rem;
 
     font-size: 1rem;
+  }
+
+  #authenticationBody {
+    margin-top: 10vh;
   }
 }
 </style>

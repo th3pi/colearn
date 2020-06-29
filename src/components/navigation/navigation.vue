@@ -2,8 +2,9 @@
   <div>
     <div id="navBar" class="open-sans">
       <li>
-        <a @click="$router.push({name:'home'})">
-          <logo class="logo" fill="var(--sql-light-primary)" />
+        <a>
+          <clLogo v-if="this.$mq != 'sm'" class="logo" fill="var(--sql-light-primary)" />
+          <i v-else class="fas fa-bars logo"></i>
         </a>
         <transition name="fade" mode="out-in">
           <div v-if="user.authenticated" id="profile" key="loggedIn">
@@ -63,13 +64,13 @@
 <script>
 import firebase from "firebase";
 
-import logo from "@/assets/img/titles/co-learn-logo.vue";
+import clLogo from "@/assets/img/titles/cl-logo.vue";
 import dropdown from "@/components/General/dropdown.vue";
 import { mapGetters } from "vuex";
 
 export default {
   name: "navigation",
-  components: { logo, dropdown },
+  components: { clLogo, dropdown },
   methods: {
     logout() {
       firebase
@@ -100,9 +101,10 @@ export default {
 
 <style lang="scss">
 #navBar {
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 0.75rem;
+  padding-right: 0;
 
-  box-shadow: 0 4px 20px rgba($color: #000000, $alpha: 0.1);
+  box-shadow: 0 4px 20px rgba($color: #000000, $alpha: 0.05);
 
   color: var(--sql-light-primary);
 }
@@ -111,11 +113,12 @@ export default {
 }
 
 #navBar .logo {
-  width: 10rem;
+  width: 3rem;
   height: auto;
 
   margin-top: 0.5rem;
 
+  font-size: 2rem;
   cursor: pointer;
 }
 
@@ -136,9 +139,9 @@ export default {
   margin-right: 1rem;
 }
 #profile .button {
-  margin-right: 1rem;
+  margin-right: 0.4rem;
 
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
 
   border-radius: 5px;
 
@@ -166,10 +169,27 @@ export default {
 #more {
   background-color: var(--sql-light-primary);
 
+  margin-right: 0;
+
   font-size: 1.4rem;
   color: white;
 }
 #profile a:last-child {
   margin-right: 0;
+}
+
+@media only screen and (min-width: 470px) {
+  #profile .button {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+  }
+
+  #navBar {
+    padding: 1rem 1.5rem;
+    padding-right: 0rem;
+  }
+}
+
+@media only screen and (min-width: 1250px) {
 }
 </style>
