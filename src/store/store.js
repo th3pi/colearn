@@ -9,6 +9,7 @@ export default new Vuex.Store({
         user: {
             authenticated: false,
             data: null,
+            details: null,
         }
     },
     getters: {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
         },
         SET_USER(state, data) {
             state.user.data = data;
+        },
+        SET_USER_DETAILS(state, details) {
+            state.user.details = details;
         }
     },
     actions: {
@@ -30,11 +34,14 @@ export default new Vuex.Store({
             if (user) {
                 commit("SET_USER", {
                     displayName: user.displayName,
-                    email: user.email
+                    email: user.email,
                 })
             } else {
                 commit("SET_USER", null);
             }
+        },
+        fetchDetails({ commit }, details) {
+            commit("SET_USER_DETAILS", details);
         }
 
     }

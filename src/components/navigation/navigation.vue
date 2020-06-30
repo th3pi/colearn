@@ -8,7 +8,7 @@
         </a>
         <transition name="fade" mode="out-in">
           <div v-if="user.authenticated" id="profile" key="loggedIn">
-            <a id="user" class="bold">{{user.data.displayName}}</a>
+            <a id="user" class="bold">{{user.details.userId}}</a>
             <div id="dropdown">
               <dropdown>
                 <a id="settings" class="button neumorphic n-active">Settings</a>

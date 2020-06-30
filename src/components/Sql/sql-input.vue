@@ -15,8 +15,6 @@
         v-model="command"
         :placeholder="focus ? '' : this.$mq == 'sm' ? 'Enter a command' : 'Enter a SQL command'"
         @keydown.shift.enter.exact.prevent
-        @keyup.shift.space="emitMessage"
-        @keyup.shift.enter="sendSql(command)"
         @focus="focus = true"
         @blur="focus = false"
       ></textarea>
@@ -36,7 +34,7 @@
     <!-- Action buttons for the input field -->
     <div id="actionButtons">
       <!-- Update button does exactly the same as Shift + Enter keyup, shares the latest value of command -->
-      <button class="sql font neumorphic button" @click="emitMessage()">Update</button>
+      <button class="sql font neumorphic button" @click="synchronize">Update</button>
 
       <!-- Run button  -->
       <!-- Compiles and runs code then fetches result -->
@@ -56,6 +54,7 @@
 <script>
 //Mixins import
 import responsive from "@/mixins/responsive";
+import { mapGetters } from "vuex";
 
 /**
  * Input capture box for SQL co-learn module
@@ -67,31 +66,16 @@ import responsive from "@/mixins/responsive";
 export default {
   name: "sql-input",
   mixins: [responsive],
+  computed: {
+    ...mapGetters({
+      user: "user"
+    })
+  },
   /**
    * Sockets listening for "sqlTyping" which overwrites command value, with whatever is being emitted over
    * the "sqlTyping" channel
    * @param {String} data is the command that will overwrite, this.command
    */
-  // sockets: {
-  //   /**
-  //    * Socket listening for activities on the "sqlTyping" channel
-  //    */
-  //   sqlTyping(command, rows) {
-  //     if (command != "") {
-  //       this.command = command;
-  //       this.rows = rows;
-  //       this.height = this.rows * 1.6;
-  //     } else {
-  //       this.command = "";
-  //       this.rows = 1;
-  //       this.height = 1.5;
-  //     }
-  //   },
-  //   resetSql(command, message, resultBackground) {
-  //     this.command = command;
-  //     this.$emit("reset-sql", message, resultBackground);
-  //   }
-  // },
   data() {
     return {
       command: "", //Input field value
@@ -107,15 +91,21 @@ export default {
      */
     sendSql(data) {
       this.$emit("send-sql", data);
-      // this.emitMessage();
-      // if (data.match(/SELECT/i)) {
-      //   this.$socket.client.emit("sendSql", data);
-      // }
     },
     createNewLine() {
       this.rows++;
       this.height = this.rows * 1.6;
-    }
+    },
+
+    /**
+     * Synchronizes session data by sending a post request to firestore
+     */
+    synchronize() {
+      this.$httpTest.post("/sql/sync-session", {
+        name: this.user.data.displayName,
+        query: this.command
+      });
+    },
 
     /**
      * Called on shift+space, emits on the "sqlTyping" channel on shift+space
@@ -133,34 +123,20 @@ export default {
      * Resets all the parameters to default values
      * Emits "reset-sql" event to parent component
      */
-    // reset() {
-    //   this.$socket.client.emit(
-    //     "resetSql",
-    //     "",
-    //     "Run a SQL command to display result here",
-    //     "var(--sql-lighter-dark)"
-    //   );
-    // }
+    reset() {
+      this.command = "";
+      this.$httpTest
+        .post("/sql/reset", {
+          name: this.user.data.displayName
+        })
+        .then(res => {
+          console.log(res.data);
+        });
+    }
   },
   watch: {
     /**
-     * Watch the command param for changes, whenever it receives an input - transmit on the "sqlTyping" channel
-     * to synchronize all connected sessions
-     */
-    /**
-     * Deprecated, causes performance issues
-     */
-    // command() {
-    //   this.$socket.client.emit(
-    //     "sqlTyping",
-    //     this.command,
-    //     this.rows,
-    //     this.height
-    //   );
-    // }
-
-    /**
-     * Command watcher to emit on the channel when input field becomes empty and reset height and rows count
+     * Command watcher to synchronize input table
      * @param {String} newValue Current value of the command variable
      */
     command(newValue) {

@@ -12,8 +12,14 @@
           type="name"
           :validate="true"
           @name-validity="valid.name = $event"
-          @name="name = $event"
-        >Name</cl-input>
+          @name="firstName = $event"
+        >First name</cl-input>
+        <cl-input
+          type="name"
+          :validate="true"
+          @name-validity="valid.name = $event"
+          @name="lastName = $event"
+        >Last name</cl-input>
         <cl-input
           type="email"
           :validate="true"
@@ -82,7 +88,8 @@ export default {
         email: false,
         password: false
       },
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       error: {
@@ -91,14 +98,26 @@ export default {
     };
   },
   methods: {
+    /**
+     * Creates a new user authentication entry as well as a firestore entry
+     */
     registerWithEmail() {
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(data => {
+          this.$httpTest
+            .post("/user/create-user", {
+              firstName: this.firstName,
+              lastName: this.lastName,
+              email: this.email
+            })
+            .then(res => {
+              console.log(res);
+            });
           data.user
             .updateProfile({
-              displayName: this.name
+              displayName: this.firstName
             })
             .then(() => {});
           if (data.user && data.user.emailVerified == false) {

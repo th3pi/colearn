@@ -317,7 +317,7 @@ export default {
      * @param {Boolean} newValue contains the updated name value
      */
     name(newValue) {
-      if (newValue.match(/([a-zA-Z]+\s?\b){2,4}/)) {
+      if (newValue.match(/([a-zA-Z]+?\b){1}/)) {
         this.validName.oneWord = true;
         this.$emit("name-validity", true);
         this.$emit("name", this.name);

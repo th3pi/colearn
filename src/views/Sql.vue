@@ -8,7 +8,7 @@
         <!-- SQL command input box -->
         <sql-input
           class="sqlInput"
-          @send-sql="fetchSql"
+          @send-sql="fetchSqlLocal"
           @reset-sql="updateResultTable"
           @focus-sql="showTipOnFocus"
         />
@@ -58,6 +58,8 @@ import sqlResultTable from "@/components/Sql/sql-result-table.vue";
 
 //Mixin imports
 import responsive from "@/mixins/responsive";
+
+import { mapGetters } from "vuex";
 /**
  * Main view for SQL collaborations
  * @param {String} route holds the route to backend sql query api
@@ -77,42 +79,14 @@ export default {
     "code-snippet": codeSnippet,
     "sql-result-table": sqlResultTable
   },
-  // sockets: {
-  //   /**
-  //    * Called on successful connection to the server
-  //    */
-  //   connect() {},
-
-  //   /**
-  //    * Called on disconnection from the session
-  //    */
-  //   disconnect() {},
-
-  //   /**
-  //    * Called when user in the session running a SQL command
-  //    */
-  //   sendSql(data) {
-  //     this.fetchSql(data);
-  //   },
-
-  //   /**
-  //    * Called when user in the session resetting SQL workspace
-  //    */
-  //   resetSql(command, message, resultBackground) {
-  //     this.updateResultTable(message, resultBackground);
-  //   },
-
-  //   /**
-  //    * Called when a non SELECT command is sent, to share only the message between users
-  //    * to avoid sending multiple modifying commands
-  //    */
-  //   handleMessage(message) {
-  //     this.messageHandler(message);
-  //   }
-  // },
+  computed: {
+    ...mapGetters({
+      user: "user"
+    })
+  },
   data() {
     return {
-      route: "/sql/sql-query",
+      route: "/sql/local-sql-query",
       results: [],
       keys: [],
       message: "",
@@ -128,15 +102,16 @@ export default {
      * GETs the result of the sql command from the backend
      * @param {String} command SQL command that is received from the input and send to the backend
      */
-    fetchSql(command) {
+    fetchSqlLocal(command) {
       // command = "SELECT * FROM PERSONS"; //ONLY FOR TESTING PURPOSES. REMOVE this from build
-      this.$http
+      this.$httpTest
         .get(this.route, {
           params: {
-            sql: command
+            query: command
           }
         })
         .then(res => {
+          0;
           //If response is an array, it means successful SELECT command was run
           if (Array.isArray(res.data)) {
             this.results = res.data;
@@ -146,7 +121,7 @@ export default {
             this.showTable = true;
           } else {
             console.log(res.data);
-            // this.$socket.client.emit("handleMessage", res.data);
+            this.messageHandler(res.data);
           }
         })
         .catch(err => {

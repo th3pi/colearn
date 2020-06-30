@@ -19,13 +19,10 @@ export const bus = new Vue();
 
 //Establish connection to backend
 const http = axios.create({ baseURL: 'https://us-central1-co-learn-a05d9.cloudfunctions.net/app' })
+const httpTest = axios.create({ baseURL: 'http://localhost:5021/co-learn-a05d9/us-central1/app' })
 
-//Establish a socket connection
-// const socket = SocketIO('http://192.168.1.15:4113');
-
-//Initialize vue socket client
-// Vue.use(VueSocketIOExt, socket);
 Vue.prototype.$http = http;
+Vue.prototype.$httpTest = httpTest;
 
 //Firebase config
 var firebaseConfig = {
@@ -44,7 +41,16 @@ firebase.analytics();
 
 //User authentication state management
 firebase.auth().onAuthStateChanged(user => {
-  store.dispatch("fetchUser", user);
+  if (user) {
+    httpTest
+      .get("/user/get-user", { params: { email: user.email } })
+      .then(res => {
+        store.dispatch("fetchUser", user);
+        store.dispatch("fetchDetails", res.data);
+      });
+  } else {
+    store.dispatch("fetchUser", user);
+  }
 })
 
 //VueMq breakpoints, to programmatically adjust components according to screen sizes
