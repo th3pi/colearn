@@ -77,6 +77,7 @@ export default {
         .auth()
         .signOut()
         .then(() => {
+          window.sessionStorage.clear();
           this.$router.replace({ name: "home" });
         });
     },

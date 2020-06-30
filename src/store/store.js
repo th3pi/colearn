@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
+
 
 //Initial Vuex state management
 Vue.use(Vuex);
@@ -44,5 +46,8 @@ export default new Vuex.Store({
             commit("SET_USER_DETAILS", details);
         }
 
-    }
+    },
+    plugins: [createPersistedState({
+        storage: window.sessionStorage,
+    })]
 })
