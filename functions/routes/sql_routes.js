@@ -1,5 +1,4 @@
 const express = require('express');
-const admin = require('firebase-admin');
 
 const Dao = require('../dao.js');
 const SqlRepository = require('../repos/sql_repository');
@@ -7,23 +6,18 @@ const SqlRepository = require('../repos/sql_repository');
 // Database location
 const sqlite3 = new Dao('./database/test1.sqlite3')
 const repo = new SqlRepository(sqlite3)
-var serviceAccount = require('../permission.json')
 
+const db = require('../firestore')
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://co-learn-a05d9.firebaseio.com"
-})
-const db = admin.firestore();
 
 const app = express.Router();
 
 /**
  * Sends a SQL command to server
- * Request is sent to http://address/?sql=[command]
+ * Request is sent to http://address/?query=[command]
  */
-app.get('/sql-query', (req, res) => {
-    const sql = req.query.sql;
+app.get('/local-sql-query', (req, res) => {
+    const sql = req.query.query;
     console.log("API REQUEST ON: /sql/sql-query");
 
     repo.sendCommand(sql).then((result) => {
@@ -38,7 +32,7 @@ app.get('/sql-query', (req, res) => {
 app.post('/session-query', (req, res) => {
     (async () => {
         try {
-            await db.collection('session').doc('query').set({ query: req.body.query })
+            await db.collection('sessions').doc(req.body.name).set({ query: req.body.query })
             return res.status(200).send();
         } catch (err) {
             console.log(err);
@@ -46,5 +40,25 @@ app.post('/session-query', (req, res) => {
         };
     })();
 });
+
+app.post('/reset', (req, res) => {
+    (async () => {
+        try {
+            await db.collection('sessions').doc(req.body.name).set({ query: '' });
+            return res.status(200).send('Successfully reset');
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
+    })();
+})
+
+app.post('/sync-session', (req, res) => {
+    db.collection('sessions').doc(req.body.name).set({ query: req.body.query }).then(() => {
+        res.status(200).send();
+    }).catch(err => {
+        res.status(500).send(err);
+    })
+})
 
 module.exports = app;
