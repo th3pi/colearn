@@ -5,12 +5,17 @@
       <agile :dots="false">
         <!-- First slide -->
         <div class="slide cl-slide">
-          <img class="screenshot neumorphic" src="../assets/img/sql-screenshot.png" alt="nothing" />
+          <img
+            class="screenshot neumorphic"
+            src="../assets/img/sql-screenshot.png"
+            alt="nothing"
+          />
           <div id="caption">
             <h3>Powerful and Fast</h3>
             <p>
               Colearn runs all your code using
-              <strong>magic</strong> on the backend providing a minimal compilation time and seamless collaboration experience
+              <strong>magic</strong> on the backend providing a minimal
+              compilation time and seamless collaboration experience
             </p>
           </div>
         </div>
@@ -18,9 +23,16 @@
         <div class="slide cl-slide">
           <div id="caption">
             <h3>Guides and Cheatsheets</h3>
-            <p>Follow along with colearn's guides and cheatsheets, that exists only to make sure you are never lost!</p>
+            <p>
+              Follow along with colearn's guides and cheatsheets, that exists
+              only to make sure you are never lost!
+            </p>
           </div>
-          <img class="screenshot neumorphic" src="../assets/img/sql-screenshot.png" alt="nothing" />
+          <img
+            class="screenshot neumorphic"
+            src="../assets/img/sql-screenshot.png"
+            alt="nothing"
+          />
         </div>
         <!-- Overriding default agile slideshow buttons -->
         <template #prevButton>
@@ -38,8 +50,8 @@
         <logo class="logo" fill="var(--sql-light-primary)" />
         <p id="description" class="open-sans">
           An online
-          <strong>co</strong>llaborative
-          <strong>learn</strong>ing platform for in-demand programming languages
+          <strong>co</strong>llaborative <strong>learn</strong>ing platform for
+          in-demand programming languages
         </p>
       </div>
 
@@ -51,14 +63,14 @@
             <h3 class="open-sans">Get started</h3>
           </div>
           <div id="steps" class="open-sans">
+            <p><i class="fas fa-chevron-right"></i> Log in, or sign up</p>
             <p>
-              <i class="fas fa-chevron-right"></i> Log in, or sign up
+              <i v-if="this.$mq != 'sm'" class="fas fa-chevron-right"></i>
+              Select a language from the right section
             </p>
             <p>
-              <i v-if="this.$mq !='sm'" class="fas fa-chevron-right"></i> Select a language from the right section
-            </p>
-            <p>
-              <i class="fas fa-chevron-right"></i> Create or join a session with the link provided
+              <i class="fas fa-chevron-right"></i> Create or join a session with
+              the link provided
             </p>
             <p>
               <i class="fas fa-chevron-right"></i> Start
@@ -72,7 +84,10 @@
             <i class="fab fa-java"></i> Java
             <small>(Coming soon!)</small>
           </button>
-          <button class="bold neumorphic hover n-active" @click="$router.push({name: 'sql-view'})">
+          <button
+            class="bold neumorphic hover n-active"
+            @click="$router.push({ name: 'sql-view' })"
+          >
             <i class="fas fa-search"></i> SQL
           </button>
           <button class="bold neumorphic hover n-active" disabled>
@@ -100,14 +115,21 @@ export default {
   name: "home",
   components: {
     logo,
-    agile: VueAgile
+    agile: VueAgile,
   },
   methods: {},
   computed: {
     ...mapGetters({
-      user: "user"
-    })
-  }
+      user: "user",
+    }),
+  },
+  created() {
+    console.log(this.user.beta);
+
+    if (!this.user.beta) {
+      this.$router.replace({ name: "beta" });
+    }
+  },
 };
 </script>
 <style lang="scss">

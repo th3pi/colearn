@@ -5,7 +5,10 @@
       <!-- Input label, label is default slot -->
       <label
         for="name"
-        :class="{'label' : true, 'label-go-top': (name.length > 0 || focus.name) ? true : false}"
+        :class="{
+          label: true,
+          'label-go-top': name.length > 0 || focus.name ? true : false,
+        }"
       >
         <slot />
       </label>
@@ -15,7 +18,11 @@
         id="nameField"
         name="name"
         type="name"
-        :class="{'input':true, 'neumorphic': true, 'valid': (validName.oneWord && validate)}"
+        :class="{
+          input: true,
+          neumorphic: true,
+          valid: validName.oneWord && validate,
+        }"
         @focus="focus.name = true"
         @blur="focus.name = false"
         placeholder
@@ -31,7 +38,10 @@
 
       <label
         for="email"
-        :class="{'label' : true, 'label-go-top': (email.length > 0 || focus.email) ? true : false}"
+        :class="{
+          label: true,
+          'label-go-top': email.length > 0 || focus.email ? true : false,
+        }"
       >
         <!-- Input label, label is default slot -->
         <slot />
@@ -41,12 +51,15 @@
         v-model="email"
         name="email"
         type="email"
-        :class="{'input':true, 'neumorphic': true, 
-            'bottom' : validEmail.fourChars && validate, 
-            'top':     validEmail.atSign  && validate, 
-            'left' :   validEmail.beforeAtSign && validate, 
-            'right':   validEmail.domain  && validate,
-            'valid' :  validEmail.valid  && validate}"
+        :class="{
+          input: true,
+          neumorphic: true,
+          bottom: validEmail.fourChars && validate,
+          top: validEmail.atSign && validate,
+          left: validEmail.beforeAtSign && validate,
+          right: validEmail.domain && validate,
+          valid: validEmail.valid && validate,
+        }"
         @focus="focus.email = true"
         @blur="focus.email = false"
         placeholder
@@ -59,37 +72,56 @@
     <!-- Password input type input box -->
     <div id="field" v-if="type == 'password'">
       <!-- Password requirements popup -->
-      <popup v-if="validate" :valid="validPassword.valid" :focus="focus.password">
+      <popup
+        v-if="validate"
+        :valid="validPassword.valid"
+        :focus="focus.password"
+      >
         <p>For your security, include at least:</p>
-        <p :class="{'valid': validPassword.sixChars}">
+        <p :class="{ valid: validPassword.sixChars }">
           <transition name="scale-half-animation" mode="out-in">
-            <i class="fas fa-check" v-if="validPassword.sixChars" key="valid"></i>
-            <i class="fas fa-times" v-else key="invalid"></i>
-          </transition>6 characters
+            <i
+              class="fas fa-check"
+              v-if="validPassword.sixChars"
+              key="valid"
+            ></i>
+            <i class="fas fa-times" v-else key="invalid"></i> </transition
+          >6 characters
         </p>
-        <p :class="{'valid': validPassword.upperCase}">
+        <p :class="{ valid: validPassword.upperCase }">
           <transition name="scale-half-animation" mode="out-in">
-            <i class="fas fa-check" v-if="validPassword.upperCase" key="valid"></i>
-            <i class="fas fa-times" v-else key="invalid"></i>
-          </transition>One uppercase letter
+            <i
+              class="fas fa-check"
+              v-if="validPassword.upperCase"
+              key="valid"
+            ></i>
+            <i class="fas fa-times" v-else key="invalid"></i> </transition
+          >One uppercase letter
         </p>
-        <p :class="{'valid': validPassword.lowerCase}">
+        <p :class="{ valid: validPassword.lowerCase }">
           <transition name="scale-half-animation" mode="out-in">
-            <i class="fas fa-check" v-if="validPassword.lowerCase" key="valid"></i>
-            <i class="fas fa-times" v-else key="invalid"></i>
-          </transition>One lowercase letter
+            <i
+              class="fas fa-check"
+              v-if="validPassword.lowerCase"
+              key="valid"
+            ></i>
+            <i class="fas fa-times" v-else key="invalid"></i> </transition
+          >One lowercase letter
         </p>
-        <p :class="{'valid': validPassword.number}">
+        <p :class="{ valid: validPassword.number }">
           <transition name="scale-half-animation" mode="out-in">
             <i class="fas fa-check" v-if="validPassword.number" key="valid"></i>
-            <i class="fas fa-times" v-else key="invalid"></i>
-          </transition>One numeric character
+            <i class="fas fa-times" v-else key="invalid"></i> </transition
+          >One numeric character
         </p>
       </popup>
       <!-- Input label -->
       <label
         for="password"
-        :class="{'label' : true, 'label-go-top': (password.length > 0 || focus.password) ? true : false}"
+        :class="{
+          label: true,
+          'label-go-top': password.length > 0 || focus.password ? true : false,
+        }"
       >
         <!-- Label is default slot -->
         <slot />
@@ -100,12 +132,15 @@
         id="passwordBox"
         name="password"
         :type="peekPassword.peek ? 'text' : 'password'"
-        :class="{'input':true, 'neumorphic': true, 
-            'bottom' : validPassword.sixChars  && validate, 
-            'top': validPassword.number  && validate, 
-            'left' : validPassword.lowerCase  && validate, 
-            'right': validPassword.upperCase  && validate,
-            'valid' : validPassword.valid  && validate}"
+        :class="{
+          input: true,
+          neumorphic: true,
+          bottom: validPassword.sixChars && validate,
+          top: validPassword.number && validate,
+          left: validPassword.lowerCase && validate,
+          right: validPassword.upperCase && validate,
+          valid: validPassword.valid && validate,
+        }"
         @focus="focus.password = true"
         @blur="focus.password = false"
         placeholder
@@ -122,7 +157,12 @@
           class="fas fa-dot-circle peek"
           key="peek"
         ></i>
-        <i v-else @click="peekPassword.peek = true" class="fas fa-circle peek" key="dont-peek"></i>
+        <i
+          v-else
+          @click="peekPassword.peek = true"
+          class="fas fa-circle peek"
+          key="dont-peek"
+        ></i>
       </transition>
     </div>
   </div>
@@ -156,7 +196,7 @@ export default {
     type: String,
     validate: Boolean,
     tabindex: Number,
-    autofocus: Boolean
+    autofocus: Boolean,
   },
   data() {
     return {
@@ -167,30 +207,35 @@ export default {
       focus: {
         name: false,
         email: false,
-        password: false
+        password: false,
       },
       validPassword: {
         sixChars: null,
         lowerCase: null,
         upperCase: null,
         number: null,
-        valid: null
+        valid: null,
       },
       validEmail: {
         atSign: null,
         domain: null,
         beforeAtSign: null,
         fourChars: null,
-        valid: null
+        valid: null,
       },
       validName: {
-        twoWords: null
+        twoWords: null,
       },
       peekPassword: {
         peek: false,
-        hover: false
-      }
+        hover: false,
+      },
     };
+  },
+  methods: {
+    getInput() {
+      return this.name;
+    },
   },
   watch: {
     /**
@@ -232,7 +277,7 @@ export default {
           lowerCase: null,
           upperCase: null,
           number: null,
-          valid: null
+          valid: null,
         };
       }
 
@@ -289,7 +334,7 @@ export default {
           domain: null,
           beforeAtSign: null,
           fourChars: null,
-          valid: null
+          valid: null,
         };
       }
       //If all criterias are valid, mark email as valid
@@ -326,8 +371,8 @@ export default {
 
         this.validName.oneWord = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

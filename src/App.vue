@@ -11,10 +11,20 @@
 <script>
 import navigation from "@/components/navigation/navigation.vue";
 import footer from "@/components/footer/footer.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "App",
-  components: { navigation, "cl-footer": footer }
+  components: { navigation, "cl-footer": footer },
+  computed: {
+    ...mapGetters({ user: "user" }),
+  },
+  created() {
+    console.log(this.user.beta);
+    if (!this.user.beta || !this.user) {
+      this.$router.replace({ name: "beta" });
+    }
+  },
 };
 </script>
 

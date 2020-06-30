@@ -13,25 +13,29 @@
           :validate="true"
           @name-validity="valid.name = $event"
           @name="firstName = $event"
-        >First name</cl-input>
+          >First name</cl-input
+        >
         <cl-input
           type="name"
           :validate="true"
           @name-validity="valid.name = $event"
           @name="lastName = $event"
-        >Last name</cl-input>
+          >Last name</cl-input
+        >
         <cl-input
           type="email"
           :validate="true"
           @email-validity="valid.email = $event"
           @email="email = $event"
-        >Email</cl-input>
+          >Email</cl-input
+        >
         <cl-input
           type="password"
           :validate="true"
           @password-validity="valid.password = $event"
           @password="password = $event"
-        >Password</cl-input>
+          >Password</cl-input
+        >
       </div>
       <thirdparty-auth>Or register using,</thirdparty-auth>
       <div id="authenticationButtons">
@@ -39,23 +43,23 @@
           class="neumorphic button"
           @click="registerWithEmail"
           :disabled="!valid.name || !valid.email || !valid.password"
-        >Create Account</button>
+        >
+          Create Account
+        </button>
       </div>
       <div id="alternate" class="neumorphic inset">
         <transition name="slide-in-right" mode="out-in">
           <a v-if="error.accountExists" class="error" key="accountExists">
-            {{error.accountExists}}
-            <span
-              class="neumorphic n-active"
-              @click="routeToAuthenticate"
-            >Sign me in!</span>
+            {{ error.accountExists }}
+            <span class="neumorphic n-active" @click="routeToAuthenticate"
+              >Sign me in!</span
+            >
           </a>
           <a v-else>
             Already registered?
-            <span
-              class="neumorphic n-active"
-              @click="routeToAuthenticate"
-            >Sign in!</span>
+            <span class="neumorphic n-active" @click="routeToAuthenticate"
+              >Sign in!</span
+            >
           </a>
         </transition>
       </div>
@@ -79,22 +83,22 @@ export default {
     logo,
     "register-logo": registerLogo,
     "thirdparty-auth": thirdpartyAuth,
-    "cl-input": clInput
+    "cl-input": clInput,
   },
   data() {
     return {
       valid: {
         name: false,
         email: false,
-        password: false
+        password: false,
       },
       firstName: "",
       lastName: "",
       email: "",
       password: "",
       error: {
-        accountExists: null
-      }
+        accountExists: null,
+      },
     };
   },
   methods: {
@@ -105,19 +109,19 @@ export default {
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
-        .then(data => {
-          this.$httpTest
+        .then((data) => {
+          this.$http
             .post("/user/create-user", {
               firstName: this.firstName,
               lastName: this.lastName,
-              email: this.email
+              email: this.email,
             })
-            .then(res => {
+            .then((res) => {
               console.log(res);
             });
           data.user
             .updateProfile({
-              displayName: this.firstName
+              displayName: this.firstName,
             })
             .then(() => {});
           if (data.user && data.user.emailVerified == false) {
@@ -126,7 +130,7 @@ export default {
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err.code);
           if (err.code.match(/email-already-in-use/i)) {
             this.error.accountExists = "You already have an account";
@@ -135,9 +139,9 @@ export default {
     },
     routeToAuthenticate() {
       this.$router.replace({ name: "authenticate" });
-    }
+    },
   },
-  watch: {}
+  watch: {},
 };
 </script>
 

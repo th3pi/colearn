@@ -1,7 +1,11 @@
 <template>
   <div>
-    <div class="sql font" id="sqlBody" :style="{'margin-top': (results.length == 0) ? '25vh' : 0}">
-      <div id="inputSection" :style="getWidth(showBar,'50%', '60%', '70')">
+    <div
+      class="sql font"
+      id="sqlBody"
+      :style="{ 'margin-top': results.length == 0 ? '25vh' : 0 }"
+    >
+      <div id="inputSection" :style="getWidth(showBar, '50%', '60%', '70')">
         <!-- Page title for SQL view -->
         <!-- Display only the language title if on a mobile device or something with a very small display -->
         <sql-page-title :showBar="showBar" :showTable="showTable" />
@@ -34,8 +38,7 @@
           <li>
             <strong>SELECT</strong> used to select data from a database
             <code-snippet language="SQL">
-              <strong>SELECT</strong> *
-              <strong>FROM</strong> table;
+              <strong>SELECT</strong> * <strong>FROM</strong> table;
             </code-snippet>
             <p>
               Gets all the rows from the
@@ -77,12 +80,12 @@ export default {
     "sql-input": sqlInput,
     "cheat-bar": cheatBar,
     "code-snippet": codeSnippet,
-    "sql-result-table": sqlResultTable
+    "sql-result-table": sqlResultTable,
   },
   computed: {
     ...mapGetters({
-      user: "user"
-    })
+      user: "user",
+    }),
   },
   data() {
     return {
@@ -93,7 +96,7 @@ export default {
       showBar: false,
       showTable: false,
       resultBackground: "",
-      width: 0
+      width: 0,
     };
   },
   created() {},
@@ -104,13 +107,13 @@ export default {
      */
     fetchSqlLocal(command) {
       // command = "SELECT * FROM PERSONS"; //ONLY FOR TESTING PURPOSES. REMOVE this from build
-      this.$httpTest
+      this.$http
         .get(this.route, {
           params: {
-            query: command
-          }
+            query: command,
+          },
         })
-        .then(res => {
+        .then((res) => {
           0;
           //If response is an array, it means successful SELECT command was run
           if (Array.isArray(res.data)) {
@@ -124,7 +127,7 @@ export default {
             this.messageHandler(res.data);
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err.message);
         });
     },
@@ -173,9 +176,9 @@ export default {
       if (!this.showTable) {
         this.updateResultTable(message, resultBackground);
       }
-    }
+    },
   },
-  watch: {}
+  watch: {},
 };
 </script>
 

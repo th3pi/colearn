@@ -10,10 +10,25 @@
       <textarea
         id="commandInput"
         name="commandInput"
-        :class="{'sql' : true, 'font' : true, 'focus': (focus || command != '') ? true : false}"
-        :style="{'rows':rows, 'height': height+'rem', 'width' : (focus || command != '') ? '100%' : this.$mq == 'sm' ? '70%' : '50%'}"
+        :class="{
+          sql: true,
+          font: true,
+          focus: focus || command != '' ? true : false,
+        }"
+        :style="{
+          rows: rows,
+          height: height + 'rem',
+          width:
+            focus || command != '' ? '100%' : this.$mq == 'sm' ? '70%' : '50%',
+        }"
         v-model="command"
-        :placeholder="focus ? '' : this.$mq == 'sm' ? 'Enter a command' : 'Enter a SQL command'"
+        :placeholder="
+          focus
+            ? ''
+            : this.$mq == 'sm'
+            ? 'Enter a command'
+            : 'Enter a SQL command'
+        "
         @keydown.shift.enter.exact.prevent
         @focus="focus = true"
         @blur="focus = false"
@@ -34,7 +49,9 @@
     <!-- Action buttons for the input field -->
     <div id="actionButtons">
       <!-- Update button does exactly the same as Shift + Enter keyup, shares the latest value of command -->
-      <button class="sql font neumorphic button" @click="synchronize">Update</button>
+      <button class="sql font neumorphic button" @click="synchronize">
+        Update
+      </button>
 
       <!-- Run button  -->
       <!-- Compiles and runs code then fetches result -->
@@ -68,8 +85,8 @@ export default {
   mixins: [responsive],
   computed: {
     ...mapGetters({
-      user: "user"
-    })
+      user: "user",
+    }),
   },
   /**
    * Sockets listening for "sqlTyping" which overwrites command value, with whatever is being emitted over
@@ -81,7 +98,7 @@ export default {
       command: "", //Input field value
       height: 1.5, //Height of a single line
       rows: 1, //Number of rows in the command box
-      focus: false //Focus boolean for the input field
+      focus: false, //Focus boolean for the input field
     };
   },
   methods: {
@@ -101,9 +118,9 @@ export default {
      * Synchronizes session data by sending a post request to firestore
      */
     synchronize() {
-      this.$httpTest.post("/sql/sync-session", {
+      this.$http.post("/sql/sync-session", {
         name: this.user.data.displayName,
-        query: this.command
+        query: this.command,
       });
     },
 
@@ -125,14 +142,14 @@ export default {
      */
     reset() {
       this.command = "";
-      this.$httpTest
+      this.$http
         .post("/sql/reset", {
-          name: this.user.data.displayName
+          name: this.user.data.displayName,
         })
-        .then(res => {
+        .then((res) => {
           console.log(res.data);
         });
-    }
+    },
   },
   watch: {
     /**
@@ -161,8 +178,8 @@ export default {
           "var(--sql-lighter-dark)"
         );
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
