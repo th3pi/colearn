@@ -1,9 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
 import axios from "axios";
-// import SocketIO from 'socket.io-client'
-// import VueSocketIOExt from 'vue-socket.io-extended'
 import VueMq from "vue-mq";
+import VueEllipseProgress from 'vue-ellipse-progress'
 import * as firebase from "firebase";
 
 //Navigation router
@@ -21,12 +20,15 @@ export const bus = new Vue();
 const http = axios.create({
   baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
 });
+
+/**
+ * This axios instantiation is for dev-build testing only. Comment out before production
+ */
 // const http = axios.create({
 //   baseURL: "http://localhost:5021/co-learn-a05d9/us-central1/app",
 // });
 
 Vue.prototype.$http = http;
-// Vue.prototype.$httpTest = httpTest;
 
 //Firebase config
 var firebaseConfig = {
@@ -51,6 +53,7 @@ firebase.auth().onAuthStateChanged((user) => {
       .then((res) => {
         store.dispatch("fetchUser", user);
         store.dispatch("fetchDetails", res.data);
+        store.dispatch("giveAccess", true);
       });
   } else {
     store.dispatch("fetchUser", user);
@@ -59,6 +62,9 @@ firebase.auth().onAuthStateChanged((user) => {
 
 //VueMq breakpoints, to programmatically adjust components according to screen sizes
 Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } });
+
+//Loading ellipses instantiation
+Vue.use(VueEllipseProgress)
 
 new Vue({
   router,

@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import ENUM from "@/enums/store_enum"
 
 //Initial Vuex state management
 Vue.use(Vuex);
@@ -13,6 +14,9 @@ export default new Vuex.Store({
       details: null,
       beta: false,
     },
+    storeApi: {
+      state: ENUM.INIT
+    }
   },
   getters: {
     user(state) {
@@ -22,6 +26,7 @@ export default new Vuex.Store({
   mutations: {
     SET_AUTHENTICATED(state, value) {
       state.user.authenticated = value;
+      state.storeApi.state = ENUM.LOADED;
     },
     SET_USER(state, data) {
       state.user.data = data;
@@ -32,6 +37,9 @@ export default new Vuex.Store({
     SET_BETA(state, value) {
       state.user.beta = value;
     },
+    SET_STOREAPI(state, value) {
+      state.storeApi.state = value;
+    }
   },
   actions: {
     fetchUser({ commit }, user) {
@@ -41,12 +49,14 @@ export default new Vuex.Store({
           displayName: user.displayName,
           email: user.email,
         });
+        commit("SET_STOREAPI", ENUM.LOADED);
       } else {
         commit("SET_USER", null);
       }
     },
     fetchDetails({ commit }, details) {
       commit("SET_USER_DETAILS", details);
+      commit("SET_STOREAPI", ENUM.LOADED);
     },
     giveAccess({ commit }, value) {
       commit("SET_BETA", value);

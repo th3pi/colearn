@@ -1,6 +1,6 @@
 <template>
-  <transition name="fade-fast">
-    <div id="popup" :class="{'neumorphic' : true, 'valid': valid}" v-if="focus" key="popup">
+  <transition name="fade">
+    <div id="popup" :class="{'neumorphic' : true, 'valid': valid,}" v-if="focus" key="popup">
       <slot></slot>
     </div>
   </transition>
@@ -10,7 +10,8 @@
 export default {
   name: "popup",
   props: {
-    direction: String,
+    x: String,
+    y: String,
     valid: Boolean,
     focus: Boolean
   },

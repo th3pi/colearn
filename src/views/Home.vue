@@ -5,11 +5,7 @@
       <agile :dots="false">
         <!-- First slide -->
         <div class="slide cl-slide">
-          <img
-            class="screenshot neumorphic"
-            src="../assets/img/sql-screenshot.png"
-            alt="nothing"
-          />
+          <img class="screenshot neumorphic" src="../assets/img/sql-screenshot.png" alt="nothing" />
           <div id="caption">
             <h3>Powerful and Fast</h3>
             <p>
@@ -28,11 +24,7 @@
               only to make sure you are never lost!
             </p>
           </div>
-          <img
-            class="screenshot neumorphic"
-            src="../assets/img/sql-screenshot.png"
-            alt="nothing"
-          />
+          <img class="screenshot neumorphic" src="../assets/img/sql-screenshot.png" alt="nothing" />
         </div>
         <!-- Overriding default agile slideshow buttons -->
         <template #prevButton>
@@ -50,7 +42,8 @@
         <logo class="logo" fill="var(--sql-light-primary)" />
         <p id="description" class="open-sans">
           An online
-          <strong>co</strong>llaborative <strong>learn</strong>ing platform for
+          <strong>co</strong>llaborative
+          <strong>learn</strong>ing platform for
           in-demand programming languages
         </p>
       </div>
@@ -63,7 +56,9 @@
             <h3 class="open-sans">Get started</h3>
           </div>
           <div id="steps" class="open-sans">
-            <p><i class="fas fa-chevron-right"></i> Log in, or sign up</p>
+            <p>
+              <i class="fas fa-chevron-right"></i> Log in, or sign up
+            </p>
             <p>
               <i v-if="this.$mq != 'sm'" class="fas fa-chevron-right"></i>
               Select a language from the right section
@@ -115,21 +110,15 @@ export default {
   name: "home",
   components: {
     logo,
-    agile: VueAgile,
+    agile: VueAgile
   },
   methods: {},
   computed: {
     ...mapGetters({
-      user: "user",
-    }),
+      user: "user"
+    })
   },
-  created() {
-    console.log(this.user.beta);
-
-    if (!this.user.beta) {
-      this.$router.replace({ name: "beta" });
-    }
-  },
+  created() {}
 };
 </script>
 <style lang="scss">

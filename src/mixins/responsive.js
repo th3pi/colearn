@@ -72,6 +72,23 @@ export default {
                         'font-size': '' + lg + unit
                     }
             }
+        },
+
+        getResponsiveUnit(unit = 'px', sm, md, lg) {
+            switch (this.$mq) {
+                case "sm":
+                    return '' +
+                        sm + unit;
+
+                case "md":
+                    return '' +
+                        md + unit;
+
+                case "lg":
+                    return '' +
+                        lg + unit;
+
+            }
         }
     },
 }

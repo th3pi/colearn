@@ -72,47 +72,31 @@
     <!-- Password input type input box -->
     <div id="field" v-if="type == 'password'">
       <!-- Password requirements popup -->
-      <popup
-        v-if="validate"
-        :valid="validPassword.valid"
-        :focus="focus.password"
-      >
+      <popup v-if="validate" :valid="validPassword.valid" :focus="focus.password">
         <p>For your security, include at least:</p>
         <p :class="{ valid: validPassword.sixChars }">
           <transition name="scale-half-animation" mode="out-in">
-            <i
-              class="fas fa-check"
-              v-if="validPassword.sixChars"
-              key="valid"
-            ></i>
-            <i class="fas fa-times" v-else key="invalid"></i> </transition
-          >6 characters
+            <i class="fas fa-check" v-if="validPassword.sixChars" key="valid"></i>
+            <i class="fas fa-times" v-else key="invalid"></i>
+          </transition>6 characters
         </p>
         <p :class="{ valid: validPassword.upperCase }">
           <transition name="scale-half-animation" mode="out-in">
-            <i
-              class="fas fa-check"
-              v-if="validPassword.upperCase"
-              key="valid"
-            ></i>
-            <i class="fas fa-times" v-else key="invalid"></i> </transition
-          >One uppercase letter
+            <i class="fas fa-check" v-if="validPassword.upperCase" key="valid"></i>
+            <i class="fas fa-times" v-else key="invalid"></i>
+          </transition>One uppercase letter
         </p>
         <p :class="{ valid: validPassword.lowerCase }">
           <transition name="scale-half-animation" mode="out-in">
-            <i
-              class="fas fa-check"
-              v-if="validPassword.lowerCase"
-              key="valid"
-            ></i>
-            <i class="fas fa-times" v-else key="invalid"></i> </transition
-          >One lowercase letter
+            <i class="fas fa-check" v-if="validPassword.lowerCase" key="valid"></i>
+            <i class="fas fa-times" v-else key="invalid"></i>
+          </transition>One lowercase letter
         </p>
         <p :class="{ valid: validPassword.number }">
           <transition name="scale-half-animation" mode="out-in">
             <i class="fas fa-check" v-if="validPassword.number" key="valid"></i>
-            <i class="fas fa-times" v-else key="invalid"></i> </transition
-          >One numeric character
+            <i class="fas fa-times" v-else key="invalid"></i>
+          </transition>One numeric character
         </p>
       </popup>
       <!-- Input label -->
@@ -157,12 +141,7 @@
           class="fas fa-dot-circle peek"
           key="peek"
         ></i>
-        <i
-          v-else
-          @click="peekPassword.peek = true"
-          class="fas fa-circle peek"
-          key="dont-peek"
-        ></i>
+        <i v-else @click="peekPassword.peek = true" class="fas fa-circle peek" key="dont-peek"></i>
       </transition>
     </div>
   </div>
@@ -196,7 +175,7 @@ export default {
     type: String,
     validate: Boolean,
     tabindex: Number,
-    autofocus: Boolean,
+    autofocus: Boolean
   },
   data() {
     return {
@@ -207,35 +186,38 @@ export default {
       focus: {
         name: false,
         email: false,
-        password: false,
+        password: false
       },
       validPassword: {
         sixChars: null,
         lowerCase: null,
         upperCase: null,
         number: null,
-        valid: null,
+        valid: null
       },
       validEmail: {
         atSign: null,
         domain: null,
         beforeAtSign: null,
         fourChars: null,
-        valid: null,
+        valid: null
       },
       validName: {
-        twoWords: null,
+        twoWords: null
       },
       peekPassword: {
         peek: false,
-        hover: false,
-      },
+        hover: false
+      }
     };
   },
   methods: {
     getInput() {
       return this.name;
     },
+    getEmail() {
+      return this.email;
+    }
   },
   watch: {
     /**
@@ -277,7 +259,7 @@ export default {
           lowerCase: null,
           upperCase: null,
           number: null,
-          valid: null,
+          valid: null
         };
       }
 
@@ -334,7 +316,7 @@ export default {
           domain: null,
           beforeAtSign: null,
           fourChars: null,
-          valid: null,
+          valid: null
         };
       }
       //If all criterias are valid, mark email as valid
@@ -351,7 +333,7 @@ export default {
 
         this.validEmail.valid = true;
       } else {
-        this.$emit("email-validity", true);
+        this.$emit("email-validity", false);
 
         this.validEmail.valid = false;
       }
@@ -367,12 +349,12 @@ export default {
         this.$emit("name-validity", true);
         this.$emit("name", this.name);
       } else {
-        this.$emit("name-validity", true);
+        this.$emit("name-validity", false);
 
         this.validName.oneWord = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
