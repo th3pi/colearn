@@ -1,10 +1,9 @@
 const app = require("express").Router();
 const db = require("../firestore");
 const BetaRepo = require("../repos/beta/beta_repo");
-const BetaMail = require('../repos/mail/beta_mail')
+const BetaMail = require("../repos/mail/beta_mail");
 
-
-// const mail = new BetaMail('CHANGE PASSWORD')
+const mail = new BetaMail("Colearnteacha4");
 const beta = new BetaRepo(db);
 
 app.get("/validate-beta", (req, res) => {
@@ -22,12 +21,14 @@ app.post("/generate-beta", (req, res) => {
   beta
     .generate(req.body.email)
     .then((data) => {
-      mail.sendBeta(req.body.email, data).then((mailData) => {
-        res.status(200).send(mailData);
-      }).catch(err => {
-        res.status(500).send(err);
-
-      })
+      mail
+        .sendBeta(req.body.email, data)
+        .then((mailData) => {
+          res.status(200).send(mailData);
+        })
+        .catch((err) => {
+          res.status(500).send(err);
+        });
     })
     .catch((err) => {
       res.status(500).send(err);

@@ -1,11 +1,25 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import Sql from "../views/Sql.vue";
-import Authentication from "../views/Authentication.vue";
-import Authenticate from "../components/authentication/Authenticate.vue";
-import Register from "../components/authentication/Register.vue";
-import Beta from "../views/Beta.vue";
+// import Home from "../views/Home.vue";
+const Home = () => import(/* webpackChunkName: "home" */ "../views/Home.vue");
+// import Sql from "../views/Sql.vue";
+// import Authentication from "../views/Authentication.vue";
+const Authentication = () =>
+  import(
+    /* webpackChunkName: "authentication" */ "../views/Authentication.vue"
+  );
+// import Authenticate from "../components/authentication/Authenticate.vue";
+const Authenticate = () =>
+  import(
+    /* webpackChunkName: "authentication" */ "../components/authentication/Authenticate.vue"
+  );
+// import Register from "../components/authentication/Register.vue";
+const Register = () =>
+  import(
+    /* webpackChunkName: "authentication" */ "../components/authentication/Register.vue"
+  );
+// import Beta from "../views/Beta.vue";
+const Beta = () => import(/* webpackChunkName: "beta" */ "../views/Beta.vue");
 
 Vue.use(VueRouter);
 
@@ -37,7 +51,7 @@ export default new VueRouter({
     {
       path: "/learn-sql",
       name: "sql-view",
-      component: Sql,
+      component: () => import(/* webpackChunkName: "sql" */ "../views/Sql.vue"),
     },
     {
       path: "/beta",
