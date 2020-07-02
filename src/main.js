@@ -17,16 +17,16 @@ Vue.config.productionTip = false;
 export const bus = new Vue();
 
 //Establish connection to backend
-const http = axios.create({
-  baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
-});
+// const http = axios.create({
+//   baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
+// });
 
 /**
  * This axios instantiation is for dev-build testing only. Comment out before production
  */
-// const http = axios.create({
-//   baseURL: "http://localhost:5021/co-learn-a05d9/us-central1/app",
-// });
+const http = axios.create({
+  baseURL: "http://localhost:5021/co-learn-a05d9/us-central1/app",
+});
 
 Vue.prototype.$http = http;
 
@@ -46,6 +46,7 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 //User authentication state management
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     http

@@ -35,8 +35,19 @@
         </template>
       </agile>
     </div>
+
     <!-- Main content for home -->
     <div id="homeBody">
+      <alert
+        v-if="!user.authenticated"
+        backgroundColor="var(--warn-v)"
+        color="var(--warn-dark)"
+        :dismiss="true"
+      >
+        <i class="fas fa-exclamation-circle" style="transform: scale(0.95);"></i>
+        <strong class="link" @click="$router.push({name: 'register'})">Register</strong> or
+        <strong class="link" @click="$router.push({name: 'authenticate'})">Authenticate</strong> to confirm your beta access
+      </alert>
       <!-- Colearn logo and description -->
       <div id="coLearnLogo">
         <logo class="logo" fill="var(--sql-light-primary)" />
@@ -60,7 +71,7 @@
               <i class="fas fa-chevron-right"></i> Log in, or sign up
             </p>
             <p>
-              <i v-if="this.$mq != 'sm'" class="fas fa-chevron-right"></i>
+              <i class="fas fa-chevron-right"></i>
               Select a language from the right section
             </p>
             <p>
@@ -79,10 +90,7 @@
             <i class="fab fa-java"></i> Java
             <small>(Coming soon!)</small>
           </button>
-          <button
-            class="bold neumorphic hover n-active"
-            @click="$router.push({ name: 'sql-view' })"
-          >
+          <button class="bold neumorphic hover n-active" @click="createSqlSession">
             <i class="fas fa-search"></i> SQL
           </button>
           <button class="bold neumorphic hover n-active" disabled>
@@ -104,15 +112,35 @@
 
 <script>
 import logo from "@/assets/img/titles/co-learn-logo.vue";
+import alert from "@/components/General/alert.vue";
+
 import { VueAgile } from "vue-agile";
 import { mapGetters } from "vuex";
 export default {
   name: "home",
   components: {
     logo,
-    agile: VueAgile
+    agile: VueAgile,
+    alert
   },
-  methods: {},
+  methods: {
+    createSqlSession() {
+      this.$http
+        .post("/session/sql/create-session", {
+          email: this.user.data.email
+        })
+        .then(res => {
+          let sessionId = res.data;
+          this.$router.push({
+            name: "sql-view",
+            params: { sessionId }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
   computed: {
     ...mapGetters({
       user: "user"
@@ -163,7 +191,8 @@ export default {
 }
 
 #carousel {
-  height: 20rem;
+  display: block;
+  margin-bottom: 1rem;
 }
 
 #carousel .cl-slide {
@@ -226,22 +255,18 @@ export default {
 
 // Intro css
 #homeBody #intro {
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  width: 100%;
 }
 
 #homeBody #intro #message {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 50%;
+  display: block;
 
   margin-top: 1rem;
   margin-left: 0.5rem;
+  margin-right: 0.5rem;
 
   padding: 0.5rem;
   padding-bottom: 1rem;
@@ -266,18 +291,11 @@ export default {
 }
 
 #homeBody #intro #message #header h3 {
-  margin-left: auto;
-  margin-right: auto;
+  text-align: center;
 }
-
-#homeBody #intro #message #steps {
-  margin-left: auto;
-  margin-right: auto;
-}
-
 #homeBody #intro #message #steps p {
   padding: 0.25rem;
-
+  font-size: 0.9rem;
   transition: box-shadow 0.4s;
 }
 
@@ -285,11 +303,10 @@ export default {
   display: flex;
   align-content: center;
   justify-content: center;
-  flex-direction: column;
-  width: 50%;
+  flex-direction: row;
   margin-top: 1rem;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin-left: auto;
+  margin-right: auto;
 
   padding-top: 0.5rem;
 
@@ -350,6 +367,24 @@ export default {
   #homeBody #coLearnLogo {
     margin-top: 0;
   }
+  #homeBody #intro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  #homeBody #intro #message {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+  }
+
+  #homeBody #intro #sessionButtons {
+    flex-direction: column;
+    margin-right: 0.5rem;
+    width: 50%;
+  }
 }
 
 // large screens
@@ -359,6 +394,7 @@ export default {
     margin-left: auto;
     margin-right: auto;
   }
+
   #homeBody #coLearnLogo .logo {
     display: block;
 
@@ -367,6 +403,25 @@ export default {
   }
   #homeBody #coLearnLogo {
     margin-top: 0;
+  }
+
+  #homeBody #intro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  #homeBody #intro #message {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+  }
+
+  #homeBody #intro #sessionButtons {
+    flex-direction: column;
+    margin-right: 0.5rem;
+    width: 50%;
   }
 }
 </style>

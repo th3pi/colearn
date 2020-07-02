@@ -17,6 +17,14 @@
   opacity: 0.4;
 }
 
+//Scale up
+.scale-up-enter-active, .scale-up-leave-active {
+  transition: height .3s ease-in;
+}
+
+.scale-up-enter, .scale-up-leave-to{
+  height: 0;
+}
 /**
  * ----------------------------------------
  * class dropdown-animation

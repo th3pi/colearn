@@ -3,7 +3,7 @@
     <a id="user" class="bold">Hello, {{user.details.firstName}}</a>
     <div id="dropdown">
       <dropdown>
-        <a id="settings" class="button neumorphic n-active">Settings</a>
+        <a v-if="this.$mq != 'sm'" id="settings" class="button neumorphic n-active">Settings</a>
         <template id="dropdownContent" #content>
           <a>Account</a>
           <a>Sessions</a>
@@ -41,12 +41,8 @@ export default {
 </script>
 
 <style lang="scss">
-#user {
-  margin-top: -0.75rem;
-}
-
 #rightNav #user {
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 }
 #dropdown {
   margin-top: 0.5rem;
@@ -55,6 +51,9 @@ export default {
   color: var(--sql-light-primary) !important;
 }
 @media only screen and (min-width: 470px) {
+  #rightNav #user {
+    margin-right: 1rem;
+  }
   #rightNav .button {
     margin-right: 1rem;
     padding: 0.5rem 1rem;

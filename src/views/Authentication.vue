@@ -1,6 +1,6 @@
 <template>
   <div id="authenticationBody" class="open-sans">
-    <transition name="slide-in-right" mode="out-in">
+    <transition name="fade" mode="out-in">
       <router-view></router-view>
     </transition>
   </div>
@@ -18,8 +18,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-
-  margin-top: 15vh;
+  margin-top: 8rem;
 }
 
 #authenticationBody #coLearnLogo .logo {
@@ -29,7 +28,6 @@ export default {
 
 #authenticationButtons button {
   margin-right: 0.5rem;
-
   padding: 0.5rem 0.5rem;
 
   background-color: var(--sql-light-primary);
@@ -104,7 +102,8 @@ export default {
     font-size: 0.95rem;
   }
   #authenticationBody {
-    margin-top: 10vh;
+    margin-top: 0;
+    height: 85vmin;
   }
 }
 
@@ -116,7 +115,10 @@ export default {
   }
 
   #authenticationBody {
-    margin-top: 10vh;
+    #authenticationBody {
+      margin-top: 0;
+      height: 80vmin;
+    }
   }
 }
 </style>

@@ -1,17 +1,15 @@
 <template>
   <div id="betaBody" class="center-body open-sans" @keyup.enter="validate">
     <logo class="logo" fill="var(--sql-light-primary)" />
-    <h3>Under construction! If you have a beta code, please enter below</h3>
-    <clInput ref="input" :validate="false" class="code-input" type="name">Beta code</clInput>
+    <h3>Enter session pin to join</h3>
+    <clInput ref="input" :validate="false" class="code-input" type="name">Pin</clInput>
     <button
       class="button neumorphic n-active hover open-sans"
       :style="{'background-color': invalid ? 'var(--danger-lighter)' : ''}"
       :duration="200"
       @click="validate"
     >
-      <div v-if="validateProgress == 0">
-        <i class="fas" :class="{'fa-unlock': !invalid, 'fa-lock':invalid}"></i> Validate
-      </div>
+      <div v-if="validateProgress == 0">Join</div>
       <div v-else>
         <vue-ellipse-progress
           emptyColor="white"
@@ -24,73 +22,33 @@
         />
       </div>
     </button>
-    <!-- Request access popup -->
-    <div id="requestAccess">
-      <transition name="fade" mode="out-in">
-        <!-- Request access form -->
-        <popup v-if="!request.requested" :focus="focus" class="notreq-position" key="notRequested">
-          <h3>Let's get your beta access set up!</h3>
-          <clInput
-            ref="requestInput"
-            :validate="true"
-            class="cl-input"
-            type="email"
-            @email-validity="request.validEmail = $event"
-          >Email</clInput>
-          <button
-            class="button neumorphic n-active hover open-sans"
-            @click="sendRequest"
-            :disabled="!request.validEmail"
-          >
-            <i class="fas fa-plus"></i>
-            {{request.text}}
-          </button>
-        </popup>
-        <!-- Request access form confirmation -->
-        <popup v-else :focus="focus" class="req-position" key="requested">
-          <h3>Almost there!</h3>
-          <p>
-            Thank you for your interest! Participants are selected randomly - in the coming weeks you may
-            receive an email with the beta access code and instructions on how get started with
-            <strong>Colearn</strong>
-          </p>
-          <button @click="focus = false">
-            <i class="fa fa-check" aria-hidden="true"></i>Done
-          </button>
-        </popup>
-      </transition>
-      <div @click="focus =  focus ? false : true">
-        <p v-if="!focus" key="noFocus">
-          <i class="fas fa-plus-circle"></i> Click here to request access
-        </p>
-        <p v-else key="focused" style="color: var(--danger)">
-          <i class="fas fa-times"></i> Close
-        </p>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import logo from "@/assets/img/titles/co-learn-logo.vue";
 import clInput from "@/components/General/cl-input.vue";
-import popup from "@/components/General/popup.vue";
 
 import firebaseENUM from "@/enums/firebase_enum";
+
+import { mapGetters } from "vuex";
 export default {
   name: "beta",
   created() {
-    document.title = "Colearn - Beta portal";
+    document.title = "Colearn - Join session";
   },
   components: {
     clInput,
-    logo,
-    popup
+    logo
+  },
+  computed: {
+    ...mapGetters({ user: "user" })
   },
   data() {
     return {
       loadSate: firebaseENUM.INIT,
-      code: "",
+      sessionLoadState: firebaseENUM.INIT,
+      pin: "",
       invalid: false,
       validateProgress: 0,
       requestProgress: 0,
@@ -105,38 +63,27 @@ export default {
   methods: {
     validate() {
       this.loadSate = firebaseENUM.LOADING;
-      this.code = this.$refs.input.getInput();
-      if (this.code == "") {
+      this.pin = this.$refs.input.getInput();
+      if (this.pin == "") {
         this.loadSate = firebaseENUM.ERROR;
         return (this.invalid = true);
       }
       this.$http
-        .get("/beta/validate-beta", { params: { code: this.code } })
+        .post("/session/sql/join-session", {
+          email: this.user.data.email,
+          sessionId: this.$route.params.sessionId,
+          pin: this.pin
+        })
         .then(res => {
           if (res.data) {
             this.loadSate = firebaseENUM.LOADED;
             setTimeout(() => {
-              this.$store.dispatch("giveAccess", true);
+              this.$router.replace({ name: "sql-view" });
             }, 500);
           } else {
             this.loadSate = firebaseENUM.ERROR;
             this.invalid = true;
           }
-        });
-    },
-    sendRequest() {
-      this.requestProgress = 45;
-      this.request.text = "Requesting...";
-      let email = this.$refs.requestInput.getEmail();
-      this.$http
-        .post("/beta/generate-beta", { email: email })
-        .then(() => {
-          this.requestProgress = 100;
-          this.request.requested = true;
-        })
-        .catch(() => {
-          this.requestProgress = 0;
-          this.request.requested = true;
         });
     }
   },
@@ -169,7 +116,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
+  height: 85vmin;
 }
 
 .center-items {

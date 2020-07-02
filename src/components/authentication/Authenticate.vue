@@ -156,13 +156,11 @@ export default {
 
 #authenticateBody {
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 @media screen and (min-height: 800px) {
   #authenticationBody {
-    margin-top: 25vh;
   }
 }
 

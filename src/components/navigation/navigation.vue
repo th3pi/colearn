@@ -33,6 +33,9 @@ export default {
 
 <style lang="scss">
 #navBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.5rem 0.75rem;
   padding-right: 0;
 
@@ -45,10 +48,7 @@ export default {
 }
 
 #navBar .logo {
-  width: 3rem;
-  height: auto;
-
-  margin-top: 0.5rem;
+  margin: 0.25rem 0.2rem;
 
   font-size: 2rem;
   cursor: pointer;
@@ -58,34 +58,27 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: row;
-
-  margin-top: 0.25rem;
-}
-#rightNav {
-  float: right;
 }
 #rightNav .button {
-  margin-right: 0.4rem;
-
+  margin-right: 0.5rem;
   padding: 0.4rem 0.8rem;
 
   border-radius: 5px;
 
-  text-align: center;
-
   cursor: pointer;
 }
 
-#rightNav a:last-child {
-  margin-right: 0;
-}
 @media only screen and (min-width: 470px) {
   #navBar {
     padding: 1rem 1.5rem;
     padding-right: 0rem;
   }
+  #navBar .logo {
+    width: 3rem;
+    height: auto;
+    margin: 0;
+  }
   #rightNav .button {
-    margin-right: 1rem;
     padding: 0.5rem 1rem;
   }
 }

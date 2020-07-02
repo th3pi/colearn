@@ -4,8 +4,8 @@
       <a
         v-if="$route.name == 'home'"
         @click="$router.push({name: 'authenticate'})"
+        class="button"
         id="signIn"
-        class="button neumorphic n-active"
         key="fromHome"
       >
         <i class="fas fa-sign-in-alt"></i>
@@ -15,7 +15,7 @@
         v-if="$route.name == 'authenticate'"
         @click="$router.push({name: 'register'})"
         id="signIn"
-        class="button neumorphic n-active"
+        class="button"
         key="fromLogin"
       >
         <i class="fas fa-pencil-alt"></i>
@@ -25,14 +25,14 @@
         v-if="$route.name == 'register'"
         @click="$router.push({name: 'authenticate'})"
         id="signIn"
-        class="button neumorphic n-active"
+        class="button"
         from="fromRegister"
       >
         <i class="fas fa-sign-in-alt"></i>
         Log In
       </a>
     </transition>
-    <i id="more" class="fas fa-caret-down button neumorphic n-active"></i>
+    <i v-if="this.$mq != 'sm'" id="more" class="fas fa-caret-down button neumorphic n-active"></i>
   </div>
 </template>
 
@@ -53,9 +53,9 @@ export default {
   color: white;
 }
 #signIn {
-  background-color: var(--sql-light-primary);
+  box-shadow: none;
 
-  color: white;
+  color: var(--sql-light-primary);
 }
 
 #dropdown {
@@ -63,5 +63,16 @@ export default {
 }
 .dropdown-content a {
   color: var(--sql-light-primary) !important;
+}
+
+@media screen and (max-width: 470px) {
+  #signIn {
+    background-color: transparent;
+    color: var(--sql-light-primary);
+    box-shadow: none;
+    font-weight: 700;
+    text-shadow: 6px 6px 12pxrgba (0, 0, 0, 0.2),
+      -6px -6px 12px rgba(255, 255, 255, 0.5);
+  }
 }
 </style>

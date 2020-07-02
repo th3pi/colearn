@@ -49,7 +49,7 @@ export default new VueRouter({
       ],
     },
     {
-      path: "/learn-sql",
+      path: "/learn-sql/:sessionId",
       name: "sql-view",
       component: () => import(/* webpackChunkName: "sql" */ "../views/Sql.vue"),
     },
@@ -58,5 +58,10 @@ export default new VueRouter({
       name: "beta",
       component: Beta,
     },
+    {
+      path: "/join/:sessionId",
+      name: 'join-sql',
+      component: () => import(/* webpackChunkName: "joinSql" */"../components/authentication/Session.vue")
+    }
   ],
 });
