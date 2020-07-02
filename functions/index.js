@@ -5,6 +5,7 @@ const path = require("path");
 const sqlRoutes = require("./routes/sql_routes");
 const userRoutes = require("./routes/user_routes");
 const betaRoutes = require("./routes/beta_routes");
+const sessionRoutes = require("./routes/session_routes")
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/sql", sqlRoutes);
 app.use("/user", userRoutes);
 app.use("/beta", betaRoutes);
+app.use("/session", sessionRoutes)
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
