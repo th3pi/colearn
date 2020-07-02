@@ -1,5 +1,5 @@
 <template>
-  <div id="betaBody" class="center-body open-sans" @keyup.enter="validate">
+  <div id="sessionAuthBody" class="center-body open-sans" @keyup.enter="validate">
     <logo class="logo" fill="var(--sql-light-primary)" />
     <h3>Enter session pin to join</h3>
     <clInput ref="input" :validate="false" class="code-input" type="name">Pin</clInput>
@@ -51,7 +51,6 @@ export default {
       pin: "",
       invalid: false,
       validateProgress: 0,
-      requestProgress: 0,
       focus: false,
       request: {
         text: "Request Access",
@@ -126,29 +125,29 @@ export default {
   flex-direction: column;
 }
 
-#betaBody .code-input input {
+#sessionAuthBody .code-input input {
   text-align: center;
   font-family: "Share Tech Mono", monospace;
   font-weight: 400;
   letter-spacing: 10px;
 }
 
-#betaBody h3,
+#sessionAuthBody h3,
 h4 {
   color: var(--sql-primary);
   text-align: center;
 }
 
-#betaBody .logo {
+#sessionAuthBody .logo {
   width: 25rem;
   height: auto;
 }
 
-#betaBody .code-input {
+#sessionAuthBody .code-input {
   margin-top: 1rem;
 }
 
-#betaBody button {
+#sessionAuthBody button {
   width: 8rem;
   height: 2.5rem;
 
@@ -163,26 +162,26 @@ h4 {
   color: white;
 }
 
-#betaBody button:active {
+#sessionAuthBody button:active {
   border: none;
 }
 
-#betaBody #requestAccess {
+#sessionAuthBody #requestAccess {
   position: absolute;
   width: 15rem;
   bottom: 1rem;
 }
 
-#betaBody #requestAccess h3 {
+#sessionAuthBody #requestAccess h3 {
   margin: 0.5rem 0;
 }
 
-#betaBody #requestAccess i {
+#sessionAuthBody #requestAccess i {
   transform: scale(0.9);
   margin-right: 0rem;
 }
 
-#betaBody #requestAccess p {
+#sessionAuthBody #requestAccess p {
   margin: 0;
   text-decoration: none;
   text-align: center;
@@ -192,7 +191,7 @@ h4 {
   cursor: pointer;
 }
 
-#betaBody #requestAccess .notreq-position {
+#sessionAuthBody #requestAccess .notreq-position {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -200,14 +199,14 @@ h4 {
   transform: translate(-6rem, -11.5rem);
 }
 
-#betaBody .notreq-position button {
+#sessionAuthBody .notreq-position button {
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 12rem;
 }
 
-#betaBody .req-position {
+#sessionAuthBody .req-position {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -215,15 +214,15 @@ h4 {
   transform: translate(-4.7rem, -12.3rem);
   width: 21rem;
 }
-#betaBody .req-position i {
+#sessionAuthBody .req-position i {
   margin-right: 0.3rem !important;
 }
 
-#betaBody .req-position p {
+#sessionAuthBody .req-position p {
   margin-bottom: 0.5rem !important;
 }
 
-#betaBody .req-position button {
+#sessionAuthBody .req-position button {
   display: block;
   margin-left: auto;
   margin-right: auto;

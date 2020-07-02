@@ -13,6 +13,7 @@ export default new Vuex.Store({
       data: null,
       details: null,
       beta: false,
+      activeSession: null,
     },
     storeApi: {
       state: ENUM.INIT
@@ -39,6 +40,9 @@ export default new Vuex.Store({
     },
     SET_STOREAPI(state, value) {
       state.storeApi.state = value;
+    },
+    SET_ACTIVE_SESSION(state, value) {
+      state.user.activeSession = value;
     }
   },
   actions: {
@@ -61,6 +65,9 @@ export default new Vuex.Store({
     giveAccess({ commit }, value) {
       commit("SET_BETA", value);
     },
+    setActiveSession({ commit }, value) {
+      commit("SET_ACTIVE_SESSION", value);
+    }
   },
   plugins: [
     createPersistedState({

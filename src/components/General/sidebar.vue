@@ -1,43 +1,42 @@
 <template>
-  <!-- Sidebar help guide content - slots generate the content
-        Slots should be overriden in parents
-  -->
-  <div id="cheat">
-    <!-- Side bar help guide activation button -->
+  <div>
+    <!-- Sidebar help guide content - slots generate the content
+          Slots should be overriden in parents
+    -->
     <button
-      id="cheatButton"
-      class="button"
+      id="sidebarButton"
+      class="button neumorphic n-active hover"
       @click="showBar = true"
       :style="{'opacity' : showBar ? 0 : 1}"
     >
-      <transition name="fade" mode="out-in">
-        <p v-if="!showBar && this.$mq == 'lg'" style="font-size:.95rem;">Cheat Sheet</p>
-        <i v-else class="fas fa-info"></i>
-      </transition>
+      <i class="fas fa-info"></i>
     </button>
-    <!-- Cheat bar section -->
-    <div
-      :class="{ 'cheatBar' : true, 'showBar' : showBar ? true : false}"
-      :style="getWidth(showBar, '50vw', '40vw','30vw')"
-    >
-      <div id="content" :style="{'opacity' : showBar ? 1 : 0}">
-        <!-- Header section-->
-        <div id="header">
-          <p class="bungee">
-            <!-- Header prop for language -->
-            <strong class="bungee-shade">{{language}}</strong> Cheat Sheet
-          </p>
+    <div id="sidebarBody">
+      <!-- Side bar help guide activation button -->
 
-          <!-- Help guide close button -->
-          <i id="closeBarButton" class="far fa-times-circle" @click="showBar = false"></i>
-        </div>
-        <br />
-        <div id="body" class="sql font">
-          <p>
-            <!-- Header prop for language -->
-            At a glance
-          </p>
-          <slot class="cheatSheet" name="cheatSheet"></slot>
+      <!-- Sidebar section -->
+      <div
+        class="open-sans"
+        :class="{ 'sidebar' : true, 'showBar' : showBar ? true : false}"
+        :style="getWidth(showBar, '50vw', '40vw','30vw')"
+      >
+        <div id="content" :style="{'opacity' : showBar ? 1 : 0}">
+          <!-- Header section-->
+          <div id="header">
+            <p>
+              <!-- Header prop for language -->
+              Info and Settings
+            </p>
+
+            <!-- Help guide close button -->
+            <i id="closeBarButton" class="far fa-times-circle" @click="showBar = false"></i>
+          </div>
+          <br />
+          <div id="body" class="sql font">
+            <!-- Session info section -->
+            <p>Session Info</p>
+            <slot class="session-info" name="sessionInfo"></slot>
+          </div>
         </div>
       </div>
     </div>
@@ -48,14 +47,14 @@
 //Mixin imports
 import responsive from "@/mixins/responsive";
 export default {
-  name: "cheat-bar",
+  name: "sidebar",
   mixins: [responsive],
   props: {
     language: String
   },
   data() {
     return {
-      showBar: false //boolean to determine whether to show the help guide, changes on cheatButton click
+      showBar: false //boolean to determine whether to show the help guide, changes on sidebarButton click
     };
   },
   watch: {
@@ -73,46 +72,30 @@ export default {
 
 <style lang="scss">
 // Entire component
-#cheat {
+#sidebarBody {
   position: fixed;
   right: 0;
 }
 
-// Cheat bar open button
-#cheatButton {
+// Sidebar open button
+#sidebarButton {
+  position: absolute;
+  right: 0;
+  top: 6.5rem;
   height: 2rem;
-  width: 8vw;
-  max-width: 15rem;
-  background-color: rgba($color: #ffffff, $alpha: 1);
-
-  margin-top: 1.5rem;
+  width: 3rem;
+  background-color: white;
 
   border: 1px solid rgba($color: #254e70, $alpha: 0.4);
   border-right: none;
   border-radius: 5px 0 0 5px;
   outline: none;
 
-  box-shadow: 6px 6px 12px 0 rgba(0, 0, 0, 0.2),
-    -6px -6px 12px 0 rgba(255, 255, 255, 0.5);
-
   transition: background-color 0.3s, color 0.4s, box-shadow 0.4s, width 0.4s;
 }
 
-#cheatButton:hover {
-  background-color: rgba(var(--sql-dark-v), 1);
-
-  box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.3);
-
-  color: white;
-}
-
-#cheat .button:active {
-  box-shadow: inset 3px 3px 12px 0 rgba(0, 0, 0, 0.2),
-    inset -3px -3px 12px 0 rgba(0, 0, 0, 0.2);
-}
-
-// Cheat bar
-.cheatBar {
+// Sidebar
+.sidebar {
   position: fixed;
   top: 0;
   right: -5px;
@@ -132,16 +115,16 @@ export default {
   transition: width 0.2s, box-shadow 2s;
 }
 
-.cheatBar:hover {
+.sidebar:hover {
   box-shadow: 0 2px 12px rgba($color: #000000, $alpha: 0.3);
 }
 
-// Cheatbar box-shadow class
+// Sidebar box-shadow class
 .showBar {
   box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.2);
 }
 
-// Cheat bar content body
+// Sidebar content body
 #content {
   margin: 0.2rem 0.5rem 0.2rem 0.5rem;
   margin-top: 0.2rem;
@@ -149,7 +132,7 @@ export default {
   transition: 0.4s;
 }
 
-// Cheat bar header
+// Sidebar header
 #header {
   display: flex;
   flex: nowrap;
@@ -161,7 +144,7 @@ export default {
   font-size: 1.2rem;
 }
 
-// Cheat bar close button
+// Sidebar close button
 #closeBarButton {
   margin-top: 0.4rem;
 

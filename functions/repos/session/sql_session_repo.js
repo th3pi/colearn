@@ -1,19 +1,19 @@
 /**
  * Repository for SQL Sessions
  */
-const randomWords = require('random-words')
+const srs = require('secure-random-string')
 const CustomDate = require('../../modules/date')
 const date = new CustomDate(new Date());
 const admin = require('firebase-admin')
 
 class SqlSessionRepo {
     constructor(db) {
-        this.collection = db.collection('sessions');
+        this.db = db;
     }
     create(email) {
-        var sessionId = randomWords({ exactly: 4, join: '-' })
+        var sessionId = srs({ length: 8 })
         return new Promise((resolve, reject) => {
-            this.collection.doc(sessionId).set({
+            this.db.collection('sessions').doc(sessionId).set({
                 leader: email,
                 sessionId: sessionId,
                 createdOn: date.getCurrentDate(),
@@ -21,16 +21,21 @@ class SqlSessionRepo {
                 language: 'sql',
                 pin: Math.round(Math.random() * 9999 + 1000),
             }).then(() => {
-                resolve(sessionId)
+                this.db.collection('users').doc(email).update({ sqlSessions: admin.firestore.FieldValue.arrayUnion(sessionId) }).then(() => {
+                    resolve({ message: sessionId, code: 0 })
+
+                }).catch(err => {
+                    reject({ message: err, code: 2 })
+                })
             }).catch(err => {
-                reject(err)
+                reject({ message: err, code: 2 })
             })
         })
     }
 
     join(email, sessionId, pin) {
         return new Promise((resolve, reject) => {
-            const session = this.collection.doc(sessionId);
+            const session = this.db.collection('sessions').doc(sessionId);
             session.get().then(doc => {
                 if (doc.exists) {
                     if (doc.data().pin == pin) {
@@ -56,7 +61,7 @@ class SqlSessionRepo {
 
     get(sessionId) {
         return new Promise((resolve, reject) => {
-            this.collection.doc(sessionId).get().then(doc => {
+            this.db.collection('sessions').doc(sessionId).get().then(doc => {
                 if (doc.exists) resolve(doc.data());
                 else reject({ message: "Invalid session", code: 0 })
             }).catch(err => reject({ message: err, code: 2 }))

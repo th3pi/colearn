@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div
-      class="sql font"
-      id="sqlBody"
-      :style="{ 'margin-top': results.length == 0 ? '25vh' : 0 }"
-    >
+    <div class="sql font" id="sqlBody" :style="{ 'margin-top': results.length == 0 ? '25vh' : 0 }">
       <div id="inputSection" :style="getWidth(showBar, '50%', '60%', '70')">
         <!-- Page title for SQL view -->
         <!-- Display only the language title if on a mobile device or something with a very small display -->
@@ -28,25 +24,23 @@
         ></sql-result-table>
       </div>
     </div>
-    <!-- Update:showBar event emitted from cheat-bar child component, on emission, showBar is assigned the value of 
+    <!-- Update:showBar event emitted from sidebar child component, on emission, showBar is assigned the value of 
     data passed from child component, which is a boolean value-->
-    <div id="sidebar">
-      <cheat-bar language="SQL" @update:showBar="showBar = $event">
+    <div>
+      <sidebar @update:showBar="showBar = $event">
         <!-- Cheat sheet body -->
-        <template #cheatSheet>
+        <template #sessionInfo>
           <!-- Each cheat is its own bullet point using the li tag -->
-          <li>
-            <strong>SELECT</strong> used to select data from a database
-            <code-snippet language="SQL">
-              <strong>SELECT</strong> * <strong>FROM</strong> table;
-            </code-snippet>
-            <p>
-              Gets all the rows from the
-              <strong>table</strong>
-            </p>
-          </li>
+          <code-snippet language="SQL">
+            Session Link: colearn.tech/join/
+            <strong>{{user.activeSession}}</strong>
+          </code-snippet>
+          <p>
+            Gets all the rows from the
+            <strong>table</strong>
+          </p>
         </template>
-      </cheat-bar>
+      </sidebar>
     </div>
   </div>
 </template>
@@ -55,7 +49,7 @@
 //Component imports
 import sqlPageTitle from "@/components/Sql/sql-page-title.vue";
 import sqlInput from "@/components/Sql/sql-input.vue";
-import cheatBar from "@/components/General/cheat-bar.vue";
+import sidebar from "@/components/General/sidebar.vue";
 import codeSnippet from "@/components/General/code-snippet.vue";
 import sqlResultTable from "@/components/Sql/sql-result-table.vue";
 
@@ -78,14 +72,14 @@ export default {
   components: {
     "sql-page-title": sqlPageTitle,
     "sql-input": sqlInput,
-    "cheat-bar": cheatBar,
+    sidebar,
     "code-snippet": codeSnippet,
-    "sql-result-table": sqlResultTable,
+    "sql-result-table": sqlResultTable
   },
   computed: {
     ...mapGetters({
-      user: "user",
-    }),
+      user: "user"
+    })
   },
   data() {
     return {
@@ -96,10 +90,12 @@ export default {
       showBar: false,
       showTable: false,
       resultBackground: "",
-      width: 0,
+      width: 0
     };
   },
-  created() {},
+  created() {
+    document.title = "Colearn - SQL";
+  },
   methods: {
     /**
      * GETs the result of the sql command from the backend
@@ -110,10 +106,10 @@ export default {
       this.$http
         .get(this.route, {
           params: {
-            query: command,
-          },
+            query: command
+          }
         })
-        .then((res) => {
+        .then(res => {
           0;
           //If response is an array, it means successful SELECT command was run
           if (Array.isArray(res.data)) {
@@ -123,13 +119,10 @@ export default {
             this.resultBackground = "var(--sql-lighter-dark)";
             this.showTable = true;
           } else {
-            console.log(res.data);
             this.messageHandler(res.data);
           }
         })
-        .catch((err) => {
-          console.log(err.message);
-        });
+        .catch(() => {});
     },
     /**
      * Resets arrays to become empty when child compononent emits "reset-sql", also used to update the result table message and background color of the component
@@ -176,9 +169,9 @@ export default {
       if (!this.showTable) {
         this.updateResultTable(message, resultBackground);
       }
-    },
+    }
   },
-  watch: {},
+  watch: {}
 };
 </script>
 
@@ -209,11 +202,6 @@ export default {
   align-items: center;
   justify-content: center;
   width: 100%;
-}
-
-#sidebar {
-  position: fixed;
-  top: 0;
 }
 
 @media screen and (min-width: 470px) {

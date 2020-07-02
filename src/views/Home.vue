@@ -38,6 +38,7 @@
 
     <!-- Main content for home -->
     <div id="homeBody">
+      <!-- Shows alert notifying user to register or authenticate if user entered using a beta code, and isn't signed in -->
       <alert
         v-if="!user.authenticated"
         backgroundColor="var(--warn-v)"
@@ -130,7 +131,8 @@ export default {
           email: this.user.data.email
         })
         .then(res => {
-          let sessionId = res.data;
+          let sessionId = res.data.message;
+          this.$store.dispatch("setActiveSession", sessionId);
           this.$router.push({
             name: "sql-view",
             params: { sessionId }

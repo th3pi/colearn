@@ -36,7 +36,7 @@
           <button class="neumorphic n-active bold button" @click="signInUsingEmail">Authenticate</button>
         </div>
 
-        <!-- Swap to registraion form -->
+        <!-- Swap to registraion form and error display -->
         <div id="alternate" class="neumorphic inset">
           <transition name="slide-in-right" mode="out-in">
             <a v-if="error.noAccount" class="error" key="noAccount">
@@ -121,8 +121,6 @@ export default {
           this.$router.replace({ name: "home" });
         })
         .catch(err => {
-          console.log(err.code);
-
           if (err.code.match(/user-not-found/i)) {
             this.error.noAccount = "Sorry you're not in our records!";
           }
