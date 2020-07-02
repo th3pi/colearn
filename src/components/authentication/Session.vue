@@ -41,6 +41,13 @@ export default {
     clInput,
     logo
   },
+  beforeRouteEnter(to, from, next) {
+    if (to && from) {
+      next(vm => {
+        if (!vm.user.authenticated) next({ name: "authenticate" });
+      });
+    }
+  },
   computed: {
     ...mapGetters({ user: "user" })
   },
@@ -77,7 +84,10 @@ export default {
           if (res.data) {
             this.loadSate = firebaseENUM.LOADED;
             setTimeout(() => {
-              this.$router.replace({ name: "sql-view" });
+              this.$router.replace({
+                name: "learn-sql",
+                params: { sessionId: this.$route.params.sessionId }
+              });
             }, 500);
           } else {
             this.loadSate = firebaseENUM.ERROR;

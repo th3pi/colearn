@@ -1,46 +1,55 @@
 <template>
   <div>
-    <div class="sql font" id="sqlBody" :style="{ 'margin-top': results.length == 0 ? '25vh' : 0 }">
-      <div id="inputSection" :style="getWidth(showBar, '50%', '60%', '70')">
-        <!-- Page title for SQL view -->
-        <!-- Display only the language title if on a mobile device or something with a very small display -->
-        <sql-page-title :showBar="showBar" :showTable="showTable" />
-        <!-- SQL command input box -->
-        <sql-input
-          class="sqlInput"
-          @send-sql="fetchSqlLocal"
-          @reset-sql="updateResultTable"
-          @focus-sql="showTipOnFocus"
-        />
-      </div>
+    <div v-if="progress == 100" key="loaded">
+      <div
+        class="sql font"
+        id="sqlBody"
+        :style="{ 'margin-top': results.length == 0 ? '25vh' : 0 }"
+      >
+        <div id="inputSection" :style="getWidth(showBar, '50%', '60%', '70')">
+          <!-- Page title for SQL view -->
+          <!-- Display only the language title if on a mobile device or something with a very small display -->
+          <sql-page-title :showBar="showBar" :showTable="showTable" />
+          <!-- SQL command input box -->
+          <sql-input
+            class="sqlInput"
+            @send-sql="fetchSqlLocal"
+            @reset-sql="updateResultTable"
+            @focus-sql="showTipOnFocus"
+          />
+        </div>
 
-      <!-- Result table -->
-      <div id="resultSection">
-        <sql-result-table
-          :error="message"
-          :results="results"
-          :keys="keys"
-          :background="resultBackground"
-        ></sql-result-table>
+        <!-- Result table -->
+        <div id="resultSection">
+          <sql-result-table
+            :error="message"
+            :results="results"
+            :keys="keys"
+            :background="resultBackground"
+          ></sql-result-table>
+        </div>
+      </div>
+      <!-- Update:showBar event emitted from sidebar child component, on emission, showBar is assigned the value of 
+      data passed from child component, which is a boolean value-->
+      <div>
+        <sidebar @update:showBar="showBar = $event">
+          <!-- Cheat sheet body -->
+          <template #sessionInfo>
+            <!-- Each cheat is its own bullet point using the li tag -->
+            <code-snippet language="SQL">
+              Session Link: colearn.tech/join/
+              <strong>{{user.activeSession}}</strong>
+            </code-snippet>
+            <p>
+              Gets all the rows from the
+              <strong>table</strong>
+            </p>
+          </template>
+        </sidebar>
       </div>
     </div>
-    <!-- Update:showBar event emitted from sidebar child component, on emission, showBar is assigned the value of 
-    data passed from child component, which is a boolean value-->
-    <div>
-      <sidebar @update:showBar="showBar = $event">
-        <!-- Cheat sheet body -->
-        <template #sessionInfo>
-          <!-- Each cheat is its own bullet point using the li tag -->
-          <code-snippet language="SQL">
-            Session Link: colearn.tech/join/
-            <strong>{{user.activeSession}}</strong>
-          </code-snippet>
-          <p>
-            Gets all the rows from the
-            <strong>table</strong>
-          </p>
-        </template>
-      </sidebar>
+    <div id="loader" v-else key="loader">
+      <vue-ellipse-progress :progress="progress" :loading="true" />
     </div>
   </div>
 </template>
@@ -90,11 +99,21 @@ export default {
       showBar: false,
       showTable: false,
       resultBackground: "",
-      width: 0
+      width: 0,
+      progress: 0,
+      sessionInfo: []
     };
   },
   created() {
     document.title = "Colearn - SQL";
+    this.verifySession();
+  },
+  beforeRouteEnter(to, from, next) {
+    if (to && from) {
+      next(vm => {
+        if (!vm.user.authenticated) next({ name: "authenticate" });
+      });
+    }
   },
   methods: {
     /**
@@ -169,6 +188,37 @@ export default {
       if (!this.showTable) {
         this.updateResultTable(message, resultBackground);
       }
+    },
+    verifySession() {
+      this.$http
+        .get("/session/sql/fetch-session", {
+          params: {
+            sessionId: this.$route.params.sessionId
+          }
+        })
+        .then(res => {
+          if (res.data.leader != this.user.data.email) {
+            if (!Array.isArray(res.data.colearners)) {
+              this.$router.replace({
+                name: "join-sql",
+                params: { sessionId: this.$route.params.sessionId }
+              });
+            }
+            if (!res.data.colearners.includes(this.user.data.email)) {
+              this.$router.replace({
+                name: "join-sql",
+                params: { sessionId: this.$route.params.sessionId }
+              });
+            } else {
+              this.progress = 100;
+            }
+          } else {
+            this.progress = 100;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   watch: {}
@@ -176,6 +226,10 @@ export default {
 </script>
 
 <style lang="scss">
+#loader {
+  margin-top: 15rem;
+}
+
 #sqlBody {
   width: 100%;
 
@@ -205,6 +259,11 @@ export default {
 }
 
 @media screen and (min-width: 470px) {
+  #loader {
+    margin-top: 0;
+
+    height: 85vmin;
+  }
   #sqlBody {
     width: 800px;
     margin-left: auto;
@@ -212,6 +271,10 @@ export default {
   }
 }
 @media screen and (min-width: 1250px) {
+  #loader {
+    margin-top: 0;
+    height: 85vmin;
+  }
   #sqlBody {
     width: 1250px;
     margin-left: auto;

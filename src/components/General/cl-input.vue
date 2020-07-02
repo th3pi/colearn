@@ -25,7 +25,7 @@
         }"
         @focus="focus.name = true"
         @blur="focus.name = false"
-        placeholder
+        :placeholder="placeholder"
         required
         :tabindex="tabindex"
         :autofocus="autofocus"
@@ -175,7 +175,8 @@ export default {
     type: String,
     validate: Boolean,
     tabindex: Number,
-    autofocus: Boolean
+    autofocus: Boolean,
+    placeholder: String
   },
   data() {
     return {
@@ -350,7 +351,6 @@ export default {
         this.$emit("name", this.name);
       } else {
         this.$emit("name-validity", false);
-
         this.validName.oneWord = false;
       }
     }

@@ -28,6 +28,10 @@ export default new VueRouter({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '*',
+      component: () => import(/* webpackChunkName: "NotFound" */"../views/NotFound.vue")
+    },
+    {
       path: "/",
       name: "home",
       component: Home,
@@ -50,7 +54,7 @@ export default new VueRouter({
     },
     {
       path: "/learn-sql/:sessionId",
-      name: "sql-view",
+      name: "learn-sql",
       component: () => import(/* webpackChunkName: "sql" */ "../views/Sql.vue"),
     },
     {
@@ -61,7 +65,8 @@ export default new VueRouter({
     {
       path: "/join/:sessionId",
       name: 'join-sql',
-      component: () => import(/* webpackChunkName: "joinSql" */"../components/authentication/Session.vue")
-    }
+      component: () => import(/* webpackChunkName: "joinSql" */"../components/authentication/Session.vue"),
+    },
+
   ],
 });

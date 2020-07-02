@@ -63,38 +63,31 @@
       <!-- Primary introduction to colearn -->
       <div id="intro">
         <!-- Instructions on how to get started with colearn -->
-        <div id="message">
-          <div id="header">
-            <h3 class="open-sans">Get started</h3>
-          </div>
-          <div id="steps" class="open-sans">
-            <p>
-              <i class="fas fa-chevron-right"></i> Log in, or sign up
-            </p>
-            <p>
-              <i class="fas fa-chevron-right"></i>
-              Select a language from the right section
-            </p>
-            <p>
-              <i class="fas fa-chevron-right"></i> Create or join a session with
-              the link provided
-            </p>
-            <p>
-              <i class="fas fa-chevron-right"></i> Start
-              <strong>colearning</strong> with your buddies!
-            </p>
-          </div>
-        </div>
+        <message-box @join-session="joinSession($event)" @create-session="createSession" />
         <!-- Programming language buttons -->
         <div id="sessionButtons">
-          <button class="bold neumorphic hover n-active" disabled>
+          <button
+            class="bold neumorphic hover n-active"
+            :class="{'active': language == 'Java' ? true : false}"
+            @click="markLanguage('Java')"
+            disabled
+          >
             <i class="fab fa-java"></i> Java
             <small>(Coming soon!)</small>
           </button>
-          <button class="bold neumorphic hover n-active" @click="createSqlSession">
+          <button
+            class="bold neumorphic hover n-active"
+            :class="{'active': language == 'SQL' ? true : false}"
+            @click="markLanguage('SQL')"
+          >
             <i class="fas fa-search"></i> SQL
           </button>
-          <button class="bold neumorphic hover n-active" disabled>
+          <button
+            class="bold neumorphic hover n-active"
+            :class="{'active': language == 'Python' ? true : false}"
+            @click="markLanguage('Python')"
+            disabled
+          >
             <i class="fab fa-python"></i> Python
             <small>(Coming soon!)</small>
           </button>
@@ -114,6 +107,7 @@
 <script>
 import logo from "@/assets/img/titles/co-learn-logo.vue";
 import alert from "@/components/General/alert.vue";
+import messageBox from "@/components/home/MessageBox.vue";
 
 import { VueAgile } from "vue-agile";
 import { mapGetters } from "vuex";
@@ -122,10 +116,17 @@ export default {
   components: {
     logo,
     agile: VueAgile,
-    alert
+    alert,
+    "message-box": messageBox
+  },
+  data() {
+    return {
+      language: null,
+      sessionId: ""
+    };
   },
   methods: {
-    createSqlSession() {
+    createSession() {
       this.$http
         .post("/session/sql/create-session", {
           email: this.user.data.email
@@ -134,13 +135,22 @@ export default {
           let sessionId = res.data.message;
           this.$store.dispatch("setActiveSession", sessionId);
           this.$router.push({
-            name: "sql-view",
-            params: { sessionId }
+            name: "learn-" + this.language.toLowerCase(),
+            params: { sessionId: sessionId }
           });
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    joinSession(sessionId) {
+      this.$router.push({
+        name: "learn-" + this.language.toLowerCase(),
+        params: { sessionId: sessionId }
+      });
+    },
+    markLanguage(language) {
+      this.language = language;
     }
   },
   computed: {
@@ -148,7 +158,8 @@ export default {
       user: "user"
     })
   },
-  created() {}
+  created() {},
+  watch: {}
 };
 </script>
 <style lang="scss">
@@ -263,58 +274,6 @@ export default {
   flex-direction: row;
 }
 
-#homeBody #intro #message {
-  display: block;
-
-  margin-top: 1rem;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-
-  padding: 0.5rem;
-  padding-bottom: 1rem;
-
-  background-color: var(--sql-primary);
-
-  border-radius: 5px;
-
-  box-shadow: inset 3px 3px 12px 0 rgba(0, 0, 0, 0.2),
-    inset -3px -3px 12px 0 rgba(255, 255, 255, 0.123),
-    inset -3px -3px 12px 0 rgba(255, 255, 255, 0.123),
-    inset -3px -3px 12px 0 rgba(255, 255, 255, 0.123);
-
-  color: white;
-
-  transition: box-shadow 0.4s;
-}
-
-#homeBody #intro #message:hover {
-  box-shadow: inset 6px 6px 12px 0 rgba(0, 0, 0, 0.2),
-    inset -6px -6px 12px 0 rgba(255, 255, 255, 0.123);
-}
-
-#homeBody #intro #message #header h3 {
-  text-align: center;
-}
-#homeBody #intro #message #steps p {
-  padding: 0.25rem;
-  font-size: 0.9rem;
-  transition: box-shadow 0.4s;
-}
-
-#homeBody #intro #sessionButtons {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  flex-direction: row;
-  margin-top: 1rem;
-  margin-left: auto;
-  margin-right: auto;
-
-  padding-top: 0.5rem;
-
-  border-radius: 5px;
-}
-
 #sessionButtons button {
   width: 95%;
 
@@ -339,6 +298,12 @@ export default {
 
 #sessionButtons button i {
   font-size: 1.5rem;
+}
+
+.active {
+  background-color: var(--sql-light-primary) !important;
+
+  color: white !important;
 }
 
 #homeBody #subMessage {
@@ -414,13 +379,7 @@ export default {
     flex-direction: row;
   }
 
-  #homeBody #intro #message {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-  }
-
-  #homeBody #intro #sessionButtons {
+  #homeBody #intro #homeBody #intro #sessionButtons {
     flex-direction: column;
     margin-right: 0.5rem;
     width: 50%;

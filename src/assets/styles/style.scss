@@ -93,6 +93,16 @@
     font-family: "Open Sans", sans-serif;
 }
 
+.border{
+    border-radius: 5px;
+    border: 2px solid rgba(var(--sql-light-primary-v), 0.2);
+}
+
+.border:hover{
+    border-radius: 5px;
+    border: 2px solid rgba(var(--sql-light-primary-v), 0.2);
+}
+
 .flex {
     display: flex;
 
@@ -102,7 +112,6 @@
     justify-content: center;
     align-items: center;
 }
-
 .columns{
     flex-direction: column;    
 }

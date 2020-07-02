@@ -82,6 +82,7 @@ export default {
   created() {
     document.title = "Colearn - Beta portal";
   },
+
   components: {
     clInput,
     logo,
