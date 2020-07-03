@@ -2,7 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import axios from "axios";
 import VueMq from "vue-mq";
-import VueEllipseProgress from 'vue-ellipse-progress'
+import VueEllipseProgress from "vue-ellipse-progress";
 import * as firebase from "firebase";
 
 //Navigation router
@@ -17,16 +17,16 @@ Vue.config.productionTip = false;
 export const bus = new Vue();
 
 //Establish connection to backend
-const http = axios.create({
-  baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
-});
+// const http = axios.create({
+//   baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
+// });
 
 /**
  * This axios instantiation is for dev-build testing only. Comment out before production
  */
-// const http = axios.create({
-//   baseURL: "http://localhost:5021/co-learn-a05d9/us-central1/app",
-// });
+const http = axios.create({
+  baseURL: "http://localhost:5021/co-learn-a05d9/us-central1/app",
+});
 
 Vue.prototype.$http = http;
 
@@ -65,7 +65,7 @@ firebase.auth().onAuthStateChanged((user) => {
 Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } });
 
 //Loading ellipses instantiation
-Vue.use(VueEllipseProgress)
+Vue.use(VueEllipseProgress);
 
 new Vue({
   router,

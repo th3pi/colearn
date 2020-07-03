@@ -1,17 +1,17 @@
 const app = require("express").Router();
-const rateLimit = require('express-rate-limit');
+const rateLimit = require("express-rate-limit");
 const db = require("../firestore");
 const BetaRepo = require("../repos/beta/beta_repo");
 const BetaMail = require("../repos/mail/beta_mail");
 
-// const mail = new BetaMail("REPLACE WITH ACTUAL PASSWORD");
+const mail = new BetaMail("Colearntecha4");
 const beta = new BetaRepo(db);
 
 const validateLimiter = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,
+  windowMs: 30 * 60 * 1000,
   max: 3,
-  message: "Too many requests"
-})
+  message: "Too many requests",
+});
 
 app.get("/validate-beta", validateLimiter, (req, res) => {
   beta
@@ -26,9 +26,9 @@ app.get("/validate-beta", validateLimiter, (req, res) => {
 
 const generateLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
-  max: 3,
-  message: "Too many requests"
-})
+  max: 1,
+  message: "Already requested",
+});
 
 app.post("/generate-beta", generateLimiter, (req, res) => {
   beta

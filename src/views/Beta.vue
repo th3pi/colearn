@@ -2,37 +2,58 @@
   <div id="betaBody" class="center-body open-sans" @keyup.enter="validate">
     <logo class="logo" fill="var(--sql-light-primary)" />
     <h3>Under construction! If you have a beta code, please enter below</h3>
-    <clInput ref="input" :validate="false" class="code-input" type="name">Beta code</clInput>
-    <button
-      class="button neumorphic n-active hover open-sans"
-      :style="{'background-color': invalid || tooManyValid ? 'var(--danger-lighter)' : ''}"
-      :duration="200"
-      @click="validate"
-      :disabled="tooManyValid"
+    <clInput ref="input" :validate="false" class="code-input" type="name"
+      >Beta code</clInput
     >
-      <div v-if="validateProgress == 0 && !tooManyValid">
-        <i class="fas" :class="{'fa-unlock': !invalid, 'fa-lock':invalid}"></i> Validate
+    <transition name="fade" mode="out-in">
+      <button
+        class="button neumorphic n-active hover open-sans"
+        :style="{
+          'background-color':
+            invalid || tooManyValid ? 'var(--danger-lighter)' : '',
+        }"
+        :duration="200"
+        @click="validate"
+        v-if="!tooManyValid"
+        key="valid"
+      >
+        <div v-if="validateProgress == 0">
+          <i
+            class="fas"
+            :class="{ 'fa-unlock': !invalid, 'fa-lock': invalid }"
+          ></i>
+          Validate
+        </div>
+        <div v-else>
+          <vue-ellipse-progress
+            emptyColor="white"
+            :color="!invalid ? 'var(--sql-primary)' : 'var(--danger)'"
+            :legend="false"
+            :size="20"
+            mode="in-over"
+            :progress="validateProgress"
+            animation="default 500 100"
+          />
+        </div>
+      </button>
+      <div id="tooManyValid" v-else-if="tooManyValid" key="invalid">
+        <div class="message">
+          <i class="fas fa-ban"></i> Too many frequent attempts
+        </div>
+        <p>Please try again later</p>
       </div>
-      <div v-else-if="tooManyValid">
-        <i class="fas fa-ban"></i> Denied
-      </div>
-      <div v-else>
-        <vue-ellipse-progress
-          emptyColor="white"
-          :color="!invalid ? 'var(--sql-primary)' : 'var(--danger)'"
-          :legend="false"
-          :size="20"
-          mode="in-over"
-          :progress="validateProgress"
-          animation="default 500 100"
-        />
-      </div>
-    </button>
+    </transition>
+
     <!-- Request access popup -->
     <div id="requestAccess">
       <transition name="fade" mode="out-in">
         <!-- Request access form -->
-        <popup v-if="!request.requested" :focus="focus" class="notreq-position" key="notRequested">
+        <popup
+          v-if="!request.requested"
+          :focus="focus"
+          class="notreq-position"
+          key="notRequested"
+        >
           <h3>Let's get your beta access set up!</h3>
           <clInput
             ref="requestInput"
@@ -40,22 +61,43 @@
             class="cl-input"
             type="email"
             @email-validity="request.validEmail = $event"
-          >Email</clInput>
+            >Email</clInput
+          >
           <button
             class="button neumorphic n-active hover open-sans"
             @click="sendRequest"
             :disabled="!request.validEmail"
           >
             <i class="fas fa-plus"></i>
-            {{request.text}}
+            {{ request.text }}
+          </button>
+        </popup>
+        <!-- Request access form confirmation -->
+        <popup
+          v-else-if="tooManyRequest"
+          :focus="focus"
+          class="req-position"
+          key="requested"
+        >
+          <h3 style="font-size: 1.05rem">
+            Looks like you're already on the list!
+          </h3>
+          <p>
+            We took a note of your eagerness and bumped you up on the list, get
+            ready to
+            <strong>Colearn</strong>
+          </p>
+          <button @click="focus = false">
+            <i class="fa fa-check" aria-hidden="true"></i>Done
           </button>
         </popup>
         <!-- Request access form confirmation -->
         <popup v-else :focus="focus" class="req-position" key="requested">
           <h3>Almost there!</h3>
           <p>
-            Thank you for your interest! Participants are selected randomly - in the coming weeks you may
-            receive an email with the beta access code and instructions on how get started with
+            Thank you for your interest! Participants are selected randomly - in
+            the coming weeks you may receive an email with the beta access code
+            and instructions on how get started with
             <strong>Colearn</strong>
           </p>
           <button @click="focus = false">
@@ -63,7 +105,7 @@
           </button>
         </popup>
       </transition>
-      <div @click="focus =  focus ? false : true">
+      <div @click="focus = focus ? false : true">
         <p v-if="!focus" key="noFocus">
           <i class="fas fa-plus-circle"></i> Click here to request access
         </p>
@@ -90,7 +132,7 @@ export default {
   components: {
     clInput,
     logo,
-    popup
+    popup,
   },
   data() {
     return {
@@ -103,9 +145,10 @@ export default {
       request: {
         text: "Request Access",
         requested: false,
-        validEmail: false
+        validEmail: false,
       },
-      tooManyValid: false
+      tooManyValid: false,
+      tooManyRequest: false,
     };
   },
   methods: {
@@ -118,7 +161,7 @@ export default {
       }
       this.$http
         .get("/beta/validate-beta", { params: { code: this.code } })
-        .then(res => {
+        .then((res) => {
           if (res.data) {
             this.loadSate = firebaseENUM.LOADED;
             setTimeout(() => {
@@ -145,10 +188,11 @@ export default {
           this.request.requested = true;
         })
         .catch(() => {
-          this.requestProgress = 0;
+          this.tooManyRequest = true;
+          this.requestProgress = 100;
           this.request.requested = true;
         });
-    }
+    },
   },
   watch: {
     loadSate(newValue) {
@@ -168,8 +212,8 @@ export default {
         default:
           break;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -227,6 +271,26 @@ h4 {
 
 #betaBody button:active {
   border: none;
+}
+
+#betaBody #tooManyValid .message {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.2rem;
+
+  border-radius: 5px;
+
+  background-color: var(--danger-lighter);
+
+  color: white;
+
+  box-shadow: inset 4px 4px 8px rgba($color: #000000, $alpha: 0.2),
+    inset -4px 4px 8px rgba($color: #000000, $alpha: 0.2);
+}
+
+#betaBody #tooManyValid p {
+  font-size: 0.95rem;
+  color: var(--g-primary);
+  text-align: center;
 }
 
 #betaBody #requestAccess {
