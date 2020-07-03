@@ -165,14 +165,13 @@ export default {
 </script>
 
 <style lang="scss">
-.center-body {
+#betaBody {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   height: 100vh;
 }
-
 .center-items {
   display: flex;
   justify-content: center;
@@ -224,7 +223,8 @@ h4 {
 #betaBody #requestAccess {
   position: absolute;
   width: 15rem;
-  bottom: 1rem;
+  height: auto;
+  bottom: 2rem;
 }
 
 #betaBody #requestAccess h3 {
@@ -282,5 +282,15 @@ h4 {
   margin-left: auto;
   margin-right: auto;
   background-color: var(--light-success);
+}
+
+@media screen and (max-width: 480px) {
+  #betaBody .logo {
+    width: 18rem;
+  }
+
+  #betaBody h3 {
+    font-size: 1.1rem;
+  }
 }
 </style>

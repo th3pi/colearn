@@ -3,7 +3,7 @@ const db = require("../firestore");
 const BetaRepo = require("../repos/beta/beta_repo");
 const BetaMail = require("../repos/mail/beta_mail");
 
-const mail = new BetaMail("Colearnteacha4");
+// const mail = new BetaMail("REPLACE WITH ACTUAL PASSWORD");
 const beta = new BetaRepo(db);
 
 app.get("/validate-beta", (req, res) => {

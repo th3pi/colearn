@@ -92,7 +92,7 @@ export default {
   padding: 0.5rem;
   padding-bottom: 1rem;
 
-  background-color: var(--sql-primary);
+  background-color: var(--sql-light-primary);
 
   border-radius: 5px;
 
@@ -112,6 +112,9 @@ export default {
 }
 
 #message #header h3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 }
 
