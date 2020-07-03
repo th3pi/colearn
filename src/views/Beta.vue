@@ -5,12 +5,16 @@
     <clInput ref="input" :validate="false" class="code-input" type="name">Beta code</clInput>
     <button
       class="button neumorphic n-active hover open-sans"
-      :style="{'background-color': invalid ? 'var(--danger-lighter)' : ''}"
+      :style="{'background-color': invalid || tooManyValid ? 'var(--danger-lighter)' : ''}"
       :duration="200"
       @click="validate"
+      :disabled="tooManyValid"
     >
-      <div v-if="validateProgress == 0">
+      <div v-if="validateProgress == 0 && !tooManyValid">
         <i class="fas" :class="{'fa-unlock': !invalid, 'fa-lock':invalid}"></i> Validate
+      </div>
+      <div v-else-if="tooManyValid">
+        <i class="fas fa-ban"></i> Denied
       </div>
       <div v-else>
         <vue-ellipse-progress
@@ -100,7 +104,8 @@ export default {
         text: "Request Access",
         requested: false,
         validEmail: false
-      }
+      },
+      tooManyValid: false
     };
   },
   methods: {
@@ -123,6 +128,10 @@ export default {
             this.loadSate = firebaseENUM.ERROR;
             this.invalid = true;
           }
+        })
+        .catch(() => {
+          this.loadSate = firebaseENUM.ERROR;
+          this.tooManyValid = true;
         });
     },
     sendRequest() {
@@ -170,7 +179,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
+  height: 85vh;
 }
 .center-items {
   display: flex;
@@ -251,7 +260,7 @@ h4 {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  transform: translate(-6rem, -11.5rem);
+  transform: translate(-5.4rem, -11.5rem);
 }
 
 #betaBody .notreq-position button {
@@ -266,7 +275,7 @@ h4 {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  transform: translate(-4.7rem, -12.3rem);
+  transform: translate(-4rem, -12.3rem);
   width: 21rem;
 }
 #betaBody .req-position i {

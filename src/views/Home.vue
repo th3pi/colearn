@@ -150,7 +150,7 @@ export default {
       });
     },
     markLanguage(language) {
-      this.language = language;
+      this.language = this.language == language ? "" : language;
     }
   },
   computed: {

@@ -38,16 +38,14 @@
           Enter the name of the session you want to join
         </p>
         <input v-model="sessionId" type="text" class="neumorphic" />
-        <button class="button border neumorphic hover n-active" @click="emitJoin">
-          <i class="fas fa-user-plus"></i> Join
-        </button>
-
-        <p>
-          <i class="fas fa-chevron-right"></i> Or create a session
-        </p>
-        <button class="button border neumorphic hover n-active" @click="emitCreate">
-          <i class="fas fa-plus"></i> Create
-        </button>
+        <div id="sessionGroup">
+          <button class="button border neumorphic hover n-active" @click="emitJoin">
+            <i class="fas fa-user-plus"></i> Join
+          </button>
+          <button class="button border neumorphic hover n-active" @click="emitCreate">
+            <i class="fas fa-plus"></i> Create
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -126,21 +124,31 @@ export default {
 
 #message .button {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-
-  width: 7rem;
   padding: 0.5rem 1rem;
 
+  margin-right: 1rem;
   outline: none;
+
+  background-color: white;
 
   font-weight: 700;
   color: var(--sql-light-primary);
+}
+
+#message .button:last-child {
+  margin-right: 0;
 }
 #message input {
   display: block;
   margin: 0.75rem auto;
   background-color: white;
+}
+
+#message #sessionGroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 }
 
 //Medium sized screens
