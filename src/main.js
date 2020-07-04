@@ -3,8 +3,10 @@ import App from "./App.vue";
 import axios from "axios";
 import VueMq from "vue-mq";
 import VueEllipseProgress from "vue-ellipse-progress";
-import { auth } from "./firebase";
+import VueSocketIOExt from 'vue-socket.io-extended'
+import io from 'socket.io-client'
 
+import { auth } from "./firebase";
 //Navigation router
 import router from "./router/router";
 
@@ -17,16 +19,16 @@ Vue.config.productionTip = false;
 export const bus = new Vue();
 
 //Establish connection to backend
-const http = axios.create({
-  baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
-});
+// const http = axios.create({
+//   baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
+// });
 
 /**
  * This axios instantiation is for dev-build testing only. Comment out before production
  */
-// const http = axios.create({
-//   baseURL: "http://localhost:5021/co-learn-a05d9/us-central1/app",
-// });
+const http = axios.create({
+  baseURL: "http://localhost:5000/",
+});
 
 Vue.prototype.$http = http;
 
@@ -44,6 +46,10 @@ auth.onAuthStateChanged((user) => {
     store.dispatch("fetchUser", user);
   }
 });
+
+const socket = io('http://localhost:5000')
+
+Vue.use(VueSocketIOExt, socket);
 
 //VueMq breakpoints, to programmatically adjust components according to screen sizes
 Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } });

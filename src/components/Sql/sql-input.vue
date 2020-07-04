@@ -70,7 +70,6 @@
 //Mixins import
 import responsive from "@/mixins/responsive";
 import { mapGetters } from "vuex";
-import { db } from "@/firebase";
 
 /**
  * Input capture box for SQL co-learn module
@@ -88,12 +87,13 @@ export default {
       user: "user"
     })
   },
-  created() {
-    db.collection("sessions")
-      .doc(this.sessionInfo.sessionId)
-      .onSnapshot(doc => {
-        this.command = doc.data().sessionWork;
-      });
+  created() {},
+  sockets: {
+    sync_sql(command) {
+      console.log(command);
+
+      this.command = command;
+    }
   },
   /**
    * Sockets listening for "sqlTyping" which overwrites command value, with whatever is being emitted over
@@ -134,13 +134,18 @@ export default {
      * Synchronizes session data by sending a post request to firestore
      */
     update() {
-      this.$http
-        .put("/session/sql/update-work", {
-          sessionId: this.sessionInfo.sessionId,
-          sessionWork: this.command,
-          type: "update"
-        })
-        .then(() => {});
+      this.$socket.client.emit(
+        "sync_sql",
+        this.sessionInfo.sessionId,
+        this.command
+      );
+      // this.$http
+      //   .put("/session/sql/update-work", {
+      //     sessionId: this.sessionInfo.sessionId,
+      //     sessionWork: this.command,
+      //     type: "update"
+      //   })
+      //   .then(() => {});
     },
 
     /**

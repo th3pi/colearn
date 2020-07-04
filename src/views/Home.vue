@@ -142,6 +142,11 @@ export default {
       default: null
     }
   },
+  sockets: {
+    connect() {
+      console.log("CONNECTED");
+    }
+  },
   data() {
     return {
       language: null,

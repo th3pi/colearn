@@ -12,8 +12,7 @@
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html",
-        "function": "app"
+        "destination": "/index.html"
       }
     ]
   }

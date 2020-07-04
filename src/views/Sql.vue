@@ -65,7 +65,6 @@ import sqlResultTable from "@/components/Sql/sql-result-table.vue";
 
 //Mixin imports
 import responsive from "@/mixins/responsive";
-import { db } from "@/firebase";
 import { mapGetters } from "vuex";
 /**
  * Main view for SQL collaborations
@@ -91,6 +90,15 @@ export default {
       user: "user"
     })
   },
+  sockets: {
+    connect() {
+      console.log("SQL connected");
+      this.$socket.client;
+    },
+    new_session(data) {
+      console.log("NEW SESSION CREATED: " + data);
+    }
+  },
   data() {
     return {
       route: "/sql/local-sql-query",
@@ -110,16 +118,8 @@ export default {
   created() {
     if (this.user.authenticated) {
       this.verifySession();
+      this.$socket.client.emit("new_session", this.$route.params.sessionId);
     }
-    db.collection("sessions")
-      .doc(this.$route.params.sessionId)
-      .onSnapshot(doc => {
-        if (doc.data().type == "run") {
-          this.fetchSqlLocal(doc.data().sessionWork);
-        } else if (doc.data().type == "reset") {
-          this.updateResultTable();
-        }
-      });
   },
   beforeRouteEnter(to, from, next) {
     if (to && from) {

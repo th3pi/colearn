@@ -1,10 +1,16 @@
 const express = require('express');
-
+var serviceAccount = require('../permission.json')
 const Dao = require('../dao.js');
 const SqlRepository = require('../repos/sql_repository');
+const admin = require('firebase-admin');
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: "co-learn-a05d9.appspot.com"
+})
 
 // Database location
-const sqlite3 = new Dao('./database/test1.sqlite3')
+const sqlite3 = new Dao('https://firebasestorage.googleapis.com/v0/b/co-learn-a05d9.appspot.com/o/database%2Ftest1.sqlite3?alt=media&token=95576fb6-91de-420c-a623-d141d029213c')
 const repo = new SqlRepository(sqlite3)
 
 const db = require('../firestore')
@@ -25,7 +31,6 @@ app.get('/local-sql-query', (req, res) => {
     }).catch((err) => {
         console.log(err);
         res.send(err);
-
     });
 })
 
