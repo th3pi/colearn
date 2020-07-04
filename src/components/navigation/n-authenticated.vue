@@ -33,7 +33,6 @@ export default {
         .then(() => {
           window.sessionStorage.clear();
           this.$store.dispatch("giveAccess", false);
-          this.$router.replace({ name: "home" });
         });
     }
   }

@@ -3,7 +3,9 @@ import App from "./App.vue";
 import axios from "axios";
 import VueMq from "vue-mq";
 import VueEllipseProgress from "vue-ellipse-progress";
-import * as firebase from "firebase";
+// import firebase from 'firebase';
+import { firestorePlugin } from 'vuefire'
+import { auth } from './firebase'
 
 //Navigation router
 import router from "./router/router";
@@ -30,24 +32,26 @@ const http = axios.create({
 
 Vue.prototype.$http = http;
 
+Vue.use(firestorePlugin);
+
 //Firebase config
-var firebaseConfig = {
-  apiKey: "AIzaSyCQ1ofiNqi57YO9TNi8zzljikkobALP1RE",
-  authDomain: "co-learn-a05d9.firebaseapp.com",
-  databaseURL: "https://co-learn-a05d9.firebaseio.com",
-  projectId: "co-learn-a05d9",
-  storageBucket: "co-learn-a05d9.appspot.com",
-  messagingSenderId: "159948318731",
-  appId: "1:159948318731:web:29bf2c7d4016fae29b3f0e",
-  measurementId: "G-HWLQMHVY9K",
-};
+// var firebaseConfig = {
+//   apiKey: "AIzaSyCQ1ofiNqi57YO9TNi8zzljikkobALP1RE",
+//   authDomain: "co-learn-a05d9.firebaseapp.com",
+//   databaseURL: "https://co-learn-a05d9.firebaseio.com",
+//   projectId: "co-learn-a05d9",
+//   storageBucket: "co-learn-a05d9.appspot.com",
+//   messagingSenderId: "159948318731",
+//   appId: "1:159948318731:web:29bf2c7d4016fae29b3f0e",
+//   measurementId: "G-HWLQMHVY9K",
+// };
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+// firebase.initializeApp(firebaseConfig);
+// firebase.analytics();
 
 //User authentication state management
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-firebase.auth().onAuthStateChanged((user) => {
+// auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+auth.onAuthStateChanged((user) => {
   if (user) {
     http
       .get("/user/get-user", { params: { email: user.email } })

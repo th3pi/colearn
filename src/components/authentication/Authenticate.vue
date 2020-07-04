@@ -33,7 +33,22 @@
 
         <!-- Submit button -->
         <div id="authenticationButtons">
-          <button class="neumorphic n-active bold button" @click="signInUsingEmail">Authenticate</button>
+          <button
+            class="neumorphic n-active bold button"
+            @click="signInUsingEmail"
+            :disabled="progress != 0"
+          >
+            <div v-if="progress == 0">Authenticate</div>
+            <div v-else>
+              <vue-ellipse-progress
+                emptyColor="white"
+                :legend="false"
+                :size="15"
+                :progress="progress"
+                animation="default 500 100"
+              />
+            </div>
+          </button>
         </div>
 
         <!-- Swap to registraion form and error display -->
@@ -89,14 +104,43 @@ import logo from "@/assets/img/titles/co-learn-logo.vue";
 import authenticateLogo from "@/assets/img/titles/authenticate-logo.vue";
 import thirdpartyAuth from "@/components/authentication/thirdparty-auth.vue";
 import clInput from "@/components/General/cl-input.vue";
+import { mapState } from "vuex";
+
+import loader from "@/mixins/loader";
+
+import ENUM from "@/enums/firebase_enum";
 
 export default {
   name: "authenticate",
+  mixins: [loader],
+
   components: {
     "authenticate-logo": authenticateLogo,
     logo,
     "cl-input": clInput,
     "thirdparty-auth": thirdpartyAuth
+  },
+  computed: {
+    /**
+     * Maps storeApi.state from local storage state to storeApi
+     */
+    ...mapState({
+      storeApi: state => state.storeApi.state
+    }),
+
+    /**
+     * Returns true if storeApi is loaded
+     */
+    storeApiLoaded() {
+      return this.storeApi == ENUM.LOADED;
+    },
+
+    /**
+     * Returns true if storeApi is loading or has initialized
+     */
+    storeApiLoading() {
+      return this.storeApi == ENUM.LOADING || this.storeApi == ENUM.INIT;
+    }
   },
   data() {
     return {
@@ -107,20 +151,29 @@ export default {
         incorrect: null,
         badEmail: null,
         badPassword: null
-      }
+      },
+      loadState: ENUM.INIT,
+      progress: 0
     };
   },
   methods: {
     //Sign in method using email
     //Third party authentications are handled by the thirdparty authentication component
     signInUsingEmail() {
+      this.loadState = ENUM.LOADING;
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          this.$router.replace({ name: "home" });
+          if (this.storeApiLoaded) {
+            this.loadState = ENUM.LOADED;
+            setTimeout(() => {
+              this.$router.replace({ name: "home" });
+            }, 500);
+          }
         })
         .catch(err => {
+          this.loadState = ENUM.ERROR;
           if (err.code.match(/user-not-found/i)) {
             this.error.noAccount = "Sorry you're not in our records!";
           }
@@ -138,7 +191,11 @@ export default {
       this.$router.replace({ name: "register" });
     }
   },
-  watch: {}
+  watch: {
+    loadState(newValue) {
+      this.progress = this.getProgress(newValue);
+    }
+  }
 };
 </script>
 

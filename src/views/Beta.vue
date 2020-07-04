@@ -2,9 +2,7 @@
   <div id="betaBody" class="center-body open-sans" @keyup.enter="validate">
     <logo class="logo" fill="var(--sql-light-primary)" />
     <h3>Under construction! If you have a beta code, please enter below</h3>
-    <clInput ref="input" :validate="false" class="code-input" type="name"
-      >Beta code</clInput
-    >
+    <clInput ref="input" :validate="false" class="code-input" type="name">Beta code</clInput>
     <transition name="fade" mode="out-in">
       <button
         class="button neumorphic n-active hover open-sans"
@@ -18,10 +16,7 @@
         key="valid"
       >
         <div v-if="validateProgress == 0">
-          <i
-            class="fas"
-            :class="{ 'fa-unlock': !invalid, 'fa-lock': invalid }"
-          ></i>
+          <i class="fas" :class="{ 'fa-unlock': !invalid, 'fa-lock': invalid }"></i>
           Validate
         </div>
         <div v-else>
@@ -48,12 +43,7 @@
     <div id="requestAccess">
       <transition name="fade" mode="out-in">
         <!-- Request access form -->
-        <popup
-          v-if="!request.requested"
-          :focus="focus"
-          class="notreq-position"
-          key="notRequested"
-        >
+        <popup v-if="!request.requested" :focus="focus" class="notreq-position" key="notRequested">
           <h3>Let's get your beta access set up!</h3>
           <clInput
             ref="requestInput"
@@ -61,8 +51,7 @@
             class="cl-input"
             type="email"
             @email-validity="request.validEmail = $event"
-            >Email</clInput
-          >
+          >Email</clInput>
           <button
             class="button neumorphic n-active hover open-sans"
             @click="sendRequest"
@@ -73,15 +62,8 @@
           </button>
         </popup>
         <!-- Request access form confirmation -->
-        <popup
-          v-else-if="tooManyRequest"
-          :focus="focus"
-          class="req-position"
-          key="requested"
-        >
-          <h3 style="font-size: 1.05rem">
-            Looks like you're already on the list!
-          </h3>
+        <popup v-else-if="tooManyRequest" :focus="focus" class="req-position" key="requested">
+          <h3 style="font-size: 1.05rem">Looks like you're already on the list!</h3>
           <p>
             We took a note of your eagerness and bumped you up on the list, get
             ready to
@@ -118,40 +100,50 @@
 </template>
 
 <script>
+/**
+ * Beta landing page
+ */
 import logo from "@/assets/img/titles/co-learn-logo.vue";
 import clInput from "@/components/General/cl-input.vue";
 import popup from "@/components/General/popup.vue";
 
 import firebaseENUM from "@/enums/firebase_enum";
+
+import loader from "@/mixins/loader";
 export default {
   name: "beta",
+  mixins: [loader],
   created() {
-    document.title = "Colearn - Beta portal";
+    document.title = "Colearn is in beta!";
   },
 
   components: {
     clInput,
     logo,
-    popup,
+    popup
   },
   data() {
     return {
       loadSate: firebaseENUM.INIT,
       code: "",
       invalid: false,
-      validateProgress: 0,
-      requestProgress: 0,
-      focus: false,
+      validateProgress: 0, //Progress counter for validate button
+      requestProgress: 0, //Progress counter for request button
+      focus: false, //Focus boolean for Request form
       request: {
+        // Request form variables
         text: "Request Access",
         requested: false,
-        validEmail: false,
+        validEmail: false
       },
-      tooManyValid: false,
-      tooManyRequest: false,
+      tooManyValid: false, //Boolean to determine if backend reports this ip had requested too many validations
+      tooManyRequest: false //Boolean to determine if backend reports this ip had requested too many access codes
     };
   },
   methods: {
+    /**
+     * Validates user input beta code
+     */
     validate() {
       this.loadSate = firebaseENUM.LOADING;
       this.code = this.$refs.input.getInput();
@@ -161,7 +153,7 @@ export default {
       }
       this.$http
         .get("/beta/validate-beta", { params: { code: this.code } })
-        .then((res) => {
+        .then(res => {
           if (res.data) {
             this.loadSate = firebaseENUM.LOADED;
             setTimeout(() => {
@@ -177,6 +169,10 @@ export default {
           this.tooManyValid = true;
         });
     },
+
+    /**
+     * Send user email to database and reports to backend to generate a beta code for the user
+     */
     sendRequest() {
       this.requestProgress = 45;
       this.request.text = "Requesting...";
@@ -192,28 +188,13 @@ export default {
           this.requestProgress = 100;
           this.request.requested = true;
         });
-    },
+    }
   },
   watch: {
     loadSate(newValue) {
-      switch (newValue) {
-        case firebaseENUM.INIT:
-          this.validateProgress = 0;
-          break;
-        case firebaseENUM.LOADING:
-          this.validateProgress = 65;
-          break;
-        case firebaseENUM.LOADED:
-          this.validateProgress = 100;
-          break;
-        case firebaseENUM.ERROR:
-          this.validateProgress = 0;
-          break;
-        default:
-          break;
-      }
-    },
-  },
+      this.validateProgress = this.getProgress(newValue);
+    }
+  }
 };
 </script>
 
@@ -267,6 +248,8 @@ h4 {
 
   font-size: 1rem;
   color: white;
+
+  transition: background-color 0.4s;
 }
 
 #betaBody button:active {

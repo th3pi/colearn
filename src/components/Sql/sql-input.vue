@@ -49,9 +49,7 @@
     <!-- Action buttons for the input field -->
     <div id="actionButtons">
       <!-- Update button does exactly the same as Shift + Enter keyup, shares the latest value of command -->
-      <button class="sql font neumorphic button" @click="synchronize">
-        Update
-      </button>
+      <button class="sql font neumorphic button" @click="update">Update</button>
 
       <!-- Run button  -->
       <!-- Compiles and runs code then fetches result -->
@@ -72,6 +70,7 @@
 //Mixins import
 import responsive from "@/mixins/responsive";
 import { mapGetters } from "vuex";
+import { db } from "@/firebase";
 
 /**
  * Input capture box for SQL co-learn module
@@ -83,10 +82,20 @@ import { mapGetters } from "vuex";
 export default {
   name: "sql-input",
   mixins: [responsive],
+  props: { sessionInfo: Object },
   computed: {
     ...mapGetters({
-      user: "user",
-    }),
+      user: "user"
+    })
+  },
+  created() {
+    console.log(this.sessionInfo);
+    db.collection("sessions")
+      .doc("CatsPajamasYisssPass")
+      .get()
+      .then(res => {
+        console.log(res.data());
+      });
   },
   /**
    * Sockets listening for "sqlTyping" which overwrites command value, with whatever is being emitted over
@@ -98,7 +107,7 @@ export default {
       command: "", //Input field value
       height: 1.5, //Height of a single line
       rows: 1, //Number of rows in the command box
-      focus: false, //Focus boolean for the input field
+      focus: false //Focus boolean for the input field
     };
   },
   methods: {
@@ -117,11 +126,15 @@ export default {
     /**
      * Synchronizes session data by sending a post request to firestore
      */
-    synchronize() {
-      this.$http.post("/sql/sync-session", {
-        name: this.user.data.displayName,
-        query: this.command,
-      });
+    update() {
+      this.$http
+        .put("/session/sql/update-work", {
+          sessionId: this.sessionInfo.sessionId,
+          sessionWork: this.command
+        })
+        .then(res => {
+          console.log(res.data);
+        });
     },
 
     /**
@@ -144,12 +157,12 @@ export default {
       this.command = "";
       this.$http
         .post("/sql/reset", {
-          name: this.user.data.displayName,
+          name: this.user.data.displayName
         })
-        .then((res) => {
+        .then(res => {
           console.log(res.data);
         });
-    },
+    }
   },
   watch: {
     /**
@@ -178,8 +191,8 @@ export default {
           "var(--sql-lighter-dark)"
         );
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

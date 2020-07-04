@@ -13,7 +13,7 @@ const validateLimiter = rateLimit({
   message: "Too many requests",
 });
 
-app.get("/validate-beta", validateLimiter, (req, res) => {
+app.get("/validate-beta", (req, res) => {
   beta
     .validate(req.query.code)
     .then((data) => {

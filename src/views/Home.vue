@@ -41,13 +41,28 @@
       <!-- Shows alert notifying user to register or authenticate if user entered using a beta code, and isn't signed in -->
       <alert
         v-if="!user.authenticated"
-        backgroundColor="var(--warn-v)"
-        color="var(--warn-dark)"
+        backgroundColor="var(--sql-light-v)"
+        color="var(--sql-lighter-dark)"
         :dismiss="true"
       >
         <i class="fas fa-exclamation-circle" style="transform: scale(0.95);"></i>
         <strong class="link" @click="$router.push({name: 'register'})">Register</strong> or
         <strong class="link" @click="$router.push({name: 'authenticate'})">Authenticate</strong> to confirm your beta access
+      </alert>
+      <alert
+        v-if="verified == false"
+        backgroundColor="var(--danger-v)"
+        color="white"
+        bordercolor="var(--danger)"
+        :dismiss="true"
+      >
+        <i class="fas fa-exclamation-circle" style="transform: scale(0.95);"></i>
+        Your email has not been
+        <strong>verified</strong> yet.
+        <a
+          @click="sendVerification"
+          style="text-decoration: underline; cursor: pointer;"
+        >Resend verification</a>
       </alert>
       <!-- Colearn logo and description -->
       <div id="coLearnLogo">
@@ -108,9 +123,11 @@
 import logo from "@/assets/img/titles/co-learn-logo.vue";
 import alert from "@/components/General/alert.vue";
 import messageBox from "@/components/home/MessageBox.vue";
+import firebase from "firebase";
 
 import { VueAgile } from "vue-agile";
 import { mapGetters } from "vuex";
+
 export default {
   name: "home",
   components: {
@@ -119,10 +136,17 @@ export default {
     alert,
     "message-box": messageBox
   },
+  props: {
+    verified: {
+      type: Boolean,
+      default: null
+    }
+  },
   data() {
     return {
       language: null,
-      sessionId: ""
+      sessionId: "",
+      progress: 0
     };
   },
   methods: {
@@ -139,9 +163,7 @@ export default {
             params: { sessionId: sessionId }
           });
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(() => {});
     },
     joinSession(sessionId) {
       this.$router.push({
@@ -151,6 +173,19 @@ export default {
     },
     markLanguage(language) {
       this.language = this.language == language ? "" : language;
+    },
+    sendVerification() {
+      this.progress = Math.random() * 85 + 20;
+      firebase
+        .auth()
+        .currentUser.sendEmailVerification()
+        .then(() => {
+          this.progress = 100;
+          this.emailSent = true;
+        })
+        .catch(() => {
+          this.progress = 0;
+        });
     }
   },
   computed: {

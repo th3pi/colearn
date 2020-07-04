@@ -13,6 +13,7 @@
           <!-- SQL command input box -->
           <sql-input
             class="sqlInput"
+            :sessionInfo="sessionInfo"
             @send-sql="fetchSqlLocal"
             @reset-sql="updateResultTable"
             @focus-sql="showTipOnFocus"
@@ -105,8 +106,9 @@ export default {
     };
   },
   created() {
-    document.title = "Colearn - SQL";
-    this.verifySession();
+    if (this.user.authenticated) {
+      this.verifySession();
+    }
   },
   beforeRouteEnter(to, from, next) {
     if (to && from) {
@@ -197,6 +199,7 @@ export default {
           }
         })
         .then(res => {
+          this.sessionInfo = res.data;
           if (res.data.leader != this.user.data.email) {
             if (!Array.isArray(res.data.colearners)) {
               this.$router.replace({

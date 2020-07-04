@@ -27,10 +27,11 @@ export default new Vuex.Store({
   mutations: {
     SET_AUTHENTICATED(state, value) {
       state.user.authenticated = value;
-      state.storeApi.state = ENUM.LOADED;
     },
     SET_USER(state, data) {
       state.user.data = data;
+      state.storeApi.state = ENUM.LOADED;
+
     },
     SET_USER_DETAILS(state, details) {
       state.user.details = details;
@@ -52,6 +53,7 @@ export default new Vuex.Store({
         commit("SET_USER", {
           displayName: user.displayName,
           email: user.email,
+          verified: user.emailVerified
         });
         commit("SET_STOREAPI", ENUM.LOADED);
       } else {

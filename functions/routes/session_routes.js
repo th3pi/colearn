@@ -28,4 +28,12 @@ app.get('/sql/fetch-session', (req, res) => {
     })
 })
 
+app.put('/sql/update-work', (req, res) => {
+    session.update(req.body.sessionId, req.body.sessionWork).then(data => {
+        res.status(200).send(data)
+    }).catch(err => {
+        res.status(500).send(err);
+    })
+})
+
 module.exports = app;

@@ -37,7 +37,7 @@
           <i class="fas fa-chevron-right"></i>
           Enter the name of the session you want to join
         </p>
-        <input v-model="sessionId" type="text" class="neumorphic" />
+        <input v-model="sessionId" type="text" class="neumorphic" placeholder="e.g LeopardNoahYes" />
         <div id="sessionGroup">
           <button class="button border neumorphic hover n-active" @click="emitJoin">
             <i class="fas fa-user-plus"></i> Join
@@ -142,6 +142,11 @@ export default {
   display: block;
   margin: 0.75rem auto;
   background-color: white;
+}
+
+#message input::placeholder {
+  color: var(--sql-primary);
+  opacity: 0.5;
 }
 
 #message #sessionGroup {

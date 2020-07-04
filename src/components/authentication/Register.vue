@@ -40,7 +40,19 @@
           class="neumorphic button"
           @click="registerWithEmail"
           :disabled="!valid.name || !valid.email || !valid.password"
-        >Create Account</button>
+        >
+          <div v-if="progress == 0">Create Account</div>
+          <div v-else>
+            <vue-ellipse-progress
+              emptyColor="white"
+              :legend="false"
+              :size="20"
+              mode="in-over"
+              :progress="progress"
+              animation="default 500 100"
+            />
+          </div>
+        </button>
       </div>
       <div id="alternate" class="neumorphic inset">
         <transition name="slide-in-right" mode="out-in">
@@ -74,8 +86,13 @@ import thirdpartyAuth from "@/components/authentication/thirdparty-auth.vue";
 
 import clInput from "@/components/General/cl-input.vue";
 
+import loader from "@/mixins/loader";
+
+import ENUM from "@/enums/firebase_enum";
+
 export default {
   name: "register",
+  mixins: [loader],
   components: {
     logo,
     "register-logo": registerLogo,
@@ -96,7 +113,9 @@ export default {
       password: "",
       error: {
         accountExists: null
-      }
+      },
+      progress: 0,
+      loadState: ENUM.INIT
     };
   },
   methods: {
@@ -104,33 +123,40 @@ export default {
      * Creates a new user authentication entry as well as a firestore entry
      */
     registerWithEmail() {
+      this.loadState = ENUM.LOADING;
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(data => {
+          // Saves authenticated user to database as well
           this.$http
             .post("/user/create-user", {
               firstName: this.firstName,
               lastName: this.lastName,
               email: this.email
             })
-            .then(res => {
-              console.log(res);
+            .then(() => {
+              this.loadState = ENUM.LOADING;
             });
+          // Updates user display name to firstname
           data.user
             .updateProfile({
               displayName: this.firstName
             })
             .then(() => {});
+          //If user hasn't been verified already, send a verification mail, then route to home page
           if (data.user && data.user.emailVerified == false) {
             data.user.sendEmailVerification().then(() => {
-              this.$router.replace({ name: "home" });
+              this.loadState = ENUM.LOADED;
+              setTimeout(() => {
+                this.$router.replace({ name: "home" });
+              }, 500);
             });
           }
         })
         .catch(err => {
-          console.log(err.code);
           if (err.code.match(/email-already-in-use/i)) {
+            this.loadState = ENUM.ERROR;
             this.error.accountExists = "You already have an account";
           }
         });
@@ -139,7 +165,11 @@ export default {
       this.$router.replace({ name: "authenticate" });
     }
   },
-  watch: {}
+  watch: {
+    loadState(newValue) {
+      this.progress = this.getProgress(newValue);
+    }
+  }
 };
 </script>
 

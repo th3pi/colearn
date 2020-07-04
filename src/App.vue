@@ -86,6 +86,9 @@ export default {
       if (newValue == 3) {
         this.progress = 100;
       }
+    },
+    $route(to) {
+      document.title = to.meta.title;
     }
   }
 };

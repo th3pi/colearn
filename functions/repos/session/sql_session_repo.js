@@ -3,8 +3,6 @@
  */
 const superb = require('superb')
 const yesNo = require('yes-no-words')
-const CustomDate = require('../../modules/date')
-const date = new CustomDate(new Date());
 const admin = require('firebase-admin')
 
 class SqlSessionRepo {
@@ -17,8 +15,8 @@ class SqlSessionRepo {
             this.db.collection('sessions').doc(sessionId).set({
                 leader: email,
                 sessionId: sessionId,
-                createdOn: date.getCurrentDate(),
-                lastActive: date.getCurrentDate(),
+                createdOn: admin.firestore.FieldValue.serverTimestamp(),
+                lastActive: admin.firestore.FieldValue.serverTimestamp(),
                 language: 'sql',
                 pin: Math.round(Math.random() * 9999 + 1000),
             }).then(() => {
@@ -42,7 +40,7 @@ class SqlSessionRepo {
                     if (doc.data().pin == pin) {
                         session.update({
                             colearners: admin.firestore.FieldValue.arrayUnion(email),
-                            lastActive: date.getCurrentDate(),
+                            lastActive: admin.firestore.FieldValue.serverTimestamp()
                         }).then(() => {
                             resolve({
                                 message: "New user joined",
@@ -66,6 +64,17 @@ class SqlSessionRepo {
                 if (doc.exists) resolve(doc.data());
                 else reject({ message: "Invalid session", code: 0 })
             }).catch(err => reject({ message: err, code: 2 }))
+        });
+    }
+
+    update(sessionId, sessionWork) {
+        return new Promise((resolve, reject) => {
+            this.db.collection('sessions').doc(sessionId).update({
+                sessionWork: sessionWork,
+                lastActive: admin.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                resolve({ message: "Updated sessionWork", code: 0 })
+            }).catch(err => { reject({ message: err, code: 2 }) })
         });
     }
 

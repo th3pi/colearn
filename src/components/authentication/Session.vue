@@ -35,7 +35,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "beta",
   created() {
-    document.title = "Colearn - Join session";
+    document.title = "Join - " + this.$route.params.sessionId;
   },
   components: {
     clInput,
