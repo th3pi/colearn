@@ -115,7 +115,15 @@ export default {
      * @param data SQL command that is to be sent to the backend to get back a query result
      */
     sendSql(data) {
-      this.$emit("send-sql", data);
+      this.$http
+        .put("/session/sql/update-work", {
+          sessionId: this.sessionInfo.sessionId,
+          sessionWork: this.command,
+          type: "run"
+        })
+        .then(() => {
+          this.$emit("send-sql", data);
+        });
     },
     createNewLine() {
       this.rows++;
@@ -129,11 +137,10 @@ export default {
       this.$http
         .put("/session/sql/update-work", {
           sessionId: this.sessionInfo.sessionId,
-          sessionWork: this.command
+          sessionWork: this.command,
+          type: "update"
         })
-        .then(res => {
-          console.log(res.data);
-        });
+        .then(() => {});
     },
 
     /**
@@ -155,12 +162,12 @@ export default {
     reset() {
       this.command = "";
       this.$http
-        .post("/sql/reset", {
-          name: this.user.data.displayName
+        .put("/session/sql/update-work", {
+          sessionId: this.sessionInfo.sessionId,
+          sessionWork: this.command,
+          type: "reset"
         })
-        .then(res => {
-          console.log(res.data);
-        });
+        .then(() => {});
     }
   },
   watch: {

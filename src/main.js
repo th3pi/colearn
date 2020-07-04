@@ -3,9 +3,7 @@ import App from "./App.vue";
 import axios from "axios";
 import VueMq from "vue-mq";
 import VueEllipseProgress from "vue-ellipse-progress";
-// import firebase from 'firebase';
-import { firestorePlugin } from 'vuefire'
-import { auth } from './firebase'
+import { auth } from "./firebase";
 
 //Navigation router
 import router from "./router/router";
@@ -19,38 +17,20 @@ Vue.config.productionTip = false;
 export const bus = new Vue();
 
 //Establish connection to backend
-// const http = axios.create({
-//   baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
-// });
+const http = axios.create({
+  baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
+});
 
 /**
  * This axios instantiation is for dev-build testing only. Comment out before production
  */
-const http = axios.create({
-  baseURL: "http://localhost:5021/co-learn-a05d9/us-central1/app",
-});
+// const http = axios.create({
+//   baseURL: "http://localhost:5021/co-learn-a05d9/us-central1/app",
+// });
 
 Vue.prototype.$http = http;
 
-Vue.use(firestorePlugin);
-
-//Firebase config
-// var firebaseConfig = {
-//   apiKey: "AIzaSyCQ1ofiNqi57YO9TNi8zzljikkobALP1RE",
-//   authDomain: "co-learn-a05d9.firebaseapp.com",
-//   databaseURL: "https://co-learn-a05d9.firebaseio.com",
-//   projectId: "co-learn-a05d9",
-//   storageBucket: "co-learn-a05d9.appspot.com",
-//   messagingSenderId: "159948318731",
-//   appId: "1:159948318731:web:29bf2c7d4016fae29b3f0e",
-//   measurementId: "G-HWLQMHVY9K",
-// };
-// Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
-// firebase.analytics();
-
 //User authentication state management
-// auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 auth.onAuthStateChanged((user) => {
   if (user) {
     http
