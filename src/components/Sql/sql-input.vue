@@ -89,12 +89,10 @@ export default {
     })
   },
   created() {
-    console.log(this.sessionInfo);
     db.collection("sessions")
-      .doc("CatsPajamasYisssPass")
-      .get()
-      .then(res => {
-        console.log(res.data());
+      .doc(this.sessionInfo.sessionId)
+      .onSnapshot(doc => {
+        this.command = doc.data().sessionWork;
       });
   },
   /**
@@ -107,7 +105,8 @@ export default {
       command: "", //Input field value
       height: 1.5, //Height of a single line
       rows: 1, //Number of rows in the command box
-      focus: false //Focus boolean for the input field
+      focus: false, //Focus boolean for the input field
+      session: null
     };
   },
   methods: {
@@ -169,12 +168,15 @@ export default {
      * Command watcher to synchronize input table
      * @param {String} newValue Current value of the command variable
      */
-    command(newValue) {
-      this.rows = newValue.split("\n").length;
-      this.height = this.rows * 1.6;
-      if (newValue == "") {
-        this.rows = 1;
-        this.height = 1.5;
+    command: {
+      immediate: true,
+      handler(newValue) {
+        this.rows = newValue.split("\n").length;
+        this.height = this.rows * 1.6;
+        if (newValue == "") {
+          this.rows = 1;
+          this.height = 1.5;
+        }
       }
     },
     focus(newValue) {
