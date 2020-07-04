@@ -90,8 +90,12 @@ export default {
   created() {},
   sockets: {
     sync_sql(command) {
-      console.log(command);
-
+      this.command = command;
+    },
+    get_sql(command) {
+      this.command = command;
+    },
+    run_sql(command) {
       this.command = command;
     }
   },
@@ -116,14 +120,31 @@ export default {
      */
     sendSql(data) {
       this.$http
-        .put("/session/sql/update-work", {
+        .post("/session/sql/add", {
           sessionId: this.sessionInfo.sessionId,
-          sessionWork: this.command,
+          command: this.command,
           type: "run"
         })
-        .then(() => {
-          this.$emit("send-sql", data);
-        });
+        .then();
+      if (data.match(/SELECT/i)) {
+        this.$socket.client.emit(
+          "get_sql",
+          this.sessionInfo.sessionId,
+          this.command
+        );
+      } else {
+        this.$http
+          .get("/sql/local-sql-query", { params: { query: this.command } })
+          .then(res => {
+            this.$socket.client.emit(
+              "run_sql",
+              this.sessionInfo.sessionId,
+              this.command,
+              res.data
+            );
+          });
+      }
+      this.$emit("send-sql", data);
     },
     createNewLine() {
       this.rows++;
@@ -139,40 +160,19 @@ export default {
         this.sessionInfo.sessionId,
         this.command
       );
-      // this.$http
-      //   .put("/session/sql/update-work", {
-      //     sessionId: this.sessionInfo.sessionId,
-      //     sessionWork: this.command,
-      //     type: "update"
-      //   })
-      //   .then(() => {});
     },
-
-    /**
-     * Called on shift+space, emits on the "sqlTyping" channel on shift+space
-     */
-    // emitMessage() {
-    //   this.$socket.client.emit(
-    //     "sqlTyping",
-    //     this.command,
-    //     this.rows,
-    //     this.height
-    //   );
-    // },
-
     /**
      * Resets all the parameters to default values
      * Emits "reset-sql" event to parent component
      */
     reset() {
       this.command = "";
-      this.$http
-        .put("/session/sql/update-work", {
-          sessionId: this.sessionInfo.sessionId,
-          sessionWork: this.command,
-          type: "reset"
-        })
-        .then(() => {});
+      this.$socket.client.emit(
+        "get_sql",
+        this.sessionInfo.sessionId,
+        this.command
+      );
+      this.$emit("reset-sql");
     }
   },
   watch: {

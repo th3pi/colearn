@@ -38,13 +38,9 @@
           <template #sessionInfo>
             <!-- Each cheat is its own bullet point using the li tag -->
             <code-snippet language="SQL">
-              Session Link: colearn.tech/join/
+              Session name:
               <strong>{{user.activeSession}}</strong>
             </code-snippet>
-            <p>
-              Gets all the rows from the
-              <strong>table</strong>
-            </p>
           </template>
         </sidebar>
       </div>
@@ -91,12 +87,18 @@ export default {
     })
   },
   sockets: {
-    connect() {
-      console.log("SQL connected");
-      this.$socket.client;
+    connect() {},
+    /**
+     * Receives a run command from the session
+     * @param {String} command is a sql command received from the socket
+     */
+    get_sql(command) {
+      this.command = command;
+      command == "" ? this.updateResultTable() : this.fetchSqlLocal(command);
     },
-    new_session(data) {
-      console.log("NEW SESSION CREATED: " + data);
+    run_sql(command, result) {
+      this.command = command;
+      this.messageHandler(result);
     }
   },
   data() {

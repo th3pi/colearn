@@ -27,7 +27,10 @@ export const bus = new Vue();
  * This axios instantiation is for dev-build testing only. Comment out before production
  */
 const http = axios.create({
-  baseURL: "http://localhost:5000/",
+  baseURL:
+    "http://localhost:5000/"
+  // 'https://colearn-tech.herokuapp.com/'
+  ,
 });
 
 Vue.prototype.$http = http;
@@ -47,7 +50,10 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
-const socket = io('http://localhost:5000')
+const socket = io(
+  'http://localhost:5000'
+  // 'https://colearn-tech.herokuapp.com/'
+)
 
 Vue.use(VueSocketIOExt, socket);
 
