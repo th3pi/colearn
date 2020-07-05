@@ -97,7 +97,6 @@ export default {
       command == "" ? this.updateResultTable() : this.fetchSqlLocal(command);
     },
     run_sql(command, result) {
-      this.command = command;
       this.messageHandler(result);
     }
   },
@@ -284,7 +283,6 @@ export default {
     height: 85vmin;
   }
   #sqlBody {
-    width: 800px;
     margin-left: auto;
     margin-right: auto;
   }

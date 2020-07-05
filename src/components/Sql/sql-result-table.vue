@@ -193,6 +193,10 @@ export default {
   #sqlResults td {
     padding: 8px 10px;
   }
+
+  #tableSection {
+    max-height: 25vh;
+  }
 }
 
 @media screen and (min-width: 1250px) {

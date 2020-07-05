@@ -30,6 +30,7 @@
             : 'Enter a SQL command'
         "
         @keydown.shift.enter.exact.prevent
+        @keydown.shift.space.exact.prevent="update"
         @focus="focus = true"
         @blur="focus = false"
       ></textarea>
@@ -95,8 +96,8 @@ export default {
     get_sql(command) {
       this.command = command;
     },
-    run_sql(command) {
-      this.command = command;
+    sync_sqld(data) {
+      console.log(data);
     }
   },
   /**
@@ -119,6 +120,7 @@ export default {
      * @param data SQL command that is to be sent to the backend to get back a query result
      */
     sendSql(data) {
+      this.$socket.client.emit("sync_sqld", this.sessionInfo.sessionId, data);
       this.$http
         .post("/session/sql/add", {
           sessionId: this.sessionInfo.sessionId,

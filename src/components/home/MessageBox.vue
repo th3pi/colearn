@@ -81,11 +81,7 @@ export default {
 
 <style lang="scss">
 #message {
-  display: block;
-
   margin-top: 1rem;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
 
   padding: 0.5rem;
   padding-bottom: 1rem;
@@ -114,6 +110,7 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+  flex-direction: column;
 }
 
 #message #steps p {
@@ -139,7 +136,7 @@ export default {
   margin-right: 0;
 }
 #message input {
-  display: block;
+  display: flex;
   margin: 0.75rem auto;
   background-color: white;
 }
@@ -157,7 +154,7 @@ export default {
 }
 
 //Medium sized screens
-@media screen and (min-width: 470px) {
+@media screen and (min-width: 800px) {
   #message {
     display: flex;
     justify-content: center;
@@ -166,7 +163,7 @@ export default {
     width: 50%;
   }
   #message #steps p {
-    font-size: 1rem;
+    font-size: 100%;
   }
 }
 </style>

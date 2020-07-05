@@ -1,7 +1,7 @@
 <template>
-  <div class="page open-sans">
+  <div class="open-sans">
     <!-- Top slideshow -->
-    <div id="carousel" v-if="this.$mq != 'sm'">
+    <div id="carousel" class="carousel" v-if="this.$mq != 'sm'">
       <agile :dots="false">
         <!-- First slide -->
         <div class="slide cl-slide">
@@ -109,6 +109,24 @@
         </div>
       </div>
       <!-- Github message for colearn -->
+      <h2 class="header">
+        Your past sessions
+        <i class="fas fa-info-circle"></i>
+      </h2>
+
+      <div id="pastSessions" class="neumorphic">
+        <table>
+          <tr>
+            <th>Session name</th>
+            <th>Date</th>
+          </tr>
+          <tr v-for="(session, index) in sessions" :key="index">
+            <td class="session-name" @click="joinSession(session.sessionId)">{{session.sessionId}}</td>
+            <td>{{Date(session.createdOn)}}</td>
+          </tr>
+        </table>
+      </div>
+      <!-- Github message for colearn -->
       <div id="subMessage">
         <a>
           <i class="fab fa-github"></i>Check out the ins and outs of
@@ -149,9 +167,13 @@ export default {
   },
   data() {
     return {
-      language: null,
+      language: "sql",
       sessionId: "",
-      progress: 0
+      sessions: null,
+      progress: {
+        sessions: 0,
+        verification: 0
+      }
     };
   },
   methods: {
@@ -180,16 +202,16 @@ export default {
       this.language = this.language == language ? "" : language;
     },
     sendVerification() {
-      this.progress = Math.random() * 85 + 20;
+      this.progress.verification = Math.random() * 85 + 20;
       firebase
         .auth()
         .currentUser.sendEmailVerification()
         .then(() => {
-          this.progress = 100;
+          this.progress.verification = 100;
           this.emailSent = true;
         })
         .catch(() => {
-          this.progress = 0;
+          this.progress.verification = 0;
         });
     }
   },
@@ -198,15 +220,23 @@ export default {
       user: "user"
     })
   },
-  created() {},
+  created() {
+    this.$http
+      .get("/user/user-sessions", { params: { email: this.user.data.email } })
+      .then(res => {
+        this.sessions = res.data;
+      });
+  },
   watch: {}
 };
 </script>
 <style lang="scss">
 #homeBody {
+  width: 100%;
+
+  margin-top: 0.5rem;
   margin-left: auto;
   margin-right: auto;
-
   transition: width 0.4s;
 }
 
@@ -243,8 +273,25 @@ export default {
   left: 0.5rem;
 }
 
+.header {
+  text-align: center;
+  margin: 1rem 0;
+  color: var(--sql-light-primary);
+}
+
+.header i {
+  cursor: pointer;
+
+  transform: scale(0.75);
+
+  transition: color 0.4s;
+}
+
+.header i:hover {
+  color: var(--sql-dark);
+}
+
 #carousel {
-  display: block;
   margin-bottom: 1rem;
 }
 
@@ -252,7 +299,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-
   padding-top: 1rem;
   padding-bottom: 1rem;
 
@@ -260,7 +306,7 @@ export default {
 }
 
 #carousel .cl-slide .screenshot {
-  width: 30rem;
+  width: 20rem;
 
   margin-right: 2vw;
   margin-left: 1vw;
@@ -275,6 +321,11 @@ export default {
   border: 2px solid rgba(var(--sql-light-primary-v), 1);
 }
 
+// #carousel .cl-slide #caption {
+//   margin-right: 2vw;
+//   margin-left: 1vw;
+// }
+
 #carousel .cl-slide #caption {
   margin-right: 2vw;
   margin-left: 1vw;
@@ -288,7 +339,6 @@ export default {
   flex-direction: column;
   margin-top: 2rem;
 }
-
 #homeBody #coLearnLogo #description {
   margin-top: 1rem;
 
@@ -309,18 +359,14 @@ export default {
 // Intro css
 #homeBody #intro {
   display: block;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
+  margin: 0 0.5rem;
 }
-
 #sessionButtons button {
-  width: 95%;
-
+  display: block;
+  width: 100%;
   padding: 0.8rem 0.5rem;
-  margin: 0.5rem 0;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+
+  margin: 0.5rem auto;
 
   background-color: white;
 
@@ -359,10 +405,83 @@ export default {
   text-decoration: underline !important;
 }
 
+#homeBody #pastSessions {
+  display: block;
+
+  margin: 0 0.5rem;
+
+  border-radius: 5px;
+  border: 2px solid rgba($color: #000000, $alpha: 0.1);
+
+  text-align: center;
+
+  color: white;
+  background-color: var(--sql-light-primary);
+}
+
+#homeBody #pastSessions table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+#pastSessions th {
+  padding: 10px 5px;
+}
+
+#pastSessions td {
+  padding: 10px 5px;
+  border-bottom: 2px solid white;
+}
+
+#pastSessions th {
+  border-bottom: 2px solid whitesmoke;
+}
+#pastSessions tr:last-child td {
+  border-bottom: transparent;
+}
+
+#pastSessions tr,
+th {
+  cursor: pointer;
+
+  transition: 0.6s;
+}
+
+#pastSessions tr:hover {
+  background-color: rgba(var(--sql-primary-v), 0.2);
+}
+
+#pastSessions tr:hover th {
+  background-color: rgba(var(--sql-primary-v), 0.5);
+}
+
+#pastSessions .session-name {
+  color: white;
+  transition: color 0.5s;
+}
+
+#pastSessions .session-name:hover {
+  text-decoration: underline;
+}
+
 //Medium sized screens
-@media screen and (min-width: 470px) {
-  #homeBody {
-    width: 800px;
+@media screen and (min-width: 800px) {
+  #carousel .cl-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    box-shadow: inset -2px -4px 6px rgba($color: #000000, $alpha: 0.1);
+  }
+
+  #carousel .cl-slide .screenshot {
+    width: 30rem;
+  }
+  #homBody {
+    margin-top: 0.5rem;
     margin-left: auto;
     margin-right: auto;
   }
@@ -381,12 +500,6 @@ export default {
     flex-direction: row;
   }
 
-  #homeBody #intro #message {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-  }
-
   #homeBody #intro #sessionButtons {
     flex-direction: column;
     margin-right: 0.5rem;
@@ -398,10 +511,7 @@ export default {
 @media screen and (min-width: 1250px) {
   #homeBody {
     width: 1250px;
-    margin-left: auto;
-    margin-right: auto;
   }
-
   #homeBody #coLearnLogo .logo {
     display: block;
 
