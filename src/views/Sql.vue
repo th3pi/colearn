@@ -41,6 +41,10 @@
               Session name:
               <strong>{{user.activeSession}}</strong>
             </code-snippet>
+            <code-snippet>
+              Session pin:
+              <strong>{{sessionInfo.pin}}</strong>
+            </code-snippet>
           </template>
         </sidebar>
       </div>
@@ -96,7 +100,7 @@ export default {
       this.command = command;
       command == "" ? this.updateResultTable() : this.fetchSqlLocal(command);
     },
-    run_sql(command, result) {
+    sync_result(result) {
       this.messageHandler(result);
     }
   },
@@ -153,6 +157,12 @@ export default {
             this.showTable = true;
           } else {
             this.messageHandler(res.data);
+
+            this.$socket.client.emit(
+              "sync_result",
+              this.$route.params.sessionId,
+              res.data
+            );
           }
         })
         .catch(() => {});
@@ -178,19 +188,21 @@ export default {
      * @param {String} message is the response from backend after a SQL command has been. Only populated when response is not an array
      */
     messageHandler(message) {
+      this.message = message;
+      let cleanMessage = message.replace(/^([\w:/-]+\s)/g, "");
       if (typeof message == "string") {
         if (message.match(/SUCCESSFULLY/i)) {
-          this.updateResultTable(message, "var(--success)");
+          this.updateResultTable(cleanMessage, "var(--success)");
         } else if (message.match(/DELETED/i)) {
-          this.updateResultTable(message, "var(--success)");
+          this.updateResultTable(cleanMessage, "var(--success)");
         } else if (message.match(/UPDATED/i)) {
-          this.updateResultTable(message, "var(--sql-light-primary)");
+          this.updateResultTable(cleanMessage, "var(--sql-light-primary)");
         } else if (message.match(/ERROR/i)) {
-          this.updateResultTable(message, "var(--danger)");
+          this.updateResultTable(cleanMessage, "var(--danger)");
         } else if (message.match(/NO MATCHING/i)) {
-          this.updateResultTable(message, "var(--danger-light)");
+          this.updateResultTable(cleanMessage, "var(--danger-light)");
         } else if (message.match(/Empty table/i)) {
-          this.updateResultTable(message, "var(--g-secondary)");
+          this.updateResultTable(cleanMessage, "var(--g-secondary)");
         } else {
           this.updateResultTable(
             "Something went wrong, please reset and try again.",
@@ -202,7 +214,10 @@ export default {
       }
     },
     showTipOnFocus(message, resultBackground) {
-      if (!this.showTable) {
+      if (
+        !this.showTable &&
+        this.message != "Run a SQL command to display result here"
+      ) {
         this.updateResultTable(message, resultBackground);
       }
     },

@@ -113,7 +113,6 @@
         Your past sessions
         <i class="fas fa-info-circle"></i>
       </h2>
-
       <div id="pastSessions" class="neumorphic">
         <table>
           <tr>
@@ -122,7 +121,7 @@
           </tr>
           <tr v-for="(session, index) in sessions" :key="index">
             <td class="session-name" @click="joinSession(session.sessionId)">{{session.sessionId}}</td>
-            <td>{{Date(session.createdOn)}}</td>
+            <td>{{new Date((session.createdOn._seconds)* 1000).toLocaleString()}}</td>
           </tr>
         </table>
       </div>
@@ -169,7 +168,7 @@ export default {
     return {
       language: "sql",
       sessionId: "",
-      sessions: null,
+      sessions: [],
       progress: {
         sessions: 0,
         verification: 0
@@ -237,6 +236,7 @@ export default {
   margin-top: 0.5rem;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 3.5rem;
   transition: width 0.4s;
 }
 

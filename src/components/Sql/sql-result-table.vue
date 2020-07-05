@@ -177,6 +177,10 @@ export default {
   text-align: center;
 }
 
+#emptyResultBox p::first-letter {
+  text-transform: capitalize;
+}
+
 #emptyResultBox:hover {
   box-shadow: 0 -4px 12px rgba($color: #d8d8d8, $alpha: 0.4) inset,
     0 4px 12px rgba($color: #000000, $alpha: 0.2) inset;

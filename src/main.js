@@ -5,7 +5,10 @@ import VueMq from "vue-mq";
 import VueEllipseProgress from "vue-ellipse-progress";
 import VueSocketIOExt from 'vue-socket.io-extended'
 import io from 'socket.io-client'
+import _ from 'lodash';
+import SmartTable from 'vuejs-smart-table'
 
+Vue.use(SmartTable)
 import { auth } from "./firebase";
 //Navigation router
 import router from "./router/router";
@@ -34,6 +37,8 @@ const http = axios.create({
 });
 
 Vue.prototype.$http = http;
+
+Vue.prototype.$_ = _;
 
 //User authentication state management
 auth.onAuthStateChanged((user) => {

@@ -135,16 +135,7 @@ export default {
           this.command
         );
       } else {
-        this.$http
-          .get("/sql/local-sql-query", { params: { query: this.command } })
-          .then(res => {
-            this.$socket.client.emit(
-              "run_sql",
-              this.sessionInfo.sessionId,
-              this.command,
-              res.data
-            );
-          });
+        this.update();
       }
       this.$emit("send-sql", data);
     },

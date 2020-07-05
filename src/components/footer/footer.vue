@@ -35,12 +35,13 @@ export default {
 #clFooter {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
 
-  padding: 1rem 0;
+  height: 3rem;
 
   box-shadow: 2px -4px 8px rgba($color: #000000, $alpha: 0.05);
 
