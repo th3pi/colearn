@@ -5,10 +5,7 @@ import VueMq from "vue-mq";
 import VueEllipseProgress from "vue-ellipse-progress";
 import VueSocketIOExt from 'vue-socket.io-extended'
 import io from 'socket.io-client'
-import _ from 'lodash';
-import SmartTable from 'vuejs-smart-table'
 
-Vue.use(SmartTable)
 import { auth } from "./firebase";
 //Navigation router
 import router from "./router/router";
@@ -31,14 +28,12 @@ export const bus = new Vue();
  */
 const http = axios.create({
   baseURL:
-    "http://localhost:5000/"
-  // 'https://colearn-tech.herokuapp.com/'
+    // "http://localhost:5000/"
+    'https://colearn-tech.herokuapp.com/'
   ,
 });
 
 Vue.prototype.$http = http;
-
-Vue.prototype.$_ = _;
 
 //User authentication state management
 auth.onAuthStateChanged((user) => {
@@ -56,8 +51,8 @@ auth.onAuthStateChanged((user) => {
 });
 
 const socket = io(
-  'http://localhost:5000'
-  // 'https://colearn-tech.herokuapp.com/'
+  // 'http://localhost:5000'
+  'https://colearn-tech.herokuapp.com/'
 )
 
 Vue.use(VueSocketIOExt, socket);
