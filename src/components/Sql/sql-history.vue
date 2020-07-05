@@ -23,7 +23,7 @@
 
       <p v-if="commands.length == 0" style="padding: 2rem 0">
         There's nothing to show here right now.
-        <br />Your past sessions will show up here as you keep joining sessions or creating new sessions
+        <br />Your session history will show up here when you or someone else in the session runs a command
       </p>
     </div>
     <div class="loader" v-else key="loading">
