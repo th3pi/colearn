@@ -70,6 +70,7 @@
 <script>
 //Mixins import
 import responsive from "@/mixins/responsive";
+import { EventBus } from "@/bus/bus";
 import { mapGetters } from "vuex";
 
 /**
@@ -88,7 +89,12 @@ export default {
       user: "user"
     })
   },
-  created() {},
+  created() {
+    EventBus.$on("copy-command", event => {
+      this.command = event;
+      this.update();
+    });
+  },
   sockets: {
     sync_sql(command) {
       this.command = command;
@@ -121,11 +127,15 @@ export default {
      */
     sendSql(data) {
       this.$socket.client.emit("sync_sqld", this.sessionInfo.sessionId, data);
+      let name =
+        this.user.data.displayName.charAt(0).toUpperCase() +
+        this.user.data.displayName.slice(1);
       this.$http
         .post("/session/sql/add", {
           sessionId: this.sessionInfo.sessionId,
           command: this.command,
-          type: "run"
+          type: "run",
+          by: name
         })
         .then();
       if (data.match(/SELECT/i)) {

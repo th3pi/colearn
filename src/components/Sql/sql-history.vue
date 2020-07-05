@@ -1,18 +1,26 @@
 <template>
   <div id="sqlHistory" class="neumorphic">
-    <div v-if="progress == 100" key="loaded">
+    <div id="tableSection" v-if="progress == 100" key="loaded">
       <table v-if="commands.length != 0">
         <tr>
           <th>Command</th>
-          <th>Ran at</th>
+          <th>By</th>
+          <th>When</th>
         </tr>
         <tr v-for="(command, index) in commands" :key="index">
-          <td class="session-name">
-            <p>{{command.command}}</p>
+          <td class="command">
+            <p>{{getCommand(command.command)}}</p>
+            <i
+              @click="copyCommand(command.command)"
+              :class="{'fas': clipboard.command == command.command ? true : false, 'far' : clipboard.command != command.command ? true : false,}"
+              class="fa-copy"
+            ></i>
           </td>
-          <td>{{new Date((command.ranAt._seconds)* 1000).toLocaleString()}}</td>
+          <td>{{command.by}}</td>
+          <td class="time-ran">{{getTimeDifference(new Date((command.ranAt._seconds)* 1000))}}</td>
         </tr>
       </table>
+
       <p v-if="commands.length == 0" style="padding: 2rem 0">
         There's nothing to show here right now.
         <br />Your past sessions will show up here as you keep joining sessions or creating new sessions
@@ -27,6 +35,7 @@
 <script>
 import ENUM from "@/enums/firebase_enum";
 import loader from "@/mixins/loader";
+import { EventBus } from "@/bus/bus";
 export default {
   name: "sql-history",
   mixins: [loader],
@@ -41,6 +50,7 @@ export default {
       loadState: ENUM.INIT,
       progress: 0,
       clipboard: {
+        command: null,
         clip: null,
         success: null,
         fail: null,
@@ -65,6 +75,32 @@ export default {
       this.clipboard.clip =
         "https://colearn.tech/learn-" + language + "/" + sessionId;
       this.$clipboard(this.clipboard.clip);
+    },
+    getTimeDifference(date) {
+      let now = new Date();
+      let difference = (now - date) / 1000;
+      if (difference < 60) {
+        return difference.toFixed(0) + " second(s) ago";
+      }
+      if (difference > 60 && difference < 60 * 60) {
+        return (difference / 60).toFixed(0) + " minute(s) ago";
+      }
+      if (difference > 60 * 60 && difference < 60 * 60 * 24) {
+        return (difference / (60 * 60 * 24)).toFixed(0) + " day(s) ago";
+      }
+    },
+    copyCommand(command) {
+      EventBus.$emit("copy-command", command);
+      this.clipboard.command = command;
+      this.clipboard.clip = command;
+      this.$clipboard(this.clipboard.clip);
+    },
+    getCommand(command) {
+      if (command.length > 30) {
+        return command.substring(0, 30) + "...";
+      } else {
+        return command;
+      }
     }
   },
   watch: {
@@ -81,21 +117,30 @@ export default {
 
   min-height: 5rem;
 
-  margin: 0 0.5rem;
+  width: 88%;
+  margin: 0 auto;
+
+  margin-top: 1rem;
 
   border-radius: 5px;
-  border: 2px solid rgba($color: #000000, $alpha: 0.1);
+  border: 2px solid rgba(var(--sql-light-primary), $alpha: 0.1);
 
   text-align: center;
 
-  color: white;
-  background-color: var(--sql-light-primary);
+  color: var(--sql-lighter-dark);
+  background-color: white;
 }
 
 #sqlHistory table {
   width: 100%;
 
   border-collapse: collapse;
+
+  overflow: auto;
+}
+
+#sqlHistory #tableSection {
+  max-height: 20vh;
 }
 
 #sqlHistory th {
@@ -108,6 +153,9 @@ export default {
 }
 
 #sqlHistory th {
+  position: sticky;
+  top: 0;
+  background-color: white;
   border-bottom: 2px solid whitesmoke;
 }
 #sqlHistory tr:last-child td {
@@ -121,29 +169,40 @@ th {
   transition: 0.6s;
 }
 
+#sqlHistory tr th:first-child {
+  border-radius: 5px 0 0 5px;
+}
+#sqlHistory tr th:last-child {
+  border-radius: 0 5px 5px 0;
+}
+
 #sqlHistory tr:hover {
   background-color: rgba(var(--sql-primary-v), 0.2);
 }
 
 #sqlHistory tr:hover th {
-  background-color: rgba(var(--sql-primary-v), 0.5);
+  background-color: rgba(var(--sql-primary-v), 1);
 }
 
-#sqlHistory .session-name {
-  color: white;
+#sqlHistory .command {
+  color: var(--sql-lighter-dark);
   transition: color 0.5s;
 }
 
-#sqlHistory .session-name p {
+#sqlHistory .command p {
   display: inline;
   margin-right: 1rem;
 }
 
-#pastSession .session-name i {
+#pastSession .command i {
   margin: 0;
 }
 
-#sqlHistory .session-name:hover {
+#sqlHistory .command:hover {
   text-decoration: underline;
+}
+
+#sqlHistory .time-ran {
+  font-size: 85%;
 }
 </style>

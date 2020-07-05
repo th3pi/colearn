@@ -32,8 +32,8 @@ export const bus = new Vue();
  */
 const http = axios.create({
   baseURL:
-    "http://localhost:5000/"
-  // 'https://colearn-tech.herokuapp.com/'
+    // "http://localhost:5000/"
+    'https://colearn-tech.herokuapp.com/'
   ,
 });
 
@@ -55,8 +55,8 @@ auth.onAuthStateChanged((user) => {
 });
 
 const socket = io(
-  'http://localhost:5000'
-  // 'https://colearn-tech.herokuapp.com/'
+  // 'http://localhost:5000'
+  'https://colearn-tech.herokuapp.com/'
 )
 
 Vue.use(VueSocketIOExt, socket);

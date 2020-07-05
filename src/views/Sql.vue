@@ -29,10 +29,40 @@
             :background="resultBackground"
           ></sql-result-table>
         </div>
+        <div>
+          <h2 class="header" style="color: var(--sql-lighter-dark)">
+            Session history
+            <i
+              v-popover:sessionInfo
+              class="fas fa-info-circle"
+              style="transform: scale(.75)"
+            ></i>
+            <popover
+              name="sessionInfo"
+              transition="fade"
+              class="neumorphic"
+              style="font-size: .95rem; font-weight: 300; text-align: left; padding: .5rem 1rem; width: 15rem"
+            >
+              <strong
+                style="font-size: 1.1rem; border-bottom: 2px solid rgba(var(--sql-lighter-dark-v), 0.8);"
+              >More about session history</strong>
+              <br />
+              <br />
+
+              <li>
+                Session history is a list of all the commands that were
+                <strong>run</strong> on this session
+              </li>
+              <br />
+              <li>The list includes, commands that were run in the session, who ran it and when it was run.</li>
+              <br />
+              <li>You can click on a command to instantly copy it to the command box above.</li>
+            </popover>
+          </h2>
+          <sql-history :sessionId="sessionInfo.sessionId" @copy-command="command = $event" />
+        </div>
       </div>
-      <div>
-        <sql-history :sessionId="sessionInfo.sessionId" />
-      </div>
+
       <!-- Update:showBar event emitted from sidebar child component, on emission, showBar is assigned the value of 
       data passed from child component, which is a boolean value-->
       <div>
@@ -306,6 +336,7 @@ export default {
   margin-top: 0.5rem;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 10rem !important;
 
   transition: margin-top 0.4s ease-in-out;
 }
