@@ -164,6 +164,7 @@ export default {
     if (this.user.authenticated) {
       this.verifySession();
       this.$socket.client.emit("new_session", this.$route.params.sessionId);
+      document.title = "🟢 Session - " + this.$route.params.sessionId;
     }
   },
   beforeRouteEnter(to, from, next) {
