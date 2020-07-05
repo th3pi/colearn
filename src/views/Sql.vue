@@ -30,6 +30,9 @@
           ></sql-result-table>
         </div>
       </div>
+      <div>
+        <sql-history :sessionId="sessionInfo.sessionId" />
+      </div>
       <!-- Update:showBar event emitted from sidebar child component, on emission, showBar is assigned the value of 
       data passed from child component, which is a boolean value-->
       <div>
@@ -38,12 +41,17 @@
           <template #sessionInfo>
             <!-- Each cheat is its own bullet point using the li tag -->
             <code-snippet language="SQL">
-              Session name:
-              <strong>{{user.activeSession}}</strong>
+              Session name
+              <strong @click="copyId">{{sessionInfo.sessionId}}</strong>
             </code-snippet>
             <code-snippet>
-              Session pin:
-              <strong>{{sessionInfo.pin}}</strong>
+              Session pin
+              <strong @click="copyPin">{{sessionInfo.pin}}</strong>
+            </code-snippet>
+            <code-snippet>
+              Session link
+              <br />
+              <strong @click="copyLink">colearn.tech/join-sql/{{sessionInfo.sessionId}}</strong>
             </code-snippet>
           </template>
         </sidebar>
@@ -62,6 +70,7 @@ import sqlInput from "@/components/Sql/sql-input.vue";
 import sidebar from "@/components/General/sidebar.vue";
 import codeSnippet from "@/components/General/code-snippet.vue";
 import sqlResultTable from "@/components/Sql/sql-result-table.vue";
+import sqlHistory from "@/components/Sql/sql-history.vue";
 
 //Mixin imports
 import responsive from "@/mixins/responsive";
@@ -83,7 +92,8 @@ export default {
     "sql-input": sqlInput,
     sidebar,
     "code-snippet": codeSnippet,
-    "sql-result-table": sqlResultTable
+    "sql-result-table": sqlResultTable,
+    sqlHistory
   },
   computed: {
     ...mapGetters({
@@ -243,15 +253,42 @@ export default {
                 params: { sessionId: this.$route.params.sessionId }
               });
             } else {
-              this.progress = 100;
+              this.$http
+                .post("/session/sql/join-session", {
+                  email: this.user.data.email,
+                  sessionId: this.$route.params.sessionId,
+                  pin: ""
+                })
+                .then(() => {
+                  this.progress = 100;
+                });
             }
           } else {
-            this.progress = 100;
+            this.$http
+              .post("/session/sql/join-session", {
+                email: this.user.data.email,
+                sessionId: this.$route.params.sessionId,
+                pin: ""
+              })
+              .then(() => {
+                this.progress = 100;
+              });
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    copyId() {
+      this.$clipboard(this.sessionInfo.sessionId);
+    },
+    copyPin() {
+      this.$clipboard(this.sessionInfo.pin);
+    },
+    copyLink() {
+      this.$clipboard(
+        "https://colearn.tech/join-sql/" + this.sessionInfo.sessionId
+      );
     }
   },
   watch: {}

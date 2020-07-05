@@ -148,6 +148,14 @@ button {
     cursor: pointer;
 }
 
+.loader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 5rem;
+}
+
 .neumorphic {
     box-shadow: 6px 6px 12px 0 rgba(0, 0, 0, 0.2),
     -6px -6px 12px 0 rgba(255, 255, 255, 0.5);

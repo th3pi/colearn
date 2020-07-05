@@ -49,8 +49,9 @@
         <strong class="link" @click="$router.push({name: 'register'})">Register</strong> or
         <strong class="link" @click="$router.push({name: 'authenticate'})">Authenticate</strong> to confirm your beta access
       </alert>
+
       <alert
-        v-if="verified == false"
+        v-if="verified == false && $route.query.verified != true"
         backgroundColor="var(--danger-v)"
         color="white"
         bordercolor="var(--danger)"
@@ -108,24 +109,42 @@
           </button>
         </div>
       </div>
-      <!-- Github message for colearn -->
+      <!-- User sessions table -->
       <div v-if="user.authenticated">
         <h2 class="header">
           Your past sessions
-          <i class="fas fa-info-circle"></i>
+          <i v-popover:sessionInfo class="fas fa-info-circle"></i>
+          <popover
+            name="sessionInfo"
+            transition="fade"
+            class="neumorphic"
+            style="font-size: .95rem; font-weight: 300; text-align: left; padding: .5rem 1rem; width: 15rem"
+          >
+            <strong style="font-size: 1.1rem">What are past sessions?</strong>
+            <br />
+
+            <li>
+              A list of all the sessions you may
+              have
+              <strong>joined</strong> or
+              <strong>created</strong>.
+            </li>
+            <br />
+            <li>
+              You can click on the
+              <strong>session names</strong> to travel back in time and checkout the session history,
+              or reactivate the session.
+            </li>
+          </popover>
+          <popover
+            name="sessionName"
+            transition="fade"
+            class="neumorphic"
+            style="font-size: .95rem; font-weight: 300; text-align: left; padding: .5rem 1rem"
+          >Session names are randomly generated words that are unique to each session</popover>
         </h2>
-        <div id="pastSessions" class="neumorphic">
-          <table>
-            <tr>
-              <th>Session name</th>
-              <th>Date</th>
-            </tr>
-            <tr v-for="(session, index) in sessions" :key="index">
-              <td class="session-name" @click="joinSession(session.sessionId)">{{session.sessionId}}</td>
-              <td>{{new Date((session.createdOn._seconds)* 1000).toLocaleString()}}</td>
-            </tr>
-          </table>
-        </div>
+        <!-- Past sessions table -->
+        <past-sessions :user="user" />
       </div>
       <!-- Github message for colearn -->
       <div id="subMessage">
@@ -142,6 +161,7 @@
 import logo from "@/assets/img/titles/co-learn-logo.vue";
 import alert from "@/components/General/alert.vue";
 import messageBox from "@/components/home/MessageBox.vue";
+import PastSessions from "@/components/home/PastSessions.vue";
 import firebase from "firebase";
 
 import { VueAgile } from "vue-agile";
@@ -153,7 +173,8 @@ export default {
     logo,
     agile: VueAgile,
     alert,
-    "message-box": messageBox
+    "message-box": messageBox,
+    PastSessions
   },
   props: {
     verified: {
@@ -175,6 +196,7 @@ export default {
       }
     };
   },
+
   methods: {
     createSession() {
       this.$http
@@ -219,15 +241,7 @@ export default {
       user: "user"
     })
   },
-  created() {
-    if (this.user.authenticated) {
-      this.$http
-        .get("/user/user-sessions", { params: { email: this.user.data.email } })
-        .then(res => {
-          this.sessions = res.data;
-        });
-    }
-  },
+  created() {},
 
   watch: {}
 };
@@ -406,66 +420,6 @@ export default {
 
 #homeBody #subMessage a:hover {
   text-decoration: underline !important;
-}
-
-#homeBody #pastSessions {
-  display: block;
-
-  margin: 0 0.5rem;
-
-  border-radius: 5px;
-  border: 2px solid rgba($color: #000000, $alpha: 0.1);
-
-  text-align: center;
-
-  color: white;
-  background-color: var(--sql-light-primary);
-}
-
-#homeBody #pastSessions table {
-  width: 100%;
-
-  border-collapse: collapse;
-}
-
-#pastSessions th {
-  padding: 10px 5px;
-}
-
-#pastSessions td {
-  padding: 10px 5px;
-  border-bottom: 2px solid white;
-}
-
-#pastSessions th {
-  border-bottom: 2px solid whitesmoke;
-}
-#pastSessions tr:last-child td {
-  border-bottom: transparent;
-}
-
-#pastSessions tr,
-th {
-  cursor: pointer;
-
-  transition: 0.6s;
-}
-
-#pastSessions tr:hover {
-  background-color: rgba(var(--sql-primary-v), 0.2);
-}
-
-#pastSessions tr:hover th {
-  background-color: rgba(var(--sql-primary-v), 0.5);
-}
-
-#pastSessions .session-name {
-  color: white;
-  transition: color 0.5s;
-}
-
-#pastSessions .session-name:hover {
-  text-decoration: underline;
 }
 
 //Medium sized screens

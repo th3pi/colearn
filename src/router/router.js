@@ -1,7 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import store from "../store/store"
-const Home = () => import(/* webpackChunkName: "home" */ "../views/Home.vue");
+import Home from "../views/Home.vue"
+import Sql from "../views/Sql.vue"
+// const Home = () => import(/* webpackChunkName: "home" */ "../views/Home.vue");
 const Authentication = () =>
   import(
     /* webpackChunkName: "authentication" */ "../views/Authentication.vue"
@@ -24,7 +26,7 @@ export default new VueRouter({
   routes: [
     {
       path: '*',
-      component: () => import(/* webpackChunkName: "NotFound" */"../views/NotFound.vue")
+      component: Home,
     },
     {
       path: "/",
@@ -107,7 +109,7 @@ export default new VueRouter({
     {
       path: "/learn-sql/:sessionId",
       name: "learn-sql",
-      component: () => import(/* webpackChunkName: "sql" */ "../views/Sql.vue"),
+      component: Sql,
     },
     {
       path: "/beta",

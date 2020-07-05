@@ -2,7 +2,10 @@
   <div id="notFoundBody" class="open-sans">
     <verifiedLogo fill="var(--sql-light-primary)" id="logo" />
     <h3>You're all set!</h3>
-    <a class="neumorphic hover n-active" @click="$router.replace({name:'home'})">
+    <a
+      class="neumorphic hover n-active"
+      @click="$router.replace({name:'home', query: {verified: true}})"
+    >
       <i class="fas fa-arrow-left"></i>Go Home
     </a>
   </div>
@@ -20,6 +23,7 @@ export default {
       .auth()
       .applyActionCode(this.$route.query.oobCode)
       .then(() => {
+        this.$store.dispatch("setVerified", true);
         this.$store.dispatch("fetchUser", firebase.auth().currentUser);
       });
   }

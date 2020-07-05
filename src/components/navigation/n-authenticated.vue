@@ -1,6 +1,6 @@
 <template>
   <div id="rightNav">
-    <a id="user" class="bold">Hello, {{user.details.firstName}}</a>
+    <a id="user" class="bold">Hello, {{user.data.displayName}}</a>
     <div id="dropdown">
       <dropdown>
         <a v-if="this.$mq != 'sm'" id="settings" class="button neumorphic n-active">Settings</a>

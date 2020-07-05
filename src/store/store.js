@@ -36,6 +36,9 @@ export default new Vuex.Store({
     SET_USER_DETAILS(state, details) {
       state.user.details = details;
     },
+    SET_USER_VERIFIED(state, value) {
+      state.user.data.verified = value;
+    },
     SET_BETA(state, value) {
       state.user.beta = value;
     },
@@ -69,6 +72,9 @@ export default new Vuex.Store({
     },
     setActiveSession({ commit }, value) {
       commit("SET_ACTIVE_SESSION", value);
+    },
+    setVerified({ commit }, value) {
+      commit("SET_USER_VERIFIED", value);
     }
   },
   plugins: [

@@ -7,7 +7,7 @@
           <i v-else class="fas fa-bars logo"></i>
         </a>
       </li>
-      <nAuth :user="user" v-if="user.authenticated" />
+      <nAuth :user="user" v-if="auth" />
       <nUnAuth v-else />
     </div>
   </div>
@@ -18,15 +18,27 @@ import clLogo from "@/assets/img/titles/cl-logo.vue";
 import nAuth from "./n-authenticated";
 import nUnAuth from "./n-unauthenticated";
 import { mapGetters } from "vuex";
+import { EventBus } from "@/bus/bus";
 
 export default {
   name: "navigation",
   components: { clLogo, nAuth, nUnAuth },
+  data() {
+    return {
+      auth: null
+    };
+  },
   methods: {},
   computed: {
     ...mapGetters({
       user: "user"
     })
+  },
+  created() {
+    this.auth = this.user.authenticated;
+    EventBus.$on("user-fetched", () => {
+      this.auth = true;
+    });
   }
 };
 </script>

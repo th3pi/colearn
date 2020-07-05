@@ -90,6 +90,8 @@ import loader from "@/mixins/loader";
 
 import ENUM from "@/enums/firebase_enum";
 
+import { EventBus } from "@/bus/bus";
+
 export default {
   name: "register",
   mixins: [loader],
@@ -143,17 +145,20 @@ export default {
             .updateProfile({
               displayName: this.firstName
             })
-            .then(() => {});
-          //If user hasn't been verified already, send a verification mail, then route to home page
-          if (data.user && data.user.emailVerified == false) {
-            data.user.sendEmailVerification().then(() => {
-              this.loadState = ENUM.LOADED;
+            .then(() => {
               this.$store.dispatch("fetchUser", data.user);
-              setTimeout(() => {
-                this.$router.replace({ name: "home" });
-              }, 500);
+
+              //If user hasn't been verified already, send a verification mail, then route to home page
+              if (data.user && data.user.emailVerified == false) {
+                data.user.sendEmailVerification().then(() => {
+                  this.loadState = ENUM.LOADED;
+                  setTimeout(() => {
+                    EventBus.$emit("user-fetched");
+                    this.$router.replace({ name: "home" });
+                  }, 500);
+                });
+              }
             });
-          }
         })
         .catch(err => {
           if (err.code.match(/email-already-in-use/i)) {

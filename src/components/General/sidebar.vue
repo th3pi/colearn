@@ -18,7 +18,7 @@
       <div
         class="open-sans"
         :class="{ 'sidebar' : true, 'showBar' : showBar ? true : false}"
-        :style="getWidth(showBar, '50vw', '40vw','30vw')"
+        :style="getWidth(showBar, '15rem', '30rem','30rem')"
       >
         <div id="content" :style="{'opacity' : showBar ? 1 : 0}">
           <!-- Header section-->
@@ -34,8 +34,9 @@
           <br />
           <div id="body" class="sql font">
             <!-- Session info section -->
-            <p>Session Info</p>
+            <p class="header">Session Info</p>
             <slot class="session-info" name="sessionInfo"></slot>
+            <p class="tip">Hint: Click on an item to copy it</p>
           </div>
         </div>
       </div>
@@ -162,6 +163,18 @@ export default {
 
 #body {
   font-size: 0.85rem;
+}
+
+#body .tip {
+  color: var(--g-primary);
+}
+
+#body .header {
+  color: var(--dark);
+
+  font-size: 1.1rem;
+
+  font-weight: 700;
 }
 
 //Medium sized screens
