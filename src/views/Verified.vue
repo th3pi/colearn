@@ -19,7 +19,9 @@ export default {
     firebase
       .auth()
       .applyActionCode(this.$route.query.oobCode)
-      .then(() => {});
+      .then(() => {
+        this.$store.dispatch("fetchUser", firebase.auth().currentUser);
+      });
   }
 };
 </script>

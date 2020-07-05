@@ -109,21 +109,23 @@
         </div>
       </div>
       <!-- Github message for colearn -->
-      <h2 class="header">
-        Your past sessions
-        <i class="fas fa-info-circle"></i>
-      </h2>
-      <div id="pastSessions" class="neumorphic">
-        <table>
-          <tr>
-            <th>Session name</th>
-            <th>Date</th>
-          </tr>
-          <tr v-for="(session, index) in sessions" :key="index">
-            <td class="session-name" @click="joinSession(session.sessionId)">{{session.sessionId}}</td>
-            <td>{{new Date((session.createdOn._seconds)* 1000).toLocaleString()}}</td>
-          </tr>
-        </table>
+      <div v-if="user.authenticated">
+        <h2 class="header">
+          Your past sessions
+          <i class="fas fa-info-circle"></i>
+        </h2>
+        <div id="pastSessions" class="neumorphic">
+          <table>
+            <tr>
+              <th>Session name</th>
+              <th>Date</th>
+            </tr>
+            <tr v-for="(session, index) in sessions" :key="index">
+              <td class="session-name" @click="joinSession(session.sessionId)">{{session.sessionId}}</td>
+              <td>{{new Date((session.createdOn._seconds)* 1000).toLocaleString()}}</td>
+            </tr>
+          </table>
+        </div>
       </div>
       <!-- Github message for colearn -->
       <div id="subMessage">
@@ -160,9 +162,7 @@ export default {
     }
   },
   sockets: {
-    connect() {
-      console.log("CONNECTED");
-    }
+    connect() {}
   },
   data() {
     return {
@@ -220,12 +220,15 @@ export default {
     })
   },
   created() {
-    this.$http
-      .get("/user/user-sessions", { params: { email: this.user.data.email } })
-      .then(res => {
-        this.sessions = res.data;
-      });
+    if (this.user.authenticated) {
+      this.$http
+        .get("/user/user-sessions", { params: { email: this.user.data.email } })
+        .then(res => {
+          this.sessions = res.data;
+        });
+    }
   },
+
   watch: {}
 };
 </script>

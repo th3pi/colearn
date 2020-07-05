@@ -148,6 +148,7 @@ export default {
           if (data.user && data.user.emailVerified == false) {
             data.user.sendEmailVerification().then(() => {
               this.loadState = ENUM.LOADED;
+              this.$store.dispatch("fetchUser", data.user);
               setTimeout(() => {
                 this.$router.replace({ name: "home" });
               }, 500);
