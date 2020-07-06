@@ -15,7 +15,8 @@
               class="fa-copy"
             ></i>
           </td>
-          <td>{{new Date((session.createdOn._seconds)* 1000).toLocaleString()}}</td>
+          <!-- {{new Date((session.createdOn._seconds)* 1000).toLocaleString()}} -->
+          <td>{{getTimeDifference(new Date((session.lastUsed._seconds)* 1000))}}</td>
         </tr>
       </table>
       <p v-if="sessions.length == 0" style="padding: 2rem 0">
@@ -32,9 +33,10 @@
 <script>
 import ENUM from "@/enums/firebase_enum";
 import loader from "@/mixins/loader";
+import time from "@/mixins/time";
 export default {
   name: "past-sessions",
-  mixins: [loader],
+  mixins: [loader, time],
   props: {
     user: {
       type: Object
@@ -75,6 +77,11 @@ export default {
       this.$router.push({
         name: "learn-" + language.toLowerCase(),
         params: { sessionId: sessionId }
+      });
+    },
+    sortSession() {
+      this.sessions.sort((a, b) => {
+        return b.lastActive._seconds - a.lastActive._seconds;
       });
     }
   },

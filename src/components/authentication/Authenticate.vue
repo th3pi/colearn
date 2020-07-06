@@ -164,10 +164,11 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
+        .then(data => {
           if (this.storeApiLoaded) {
             this.loadState = ENUM.LOADED;
             setTimeout(() => {
+              this.$store.dispatch("fetchUser", data.user);
               this.$router.replace({ name: "home" });
             }, 500);
           }

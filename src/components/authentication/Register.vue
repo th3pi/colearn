@@ -90,8 +90,6 @@ import loader from "@/mixins/loader";
 
 import ENUM from "@/enums/firebase_enum";
 
-import { EventBus } from "@/bus/bus";
-
 export default {
   name: "register",
   mixins: [loader],
@@ -143,7 +141,8 @@ export default {
           // Updates user display name to firstname
           data.user
             .updateProfile({
-              displayName: this.firstName
+              displayName:
+                this.firstName.charAt(0).toUpperCase + this.firstName.slice(1)
             })
             .then(() => {
               this.$store.dispatch("fetchUser", data.user);
@@ -153,7 +152,6 @@ export default {
                 data.user.sendEmailVerification().then(() => {
                   this.loadState = ENUM.LOADED;
                   setTimeout(() => {
-                    EventBus.$emit("user-fetched");
                     this.$router.replace({ name: "home" });
                   }, 500);
                 });

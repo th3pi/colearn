@@ -142,6 +142,9 @@ export default {
     },
     sync_result(result) {
       this.messageHandler(result);
+    },
+    left_session(name, num) {
+      console.log(num);
     }
   },
   data() {
@@ -163,8 +166,20 @@ export default {
   created() {
     if (this.user.authenticated) {
       this.verifySession();
-      this.$socket.client.emit("new_session", this.$route.params.sessionId);
+      this.$socket.client.open();
+      this.$socket.client.emit(
+        "new_session",
+        this.$route.params.sessionId,
+        this.user.data.displayName
+      );
+
       document.title = "🟢 Session - " + this.$route.params.sessionId;
+    }
+  },
+  beforeRouteLeave(to, from, next) {
+    if (to && from) {
+      this.$socket.client.emit("leave_session", this.$route.params.sessionId);
+      next();
     }
   },
   beforeRouteEnter(to, from, next) {

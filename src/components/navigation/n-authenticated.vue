@@ -17,13 +17,13 @@
 <script>
 import firebase from "firebase";
 import dropdown from "@/components/General/dropdown.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "n-authenticated",
   components: { dropdown },
-
-  props: {
-    user: Object
+  computed: {
+    ...mapGetters({ user: "user" })
   },
   methods: {
     logout() {

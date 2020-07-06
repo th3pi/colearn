@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div id="navBar" class="open-sans">
+    <div :key="user.authenticated" id="navBar" class="open-sans">
       <li>
         <a>
           <clLogo v-if="this.$mq != 'sm'" class="logo" fill="var(--sql-light-primary)" />
           <i v-else class="fas fa-bars logo"></i>
         </a>
       </li>
-      <nAuth :user="user" v-if="auth" />
+      <nAuth v-if="user.authenticated" />
       <nUnAuth v-else />
     </div>
   </div>
@@ -18,7 +18,6 @@ import clLogo from "@/assets/img/titles/cl-logo.vue";
 import nAuth from "./n-authenticated";
 import nUnAuth from "./n-unauthenticated";
 import { mapGetters } from "vuex";
-import { EventBus } from "@/bus/bus";
 
 export default {
   name: "navigation",
@@ -34,12 +33,7 @@ export default {
       user: "user"
     })
   },
-  created() {
-    this.auth = this.user.authenticated;
-    EventBus.$on("user-fetched", () => {
-      this.auth = true;
-    });
-  }
+  created() {}
 };
 </script>
 

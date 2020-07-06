@@ -56,6 +56,7 @@
         color="white"
         bordercolor="var(--danger)"
         :dismiss="true"
+        :key="user.data.verified"
       >
         <i class="fas fa-exclamation-circle" style="transform: scale(0.95);"></i>
         Your email has not been

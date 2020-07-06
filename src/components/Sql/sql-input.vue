@@ -29,7 +29,7 @@
             ? 'Enter a command'
             : 'Enter a SQL command'
         "
-        @keydown.shift.enter.exact.prevent
+        @keydown.shift.enter.exact.prevent="sendSql(command)"
         @keydown.shift.space.exact.prevent="update"
         @focus="focus = true"
         @blur="focus = false"
@@ -126,7 +126,6 @@ export default {
      * @param data SQL command that is to be sent to the backend to get back a query result
      */
     sendSql(data) {
-      this.$socket.client.emit("sync_sqld", this.sessionInfo.sessionId, data);
       let name =
         this.user.data.displayName.charAt(0).toUpperCase() +
         this.user.data.displayName.slice(1);

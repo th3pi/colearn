@@ -3,11 +3,14 @@
     <div id="tableSection" v-if="progress == 100" key="loaded">
       <table v-if="commands.length != 0">
         <tr>
-          <th>Command</th>
+          <th>
+            Command
+            <i class="fas fa-redo" @click="getSessionHistory"></i>
+          </th>
           <th>By</th>
           <th>When</th>
         </tr>
-        <tr v-for="(command, index) in commands" :key="index">
+        <tr v-for="(command, index) in commands" :key="index" @click="sendCommand(command.command)">
           <td class="command">
             <p>{{getCommand(command.command)}}</p>
             <i
@@ -36,9 +39,10 @@
 import ENUM from "@/enums/firebase_enum";
 import loader from "@/mixins/loader";
 import { EventBus } from "@/bus/bus";
+import time from "@/mixins/time";
 export default {
   name: "sql-history",
-  mixins: [loader],
+  mixins: [loader, time],
   props: {
     sessionId: {
       type: String
@@ -46,7 +50,7 @@ export default {
   },
   data() {
     return {
-      commands: [],
+      commands: null,
       loadState: ENUM.INIT,
       progress: 0,
       clipboard: {
@@ -59,15 +63,7 @@ export default {
     };
   },
   created() {
-    this.loadState = ENUM.LOADING;
-    this.$http
-      .get("/session/sql/get-history", {
-        params: { sessionId: this.sessionId }
-      })
-      .then(res => {
-        this.loadState = ENUM.LOADED;
-        this.commands = res.data;
-      });
+    this.getSessionHistory();
   },
   methods: {
     copySessionLink(sessionId, language) {
@@ -76,21 +72,7 @@ export default {
         "https://colearn.tech/learn-" + language + "/" + sessionId;
       this.$clipboard(this.clipboard.clip);
     },
-    getTimeDifference(date) {
-      let now = new Date();
-      let difference = (now - date) / 1000;
-      if (difference < 60) {
-        return difference.toFixed(0) + " second(s) ago";
-      }
-      if (difference > 60 && difference < 60 * 60) {
-        return (difference / 60).toFixed(0) + " minute(s) ago";
-      }
-      if (difference > 60 * 60 && difference < 60 * 60 * 24) {
-        return (difference / (60 * 60 * 24)).toFixed(0) + " day(s) ago";
-      }
-    },
     copyCommand(command) {
-      EventBus.$emit("copy-command", command);
       this.clipboard.command = command;
       this.clipboard.clip = command;
       this.$clipboard(this.clipboard.clip);
@@ -101,6 +83,20 @@ export default {
       } else {
         return command;
       }
+    },
+    getSessionHistory() {
+      this.loadState = ENUM.LOADING;
+      this.$http
+        .get("/session/sql/get-history", {
+          params: { sessionId: this.sessionId }
+        })
+        .then(res => {
+          this.loadState = ENUM.LOADED;
+          this.commands = res.data;
+        });
+    },
+    sendCommand(command) {
+      EventBus.$emit("copy-command", command);
     }
   },
   watch: {
@@ -115,8 +111,6 @@ export default {
 #sqlHistory {
   display: block;
 
-  min-height: 5rem;
-
   width: 88%;
   margin: 0 auto;
 
@@ -126,6 +120,8 @@ export default {
   border: 2px solid rgba(var(--sql-light-primary), $alpha: 0.1);
 
   text-align: center;
+
+  min-height: 20vh;
 
   color: var(--sql-lighter-dark);
   background-color: white;
@@ -157,13 +153,14 @@ export default {
   top: 0;
   background-color: white;
   border-bottom: 2px solid whitesmoke;
+
+  cursor: default;
 }
 #sqlHistory tr:last-child td {
   border-bottom: transparent;
 }
 
-#sqlHistory tr,
-th {
+#sqlHistory tr {
   cursor: pointer;
 
   transition: 0.6s;
@@ -181,7 +178,16 @@ th {
 }
 
 #sqlHistory tr:hover th {
-  background-color: rgba(var(--sql-primary-v), 1);
+  background-color: white;
+}
+#sqlHistory th i {
+  transition: transform 0.3s;
+  transition-delay: 0.25s;
+
+  cursor: pointer;
+}
+#sqlHistory th i:hover {
+  transform: rotate(360deg);
 }
 
 #sqlHistory .command {
@@ -198,7 +204,7 @@ th {
   margin: 0;
 }
 
-#sqlHistory .command:hover {
+#sqlHistory .command p:hover {
   text-decoration: underline;
 }
 

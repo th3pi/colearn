@@ -55,8 +55,12 @@ auth.onAuthStateChanged((user) => {
 });
 
 const socket = io(
-  // 'http://localhost:5000'
   'https://colearn-tech.herokuapp.com/'
+  // 'http://localhost:5000'
+  , {
+    autoConnect: false,
+  }
+  // 'https://colearn-tech.herokuapp.com/'
 )
 
 Vue.use(VueSocketIOExt, socket);
