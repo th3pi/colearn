@@ -17,16 +17,17 @@
         <i :class="closeButton"></i>
       </div>
     </transition>
-    <transition name="dropdown-animation">
+    <collapse-transition>
       <!-- Dropdown content slot holds the dropdown menu options -->
       <div class="dropdown-content" v-if="show">
         <slot name="content"></slot>
       </div>
-    </transition>
+    </collapse-transition>
   </div>
 </template>
 
 <script>
+import { CollapseTransition } from "vue2-transitions";
 /**
  * Custom dropdown element w/ custom styling
  * @prop {String} title The default text/button for the dropdown
@@ -35,6 +36,9 @@
  */
 export default {
   name: "dropdown",
+  components: {
+    CollapseTransition
+  },
   props: {
     title: String,
     button: String,

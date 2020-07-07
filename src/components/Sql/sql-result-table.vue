@@ -20,6 +20,7 @@
               <!-- Row count column -->
               <th>#</th>
               <!-- Dynamically generated header columns (keys) -->
+
               <th v-for="(key, index) in keys" :key="index">{{key}}</th>
             </tr>
 
@@ -74,7 +75,7 @@ export default {
 <style lang="scss">
 #sqlResults {
   display: inline-block;
-  width: 100%;
+  width: 90%;
   background-color: var(--sql-lighter-dark);
 
   border: 2px solid rgba(var(--sql-dark-v), 0.2);
@@ -120,18 +121,15 @@ export default {
 
 #sqlResults table {
   table-layout: fixed;
-  width: 100%;
+  width: 1fr;
+  white-space: pre;
 
   font-size: 0.9rem;
-
-  text-align: left;
 
   border-collapse: collapse;
 }
 
 #sqlResults th {
-  padding: 2px 5px;
-
   border-bottom: 2px solid white;
 }
 
