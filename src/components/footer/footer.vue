@@ -2,24 +2,23 @@
   <div id="clFooter" class="open-sans">
     <div id="credits">
       <p>
-        <i class="far fa-copyright copyright"></i>2020 Colearn, made with
-        <i class="fas fa-heart heart"></i> by
+        <i class="far fa-copyright copyright"></i>2020 Colearn, by
         <i class="fab fa-github github"></i>th3pi
       </p>
     </div>
     <div id="links">
       <p>Navigate to:</p>
       <li>
-        <a>Home</a>
+        <a @click="$router.push({name:'home'})">Home</a>
+      </li>
+      <li v-if="!$store.getters.user.authenticated">
+        <a @click="$router.push({name:'authenticate'})">Login</a>
+      </li>
+      <li v-if="!$store.getters.user.authenticated">
+        <a @click="$router.push({name:'register'})">Registration</a>
       </li>
       <li>
-        <a>Login</a>
-      </li>
-      <li>
-        <a>Registration</a>
-      </li>
-      <li>
-        <a>Support</a>
+        <a @click="$router.push({name:'home'})">Support</a>
       </li>
     </div>
   </div>
@@ -40,7 +39,7 @@ export default {
   left: 0;
   bottom: 0;
   width: 100%;
-  z-index: -9999;
+  z-index: 1;
 
   height: 3rem;
 
@@ -50,6 +49,10 @@ export default {
 
   font-size: 0.85rem;
   color: var(--sql-lighter-dark);
+}
+
+#credits {
+  margin-left: 1rem;
 }
 
 #credits .copyright {

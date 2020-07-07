@@ -101,7 +101,16 @@ export default {
 html,
 body {
   margin: 0;
-  height: 100vh;
+
+  padding: 0;
+
+  min-width: 100%;
+  width: 100%;
+  max-width: 100%;
+
+  min-height: 100%;
+  height: 100%;
+  max-height: 100%;
 }
 #loader {
   display: flex;
