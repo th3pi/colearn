@@ -10,7 +10,10 @@ export default {
                 return (difference / 60).toFixed(0) + " minute(s) ago";
             }
             if (difference > 60 * 60 && difference < 60 * 60 * 24) {
-                return (difference / (60 * 60 * 24)).toFixed(0) + " day(s) ago";
+                return (difference / (60 * 60)).toFixed(0) + " hour(s) ago";
+            }
+            if (difference > 60 * 60 * 24) {
+                return (difference / (60 * 60)).toFixed(0) + " days(s) ago";
             }
         },
     }

@@ -20,7 +20,7 @@ const Beta = () => import(/* webpackChunkName: "beta" */ "../views/Beta.vue");
 
 Vue.use(VueRouter);
 
-export default new VueRouter({
+export const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
@@ -151,6 +151,55 @@ export default new VueRouter({
         ]
       }
     },
-
+    {
+      path: "/sessions/",
+      name: "sessions",
+      component: () => import(/* webpackChunkName: "verified" */ "../views/Sessions.vue"),
+      meta: {
+        title: 'Colearn - Sessions',
+        metaTags: [
+          {
+            name: 'description',
+            content: 'Create, join or manage your sessions'
+          },
+          {
+            property: 'og:description',
+            content: 'Create, join or manage your sessions'
+          }
+        ]
+      },
+      beforeEnter: (to, from, next) => {
+        if (store.getters.user.authenticated) {
+          next();
+        } else {
+          next({ name: 'home' })
+        }
+      }
+    },
+    {
+      path: "/account",
+      name: "account",
+      component: () => import(/* webpackChunkName: "verified" */ "../views/Account.vue"),
+      meta: {
+        title: 'Colearn - Account Portal',
+        metaTags: [
+          {
+            name: 'description',
+            content: 'Manage your colearn account'
+          },
+          {
+            property: 'og:description',
+            content: 'Manage your colearn account'
+          }
+        ]
+      },
+      beforeEnter: (to, from, next) => {
+        if (store.getters.user.authenticated) {
+          next();
+        } else {
+          next({ name: 'home' })
+        }
+      }
+    },
   ],
 });

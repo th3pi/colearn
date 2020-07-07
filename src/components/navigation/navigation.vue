@@ -65,6 +65,7 @@ export default {
   align-items: center;
   flex-direction: row;
 }
+
 #rightNav .button {
   margin-right: 0.5rem;
   padding: 0.4rem 0.8rem;

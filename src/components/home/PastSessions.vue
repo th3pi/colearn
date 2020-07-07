@@ -1,22 +1,34 @@
 <template>
   <div id="pastSessions" class="neumorphic">
-    <div v-if="progress == 100" key="loaded">
+    <div id="tableSection" v-if="progress == 100" key="loaded">
       <table v-if="sessions.length != 0">
         <tr>
-          <th>Session name</th>
-          <th>Date</th>
+          <th>
+            Sessions
+            <i class="fas fa-redo" @click="getSessions"></i>
+          </th>
         </tr>
-        <tr v-for="(session, index) in sessions" :key="index">
-          <td class="session-name">
-            <p @click="joinSession(session.sessionId, session.language)">{{session.sessionId}}</p>
-            <i
-              @click="copySessionLink(session.sessionId, session.language)"
-              :class="{'fas': clipboard.sessionId == session.sessionId ? true : false, 'far' : clipboard.sessionId != session.sessionId ? true : false,}"
-              class="fa-copy"
-            ></i>
-          </td>
+        <tr id="pastSessionsBody" v-for="(session, index) in sessions" :key="index">
+          <div class="session-card neumorphic">
+            <div>
+              <p
+                class="main-title"
+                @click="joinSession(session.sessionId, session.language)"
+              >{{session.sessionId}}</p>
+              <i
+                @click="copySessionName(session.sessionId)"
+                :class="{'fas': clipboard.sessionId == session.sessionId ? true : false, 'far' : clipboard.sessionId != session.sessionId ? true : false,}"
+                class="fa-copy copy-button"
+              ></i>
+              <p class="secondary-title">Host: {{session.hostname}}</p>
+            </div>
+
+            <div id="date">
+              <i class="far fa-clock"></i>
+              {{getTimeDifference(new Date((session.lastUsed._seconds)* 1000))}}
+            </div>
+          </div>
           <!-- {{new Date((session.createdOn._seconds)* 1000).toLocaleString()}} -->
-          <td>{{getTimeDifference(new Date((session.lastUsed._seconds)* 1000))}}</td>
         </tr>
       </table>
       <p v-if="sessions.length == 0" style="padding: 2rem 0">
@@ -57,13 +69,7 @@ export default {
   },
   created() {
     if (this.user.authenticated) {
-      this.loadState = ENUM.LOADING;
-      this.$http
-        .get("/user/user-sessions", { params: { email: this.user.data.email } })
-        .then(res => {
-          this.loadState = ENUM.LOADED;
-          this.sessions = res.data;
-        });
+      this.getSessions();
     }
   },
   methods: {
@@ -71,6 +77,12 @@ export default {
       this.clipboard.sessionId = sessionId;
       this.clipboard.clip =
         "https://colearn.tech/learn-" + language + "/" + sessionId;
+      this.$clipboard(this.clipboard.clip);
+    },
+    copySessionName(sessionId) {
+      this.clipboard.sessionId = sessionId;
+
+      this.clipboard.clip = sessionId;
       this.$clipboard(this.clipboard.clip);
     },
     joinSession(sessionId, language) {
@@ -83,6 +95,28 @@ export default {
       this.sessions.sort((a, b) => {
         return b.lastActive._seconds - a.lastActive._seconds;
       });
+    },
+    getUser(email) {
+      this.$http
+        .get("/user/get-user-by-email", { params: { email: email } })
+        .then(res => {
+          return res.data.displayName;
+        });
+    },
+    getSessions() {
+      this.loadState = ENUM.LOADING;
+      this.$http
+        .get("/user/user-sessions", {
+          params: {
+            email: this.user.data.email,
+            limit: "5"
+          }
+        })
+        .then(res => {
+          this.loadState = ENUM.LOADED;
+
+          this.sessions = res.data;
+        });
     }
   },
   watch: {
@@ -96,8 +130,6 @@ export default {
 <style lang="scss">
 #pastSessions {
   display: block;
-
-  min-height: 5rem;
 
   margin: 0 0.5rem;
 
@@ -116,27 +148,31 @@ export default {
   border-collapse: collapse;
 }
 
-#pastSessions th {
-  padding: 10px 5px;
+#pastSessions #tableSection {
+  overflow: auto;
 }
 
-#pastSessions td {
-  padding: 10px 5px;
-  border-bottom: 2px solid white;
+#pastSessions #pastSessionsBody {
 }
 
 #pastSessions th {
+  padding: 10px 5px;
   border-bottom: 2px solid whitesmoke;
-}
-#pastSessions tr:last-child td {
-  border-bottom: transparent;
 }
 
 #pastSessions tr,
 th {
-  cursor: pointer;
-
   transition: 0.6s;
+}
+
+#pastSessions th i {
+  transition: transform 0.3s;
+  transition-delay: 0.25s;
+
+  cursor: pointer;
+}
+#pastSessions th i:hover {
+  transform: rotate(360deg);
 }
 
 #pastSessions tr:hover {
@@ -147,21 +183,66 @@ th {
   background-color: rgba(var(--sql-primary-v), 0.5);
 }
 
-#pastSessions .session-name {
-  color: white;
+#pastSessions .session-card {
+  display: flex;
+
+  flex-direction: row;
+
+  justify-content: space-between;
+
+  background-color: white;
+
+  padding: 1rem;
+
+  margin: 0.5rem 0.5rem;
+
+  border-radius: 5px;
+
+  color: var(--sql-light-primary);
+
   transition: color 0.5s;
 }
 
-#pastSessions .session-name p {
-  display: inline;
-  margin-right: 1rem;
+#pastSessions .session-card .main-title,
+.secondary-title {
+  text-align: left;
+  margin-right: 0.4rem;
 }
 
-#pastSession .session-name i {
+#pastSessions .session-card .main-title {
+  display: inline;
+
+  cursor: pointer;
+}
+
+#pastSessions .session-card .copy-button {
+  cursor: pointer;
+
+  transition: 0.4s;
+}
+
+#pastSessions .session-card .copy-button:hover {
+  color: var(--sql-primary);
+}
+
+#pastSessions .session-card .main-title:hover {
+  text-decoration: underline;
+}
+
+#pastSessions .session-card .secondary-title {
+  font-size: 0.85rem;
+  color: var(--sql-lighter-dark);
+}
+
+#pastSession .session-card i {
   margin: 0;
 }
 
-#pastSessions .session-name:hover {
-  text-decoration: underline;
+#pastSessions #date {
+  display: block;
+
+  color: var(--sql-lighter-dark);
+
+  font-size: 0.85rem;
 }
 </style>

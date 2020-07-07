@@ -35,7 +35,13 @@
         </p>
         <p>
           <i class="fas fa-chevron-right"></i>
-          Enter the name of the session you want to join
+          Enter the name of the session you wish to
+          <strong>join</strong>
+        </p>
+        <p>
+          <i class="fas fa-chevron-right"></i>
+          Or leave it blank, and
+          <strong>create</strong> a new session
         </p>
         <input v-model="sessionId" type="text" class="neumorphic" placeholder="e.g LeopardNoahYes" />
         <div id="sessionGroup">

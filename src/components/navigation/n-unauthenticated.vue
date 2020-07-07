@@ -1,10 +1,13 @@
 <template>
   <div id="rightNav">
+    <a @click="$router.push({name: 'home'})" style="margin-right: 1rem; cursor:pointer;">
+      <i class="fas fa-home"></i>
+      Home
+    </a>
     <transition name="fade-fast" mode="out-in">
       <a
         v-if="$route.name == 'home'"
         @click="$router.push({name: 'authenticate'})"
-        class="button"
         id="signIn"
         key="fromHome"
       >
@@ -15,7 +18,6 @@
         v-if="$route.name == 'authenticate'"
         @click="$router.push({name: 'register'})"
         id="signIn"
-        class="button"
         key="fromLogin"
       >
         <i class="fas fa-pencil-alt"></i>
@@ -25,14 +27,13 @@
         v-if="$route.name == 'register'"
         @click="$router.push({name: 'authenticate'})"
         id="signIn"
-        class="button"
         from="fromRegister"
       >
         <i class="fas fa-sign-in-alt"></i>
         Log In
       </a>
     </transition>
-    <i v-if="this.$mq != 'sm'" id="more" class="fas fa-caret-down button neumorphic n-active"></i>
+    <!-- <i v-if="this.$mq != 'sm'" id="more" class="fas fa-caret-down button neumorphic n-active"></i> -->
   </div>
 </template>
 
@@ -55,7 +56,10 @@ export default {
 #signIn {
   box-shadow: none;
 
+  margin-right: 1rem;
   color: var(--sql-light-primary);
+
+  cursor: pointer;
 }
 
 #dropdown {

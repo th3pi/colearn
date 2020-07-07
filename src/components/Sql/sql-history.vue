@@ -88,7 +88,7 @@ export default {
       this.loadState = ENUM.LOADING;
       this.$http
         .get("/session/sql/get-history", {
-          params: { sessionId: this.sessionId }
+          params: { sessionId: this.$route.params.sessionId }
         })
         .then(res => {
           this.loadState = ENUM.LOADED;

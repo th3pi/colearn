@@ -89,7 +89,7 @@ export default {
 <style lang="scss">
 #sqlResults {
   display: inline-block;
-  width: 88%;
+  width: 100%;
   background-color: var(--sql-lighter-dark);
 
   border: 2px solid rgba(var(--sql-dark-v), 0.2);
@@ -134,6 +134,7 @@ export default {
 }
 
 #sqlResults table {
+  table-layout: fixed;
   width: 100%;
 
   font-size: 0.9rem;
@@ -150,8 +151,8 @@ export default {
 }
 
 #sqlResults td {
-  padding: 2px 5px;
-  border-bottom: 1px solid rgba(var(--sql-light-v), $alpha: 0.5);
+  padding: 0;
+  border: 1px solid rgba(var(--sql-light-v), $alpha: 0.5);
 }
 
 #sqlResults tr {
@@ -188,7 +189,7 @@ export default {
 
 @media screen and (min-width: 470px) {
   #sqlResults table {
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
 
   #sqlResults th {
@@ -199,7 +200,10 @@ export default {
   }
 
   #tableSection {
-    max-height: 25vh;
+    table-layout: auto;
+    overflow: auto;
+    height: 20rem;
+    resize: vertical;
   }
 }
 

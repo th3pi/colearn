@@ -9,7 +9,7 @@
       @click="showBar = true"
       :style="{'opacity' : showBar ? 0 : 1}"
     >
-      <i class="fas fa-info"></i>
+      <i class="fas fa-info" style="color: var(--sql-lighter-dark)"></i>
     </button>
     <div id="sidebarBody">
       <!-- Side bar help guide activation button -->

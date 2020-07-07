@@ -74,11 +74,19 @@ export default {
         this.loadSate = firebaseENUM.ERROR;
         return (this.invalid = true);
       }
+      console.log({
+        email: this.user.data.email,
+        sessionId: this.$route.params.sessionId,
+        pin: this.pin,
+        name: this.user.data.displayName
+      });
+
       this.$http
         .post("/session/sql/join-session", {
           email: this.user.data.email,
           sessionId: this.$route.params.sessionId,
-          pin: this.pin
+          pin: this.pin,
+          name: this.user.data.displayName
         })
         .then(res => {
           if (res.data) {

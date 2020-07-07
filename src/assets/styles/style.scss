@@ -87,14 +87,34 @@
     font-family: "Open Sans", sans-serif;
 }
 
+.button{
+        color: white;
+        background-color: var(--sql-light-primary);
+  
+        border: none;
+  
+        border-radius: 5px;
+  
+        outline: none;
+  
+        padding: 0.5rem 0.75rem;
+  
+        i {
+          margin: 0 auto;
+        }
+      
+}
+
 .border{
     border-radius: 5px;
     border: 2px solid rgba(var(--sql-light-primary-v), 0.2);
+    transition: border-color 0.4s;
 }
 
 .border:hover{
     border-radius: 5px;
     border: 2px solid rgba(var(--sql-light-primary-v), 0.2);
+    border-color: rgba(var(--sql-light-primary-v), 0.8);
 }
 
 .flex {

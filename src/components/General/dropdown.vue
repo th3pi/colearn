@@ -84,16 +84,16 @@ export default {
 
 //Elements inside a dropdown
 .dropdown-content {
-  display: inline-block;
+  display: grid;
+
+  gap: 1rem;
 
   padding: 0.2rem;
 
   position: absolute;
-  min-width: 12rem;
-  top: 1.4rem;
-  right: -0.2rem;
+  top: 2rem;
 
-  background-color: white;
+  background-color: rgba($color: #fff, $alpha: 0.2);
 
   border-radius: 5px;
 
@@ -122,21 +122,22 @@ export default {
 
 //Styling links of dropdowns
 .dropdown-content a {
-  display: block;
-  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  padding: 0.85rem 1.5rem 0.85rem 1.5rem;
 
   color: black;
   text-decoration: none;
 
+  border-radius: 5px;
+
+  background-color: white;
+
   transition: 0.3s;
 
   cursor: pointer;
-}
-
-//Dropdown links on hover expand shadow
-.dropdown-content a:hover {
-  border-radius: 5px;
-  box-shadow: 0 4px 12px rgba($color: #000000, $alpha: 0.2);
 }
 
 .dropdown-content p {
@@ -144,7 +145,6 @@ export default {
   border-radius: 5px;
   background-color: rgb(46, 46, 46);
   box-shadow: 0 -2px 4px rgba($color: #ffffff, $alpha: 0.5) inset;
-  margin-bottom: 0.2rem !important;
   padding: 0.2rem 0.2rem;
 
   color: white;

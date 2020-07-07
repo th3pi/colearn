@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div v-if="progress == 100" key="loaded">
+    <vue-topprogress ref="topProgress" :height="5"></vue-topprogress>
+
+    <div key="loaded">
       <div
         class="sql font"
         id="sqlBody"
@@ -81,14 +83,11 @@
             <code-snippet>
               Session link
               <br />
-              <strong @click="copyLink">colearn.tech/join-sql/{{sessionInfo.sessionId}}</strong>
+              <strong @click="copyLink">colearn.tech/join/{{sessionInfo.sessionId}}</strong>
             </code-snippet>
           </template>
         </sidebar>
       </div>
-    </div>
-    <div id="loader" v-else key="loader">
-      <vue-ellipse-progress :progress="progress" :loading="true" />
     </div>
   </div>
 </template>
@@ -101,6 +100,8 @@ import sidebar from "@/components/General/sidebar.vue";
 import codeSnippet from "@/components/General/code-snippet.vue";
 import sqlResultTable from "@/components/Sql/sql-result-table.vue";
 import sqlHistory from "@/components/Sql/sql-history.vue";
+
+import ENUM from "@/enums/firebase_enum";
 
 //Mixin imports
 import responsive from "@/mixins/responsive";
@@ -160,7 +161,9 @@ export default {
       progress: 0,
       type: null,
       command: null,
-      sessionInfo: []
+      sessionInfo: {
+        sessionId: null
+      }
     };
   },
   created() {
@@ -278,6 +281,7 @@ export default {
       }
     },
     verifySession() {
+      this.loadState = ENUM.LOADING;
       this.$http
         .get("/session/sql/fetch-session", {
           params: {
@@ -306,7 +310,7 @@ export default {
                   pin: ""
                 })
                 .then(() => {
-                  this.progress = 100;
+                  this.loadState = ENUM.LOADED;
                 });
             }
           } else {
@@ -317,7 +321,7 @@ export default {
                 pin: ""
               })
               .then(() => {
-                this.progress = 100;
+                this.loadState = ENUM.LOADED;
               });
           }
         })
@@ -333,11 +337,17 @@ export default {
     },
     copyLink() {
       this.$clipboard(
-        "https://colearn.tech/join-sql/" + this.sessionInfo.sessionId
+        "https://colearn.tech/join/" + this.sessionInfo.sessionId
       );
     }
   },
-  watch: {}
+  watch: {
+    loadState(newValue) {
+      if (newValue == ENUM.LOADING) this.$refs.topProgress.start();
+      if (newValue == ENUM.LOADED) this.$refs.topProgress.done();
+      if (newValue == ENUM.ERROR) this.$refs.topProgress.fail();
+    }
+  }
 };
 </script>
 

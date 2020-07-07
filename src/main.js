@@ -7,12 +7,12 @@ import VueSocketIOExt from 'vue-socket.io-extended'
 import io from 'socket.io-client'
 import Popover from 'vue-js-popover'
 import Clipboard from 'v-clipboard'
-
+import vueTopprogress from 'vue-top-progress'
 
 
 import { auth } from "./firebase";
 //Navigation router
-import router from "./router/router";
+import { router } from "./router/router";
 
 //State management
 import store from "./store/store";
@@ -60,7 +60,6 @@ const socket = io(
   , {
     autoConnect: false,
   }
-  // 'https://colearn-tech.herokuapp.com/'
 )
 
 Vue.use(VueSocketIOExt, socket);
@@ -76,6 +75,10 @@ Vue.use(Popover, { tooltip: true })
 
 //To copy items to clipboard
 Vue.use(Clipboard)
+
+//Top progress bar
+Vue.use(vueTopprogress)
+
 
 
 new Vue({

@@ -202,7 +202,8 @@ export default {
     createSession() {
       this.$http
         .post("/session/sql/create-session", {
-          email: this.user.data.email
+          email: this.user.data.email,
+          name: this.user.data.displayName
         })
         .then(res => {
           let sessionId = res.data.message;
