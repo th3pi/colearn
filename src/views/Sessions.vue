@@ -18,7 +18,7 @@
         <div class="card neumorphic border">
           <div class="card-header">
             <div class="header-title neumorphic">
-              <p>{{session.sessionId}}</p>
+              <p @click="joinSession(session.sessionId)">{{session.sessionId}}</p>
               <i
                 @click="copySessionName(session.sessionId)"
                 :class="{'fas': clipboard.sessionId == session.sessionId ? true : false, 'far' : clipboard.sessionId != session.sessionId ? true : false,}"
@@ -48,13 +48,13 @@
             transition="dropdown-animation"
             :pointer="false"
           >
-            <button class="button neumorphic n-active">
+            <button class="button n-active">
               <i class="fas fa-signature"></i>Reset name
             </button>
-            <button class="button neumorphic n-active">
+            <button class="button n-active">
               <i class="fas fa-key"></i>Reset pin
             </button>
-            <button class="button neumorphic n-active">
+            <button class="button n-active">
               <i class="fas fa-backspace"></i>Delete
             </button>
           </popover>
@@ -93,6 +93,7 @@ import sessionLogo from "@/assets/img/titles/session-logo.vue";
 import ENUM from "@/enums/firebase_enum";
 import time from "@/mixins/time";
 import { mapGetters } from "vuex";
+
 export default {
   name: "sessions",
   mixins: [time],
@@ -137,10 +138,10 @@ export default {
         })
         .catch(() => {});
     },
-    joinSession() {
+    joinSession(sessionId) {
       this.$router.push({
-        name: "join-sql",
-        params: { sessionId: "getone" }
+        name: "learn-sql",
+        params: { sessionId: sessionId }
       });
     },
     getSessions() {

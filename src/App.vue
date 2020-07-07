@@ -4,8 +4,8 @@
       <div v-if="progress == 100" key="content">
         <div id="ifAuth" v-if="user.beta">
           <navigation />
-          <transition name="fade" mode="out-in">
-            <router-view></router-view>
+          <transition name="fade" id="mainBody" mode="out-in">
+            <router-view class="body"></router-view>
           </transition>
           <cl-footer />
         </div>
@@ -109,5 +109,8 @@ body {
   align-items: center;
   flex-direction: column;
   height: 100vh;
+}
+.body {
+  margin-top: 5rem;
 }
 </style>

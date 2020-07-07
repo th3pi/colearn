@@ -5,14 +5,14 @@
     </template>
     <vue-topprogress ref="topProgress" :height="5"></vue-topprogress>
     <div v-if="account" class="profile">
-      <div class="name">
+      <div class="name" :class="{'editing' : edit.basic}">
         <h3>
           Basic info
           <i class="fas fa-edit" @click="edit.basic = true" v-if="!edit.basic"></i>
           <i class="far fa-check-square" @click="edit.basic = false" v-if="edit.basic"></i>
         </h3>
       </div>
-      <transition name="fade" mode="out-in">
+      <collapse-transition mode="out-in">
         <div class="profile-body neumorphic border" v-if="!edit.basic" key="nonEdit">
           <div class="row">
             <p>First name</p>
@@ -76,7 +76,7 @@
             ></cl-input>
           </div>
         </div>
-      </transition>
+      </collapse-transition>
       <div class="name">
         <h3>Billing info</h3>
       </div>
@@ -108,10 +108,12 @@ import loader from "@/mixins/loader";
 import clInput from "@/components/General/cl-input";
 import accountLogo from "@/assets/img/titles/account-logo";
 import { mapGetters } from "vuex";
+import { CollapseTransition } from "vue2-transitions";
+
 export default {
   name: "account",
   mixins: [loader],
-  components: { page, clInput, accountLogo },
+  components: { page, clInput, accountLogo, CollapseTransition },
   data() {
     return {
       account: null,
@@ -184,12 +186,33 @@ export default {
 }
 .name {
   margin-top: 1rem;
-  h2 {
-    display: inline;
-    margin-right: 0.5rem;
+  i {
+    cursor: pointer;
+    margin-left: 1rem;
+
+    transition: 0.4s;
   }
-  h2:first-child {
-    text-transform: capitalize;
+  i:hover {
+    color: var(--sql-primary);
+  }
+
+  transition: 0.5s;
+}
+.editing {
+  padding: 0 0.5rem;
+
+  border-radius: 5px;
+
+  background-color: var(--sql-light-primary);
+  color: white;
+  i {
+    margin: 0;
+    margin-left: 1rem;
+    transition: 0.4s;
+  }
+
+  i:hover {
+    opacity: 0.9;
   }
 }
 

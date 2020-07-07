@@ -20,14 +20,15 @@ export default {
   display: block;
   width: 20rem;
   height: auto;
-  margin: 1rem auto;
+  margin: 0 auto;
+  margin-top: 0;
 }
 
 #page {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 1rem;
+  margin-top: 5.5rem;
   margin-bottom: 4rem;
 }
 
