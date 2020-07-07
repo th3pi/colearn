@@ -85,6 +85,11 @@
               <br />
               <strong @click="copyLink">colearn.tech/join/{{sessionInfo.sessionId}}</strong>
             </code-snippet>
+            <code-snippet>
+              Sample tables
+              <br />
+              <strong>Artist, Album, Customer, Employee, Genre, Invoice, Playlist, PlaylistTrack, Track</strong>
+            </code-snippet>
           </template>
         </sidebar>
       </div>

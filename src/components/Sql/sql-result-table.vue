@@ -10,20 +10,6 @@
             Showing
             <strong>{{results.length}}</strong> results
           </p>
-
-          <!-- Result options dropdown -->
-          <dropdown
-            @dropdown-show="dropdownShow = dropdownShow ? false : true"
-            button="fas fa-ellipsis-v"
-            closeButton="fas fa-times"
-          >
-            <!-- Dropdown options -->
-            <template #content>
-              <a>Save</a>
-              <a>Share</a>
-              <a>Reload</a>
-            </template>
-          </dropdown>
         </div>
 
         <!-- Table section -->
@@ -40,7 +26,7 @@
             <!-- Entry rows -->
             <tr v-for="(row, no) in results" :key="no" class="tr">
               <!-- Entry row index column -->
-              <td>{{no+1}}</td>
+              <td id="index">{{no+1}}</td>
 
               <!-- Dynamically generated entry columns -->
               <td v-for="(value, key) in row" :key="key">{{value}}</td>
@@ -60,7 +46,6 @@
 </template>
 
 <script>
-import dropdown from "@/components/General/dropdown.vue";
 /**
  * Generates a table that displays SQL command results
  * Disection of keys and results are done in the parent component
@@ -70,7 +55,7 @@ import dropdown from "@/components/General/dropdown.vue";
  */
 export default {
   name: "sql-result-table",
-  components: { dropdown },
+  components: {},
   props: {
     results: Array,
     keys: Array,

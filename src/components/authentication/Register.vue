@@ -141,8 +141,7 @@ export default {
           // Updates user display name to firstname
           data.user
             .updateProfile({
-              displayName:
-                this.firstName.charAt(0).toUpperCase + this.firstName.slice(1)
+              displayName: this.firstName
             })
             .then(() => {
               this.$store.dispatch("fetchUser", data.user);
