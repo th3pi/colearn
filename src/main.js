@@ -3,11 +3,13 @@ import App from "./App.vue";
 import axios from "axios";
 import VueMq from "vue-mq";
 import VueEllipseProgress from "vue-ellipse-progress";
-import VueSocketIOExt from 'vue-socket.io-extended'
-import io from 'socket.io-client'
 import Popover from 'vue-js-popover'
 import Clipboard from 'v-clipboard'
 import vueTopprogress from 'vue-top-progress'
+import Notifications from 'vue-notification'
+import { vsList, vsIcon } from "vuesax";
+// import "vuesax/dist/vuesax.css";
+
 
 
 import { auth } from "./firebase";
@@ -54,16 +56,6 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
-const socket = io(
-  'https://colearn-tech.herokuapp.com/'
-  // 'http://localhost:5000'
-  , {
-    autoConnect: false,
-  }
-)
-
-Vue.use(VueSocketIOExt, socket);
-
 //VueMq breakpoints, to programmatically adjust components according to screen sizes
 Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } });
 
@@ -79,7 +71,10 @@ Vue.use(Clipboard)
 //Top progress bar
 Vue.use(vueTopprogress)
 
+Vue.use(Notifications)
 
+Vue.use(vsList)
+Vue.use(vsIcon)
 
 new Vue({
   router,

@@ -1,12 +1,18 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import { sessionHistory } from "./modules/session-history"
+import { sqlSocket } from "./modules/sql-socket"
 import ENUM from "@/enums/store_enum"
 
 //Initial Vuex state management
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  modules: {
+    sessionHistory,
+    sqlSocket,
+  },
   state: {
     user: {
       authenticated: false,

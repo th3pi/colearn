@@ -34,9 +34,10 @@
           <br />
           <div id="body" class="sql font">
             <!-- Session info section -->
-            <p class="header">Session Info</p>
+            <h3 style="text-align: center; color: var(--dark); margin-bottom: .5rem">
+              <i class="far fa-file-alt"></i>Session Info
+            </h3>
             <slot class="session-info" name="sessionInfo"></slot>
-            <p class="tip">Hint: Click on an item to copy it</p>
           </div>
         </div>
       </div>
@@ -80,7 +81,7 @@ export default {
 
 // Sidebar open button
 #sidebarButton {
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 6.5rem;
   height: 2rem;
@@ -98,7 +99,7 @@ export default {
 // Sidebar
 .sidebar {
   position: fixed;
-  top: 0;
+  top: 5rem;
   right: -5px;
   z-index: 1;
 

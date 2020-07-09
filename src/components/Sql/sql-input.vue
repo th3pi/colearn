@@ -10,6 +10,7 @@
       <textarea
         id="commandInput"
         name="commandInput"
+        @keydown.shift.enter.exact.prevent="sendSql(command)"
         :class="{
           sql: true,
           font: true,
@@ -23,14 +24,8 @@
         }"
         v-model="command"
         :placeholder="
-          focus
-            ? ''
-            : this.$mq == 'sm'
-            ? 'Enter a command'
-            : 'Enter a SQL command'
+          placeholder
         "
-        @keydown.shift.enter.exact.prevent="sendSql(command)"
-        @keydown.shift.space.exact.prevent="update"
         @focus="focus = true"
         @blur="focus = false"
       ></textarea>
@@ -83,7 +78,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "sql-input",
   mixins: [responsive],
-  props: { sessionInfo: Object },
+  props: { sessionInfo: Object, socket: Object },
   computed: {
     ...mapGetters({
       user: "user"
@@ -94,17 +89,15 @@ export default {
       this.command = event;
       this.update();
     });
-  },
-  sockets: {
-    sync_sql(command) {
+    EventBus.$on("copyToCommand", event => {
+      this.command = event;
+    });
+    this.socket.on("get_sql", command => {
       this.command = command;
-    },
-    get_sql(command) {
+    });
+    this.socket.on("sync_sql", command => {
       this.command = command;
-    },
-    sync_sqld(data) {
-      console.log(data);
-    }
+    });
   },
   /**
    * Sockets listening for "sqlTyping" which overwrites command value, with whatever is being emitted over
@@ -117,7 +110,8 @@ export default {
       height: 1.5, //Height of a single line
       rows: 1, //Number of rows in the command box
       focus: false, //Focus boolean for the input field
-      session: null
+      session: null,
+      placeholder: "Enter a SQL command"
     };
   },
   methods: {
@@ -136,17 +130,22 @@ export default {
           type: "run",
           by: name
         })
-        .then();
-      if (data.match(/SELECT/i)) {
-        this.$socket.client.emit(
-          "get_sql",
-          this.sessionInfo.sessionId,
-          this.command
-        );
-      } else {
-        this.update();
-      }
-      this.$emit("send-sql", data);
+        .then(() => {
+          this.$store.dispatch(
+            "getSessionHistory",
+            this.$route.params.sessionId
+          );
+          if (data.match(/SELECT/i)) {
+            this.socket.emit(
+              "get_sql",
+              this.sessionInfo.sessionId,
+              this.command
+            );
+          } else {
+            this.update();
+          }
+          this.$emit("send-sql", data);
+        });
     },
     createNewLine() {
       this.rows++;
@@ -157,11 +156,7 @@ export default {
      * Synchronizes session data by sending a post request to firestore
      */
     update() {
-      this.$socket.client.emit(
-        "sync_sql",
-        this.sessionInfo.sessionId,
-        this.command
-      );
+      this.socket.emit("sync_sql", this.sessionInfo.sessionId, this.command);
     },
     /**
      * Resets all the parameters to default values
@@ -169,11 +164,7 @@ export default {
      */
     reset() {
       this.command = "";
-      this.$socket.client.emit(
-        "get_sql",
-        this.sessionInfo.sessionId,
-        this.command
-      );
+      this.socket.emit("get_sql", this.sessionInfo.sessionId, this.command);
       this.$emit("reset-sql");
     }
   },
@@ -183,29 +174,21 @@ export default {
      * @param {String} newValue Current value of the command variable
      */
     command: {
-      immediate: true,
+      immediate: false,
       handler(newValue) {
+        this.$emit("typing", newValue);
+        this.socket.emit(
+          "typing",
+          newValue,
+          this.$route.params.sessionId,
+          this.user.data.displayName
+        );
         this.rows = newValue.split("\n").length;
         this.height = this.rows * 1.6;
         if (newValue == "") {
           this.rows = 1;
           this.height = 1.5;
         }
-      }
-    },
-    focus(newValue) {
-      if (newValue) {
-        this.$emit(
-          "focus-sql",
-          "Shift + Space to share what you have typed",
-          "var(--sql-light-primary)"
-        );
-      } else {
-        this.$emit(
-          "focus-sql",
-          "Run a SQL command to display result here",
-          "var(--sql-lighter-dark)"
-        );
       }
     }
   }

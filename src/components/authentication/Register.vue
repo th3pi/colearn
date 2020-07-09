@@ -145,7 +145,10 @@ export default {
             })
             .then(() => {
               this.$store.dispatch("fetchUser", data.user);
-
+              this.$store.dispatch("fetchDetails", {
+                firstName: this.firstName,
+                lastName: this.lastName
+              });
               //If user hasn't been verified already, send a verification mail, then route to home page
               if (data.user && data.user.emailVerified == false) {
                 data.user.sendEmailVerification().then(() => {

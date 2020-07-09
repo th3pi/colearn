@@ -1,8 +1,10 @@
 <template>
   <div>
+    <notifications group="sessionUsers" class="open-sans notif neumorphic" position="bottom right" />
+    <notifications group="error" :max="1" class="open-sans neumorphic" position="bottom right" />
     <vue-topprogress ref="topProgress" :height="5"></vue-topprogress>
 
-    <div key="loaded">
+    <div v-if="verified" key="loaded">
       <div
         class="sql font"
         id="sqlBody"
@@ -16,21 +18,63 @@
           <sql-input
             class="sqlInput"
             :sessionInfo="sessionInfo"
+            :socket="socket"
             @send-sql="fetchSqlLocal"
             @reset-sql="updateResultTable"
             @focus-sql="showTipOnFocus"
+            @typing="shareCommand = $event == '' ? 'What others type will show up here' : $event"
           />
         </div>
+        <div>
+          <h2 class="header" style="color: var(--sql-lighter-dark)">
+            Sync box
+            <i v-popover:syncBox class="fas fa-info-circle" style="transform: scale(.75)"></i>
+            <p>Click on the box at anytime to copy its contents to your input field</p>
+            <popover
+              name="syncBox"
+              transition="fade"
+              class="neumorphic"
+              style="font-size: .95rem; font-weight: 300; text-align: left; padding: .5rem 1rem; width: 15rem"
+            >
+              <strong
+                style="font-size: 1.1rem; border-bottom: 2px solid rgba(var(--sql-lighter-dark-v), 0.8);"
+              >More about Sync Box</strong>
+              <br />
+              <br />
 
-        <!-- Result table -->
-        <div id="resultSection">
-          <sql-result-table
-            :error="message"
-            :results="results"
-            :keys="keys"
-            :background="resultBackground"
-          ></sql-result-table>
+              <li>
+                Sync box is
+                <strong>instantly synchronized</strong> between all colearners in a session
+              </li>
+              <br />
+              <li>Click on the box at any time to copy it into your command box</li>
+            </popover>
+          </h2>
+          <div
+            id="shareBox"
+            class="neumorphic hover n-active border-not-type"
+            :class="{'border-type': typedBy != null ? true : false}"
+            :style="{
+            height: height + 'rem',
+          }"
+            @click="copyToCommandBox"
+          >
+            <p>
+              {{shareCommand}}
+              <span v-if="typedBy != null" class="typed-by">// by {{typedBy}}</span>
+            </p>
+          </div>
+          <!-- Result table -->
+          <div id="resultSection">
+            <sql-result-table
+              :error="message"
+              :results="results"
+              :keys="keys"
+              :background="resultBackground"
+            ></sql-result-table>
+          </div>
         </div>
+
         <div>
           <h2 class="header" style="color: var(--sql-lighter-dark)">
             Session history
@@ -88,14 +132,31 @@
             <code-snippet>
               Sample tables
               <br />
-              <strong>Artist, Album, Customer, Employee, Genre, Invoice, Playlist, PlaylistTrack, Track</strong>
+              <strong
+                style="text-decoration: none; cursor: default"
+              >Artist, Album, Customer, Employee, Genre, Invoice, Playlist, PlaylistTrack, Track</strong>
             </code-snippet>
+            <p class="tip">Tip: Click on an item to copy it</p>
+
+            <h3 style="text-align: center; color: var(--dark); margin: .5rem 0">
+              <i class="fas fa-users"></i>Colearners in session
+            </h3>
+            <div class="session-profiles" v-for="(socket, index) in userSocket" :key="index">
+              <div class="profile-card neumorphic border">
+                <i class="fas fa-user"></i>
+                <div class="details">
+                  <p class="name">{{socket.username}}</p>
+                  <p>Online</p>
+                </div>
+              </div>
+            </div>
           </template>
         </sidebar>
       </div>
     </div>
   </div>
 </template>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js"></script>
 
 <script>
 //Component imports
@@ -105,12 +166,14 @@ import sidebar from "@/components/General/sidebar.vue";
 import codeSnippet from "@/components/General/code-snippet.vue";
 import sqlResultTable from "@/components/Sql/sql-result-table.vue";
 import sqlHistory from "@/components/Sql/sql-history.vue";
+import io from "socket.io-client";
 
 import ENUM from "@/enums/firebase_enum";
 
 //Mixin imports
 import responsive from "@/mixins/responsive";
 import { mapGetters } from "vuex";
+import { EventBus } from "@/bus/bus";
 /**
  * Main view for SQL collaborations
  * @param {String} route holds the route to backend sql query api
@@ -133,25 +196,9 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: "user"
+      user: "user",
+      userSocket: "getSocket"
     })
-  },
-  sockets: {
-    connect() {},
-    /**
-     * Receives a run command from the session
-     * @param {String} command is a sql command received from the socket
-     */
-    get_sql(command) {
-      this.command = command;
-      command == "" ? this.updateResultTable() : this.fetchSqlLocal(command);
-    },
-    sync_result(result) {
-      this.messageHandler(result);
-    },
-    left_session(name, num) {
-      console.log(num);
-    }
   },
   data() {
     return {
@@ -168,27 +215,37 @@ export default {
       command: null,
       sessionInfo: {
         sessionId: null
-      }
+      },
+      socket: null,
+      verified: null,
+      loadState: ENUM.INIT,
+      users: [],
+      shareCommand: "What others type will show up here",
+      height: 1.5,
+      typedBy: null
     };
   },
   created() {
     if (this.user.authenticated) {
-      this.verifySession();
-      this.$socket.client.open();
-      this.$socket.client.emit(
-        "new_session",
-        this.$route.params.sessionId,
-        this.user.data.displayName
-      );
+      this.sessionInfo.sessionId = this.$route.params.sessionId;
+      this.socket = io("https://colearn-tech.herokuapp.com/");
 
-      document.title = "🟢 Session - " + this.$route.params.sessionId;
+      this.verifySession();
+      this.$store.dispatch("getSessionHistory", this.sessionInfo.sessionId);
+      document.title = "🟢 Session - " + this.sessionInfo.sessionId;
+      this.watchUsers();
     }
   },
-  beforeRouteLeave(to, from, next) {
-    if (to && from) {
-      this.$socket.client.emit("leave_session", this.$route.params.sessionId);
-      next();
+  beforeDestroy() {
+    if (this.socket) {
+      this.socket.close();
+      this.$store.dispatch("updateUser", {
+        sessionId: this.sessionInfo.sessionId,
+        username: this.user.data.displayName,
+        status: "Offline"
+      });
     }
+    this.$store.dispatch("resetState");
   },
   beforeRouteEnter(to, from, next) {
     if (to && from) {
@@ -211,7 +268,6 @@ export default {
           }
         })
         .then(res => {
-          0;
           //If response is an array, it means successful SELECT command was run
           if (Array.isArray(res.data)) {
             this.results = res.data;
@@ -221,8 +277,7 @@ export default {
             this.showTable = true;
           } else {
             this.messageHandler(res.data);
-
-            this.$socket.client.emit(
+            this.socket.emit(
               "sync_result",
               this.$route.params.sessionId,
               res.data
@@ -290,7 +345,7 @@ export default {
       this.$http
         .get("/session/sql/fetch-session", {
           params: {
-            sessionId: this.$route.params.sessionId
+            sessionId: this.sessionInfo.sessionId
           }
         })
         .then(res => {
@@ -299,22 +354,35 @@ export default {
             if (!Array.isArray(res.data.colearners)) {
               this.$router.replace({
                 name: "join-sql",
-                params: { sessionId: this.$route.params.sessionId }
+                params: { sessionId: this.sessionInfo.sessionId }
               });
             }
             if (!res.data.colearners.includes(this.user.data.email)) {
               this.$router.replace({
                 name: "join-sql",
-                params: { sessionId: this.$route.params.sessionId }
+                params: { sessionId: this.sessionInfo.sessionId }
               });
             } else {
               this.$http
                 .post("/session/sql/join-session", {
                   email: this.user.data.email,
-                  sessionId: this.$route.params.sessionId,
+                  sessionId: this.sessionInfo.sessionId,
                   pin: ""
                 })
                 .then(() => {
+                  this.socket.emit(
+                    "new_user_session",
+                    this.user.data.displayName,
+                    this.sessionInfo.sessionId
+                  );
+                  this.$store.dispatch("updateUser", {
+                    sessionId: this.sessionInfo.sessionId,
+                    username: this.user.data.displayName,
+                    status: "online"
+                  });
+                  this.users = this.$store.getters.getSocket;
+
+                  this.verified = true;
                   this.loadState = ENUM.LOADED;
                 });
             }
@@ -322,10 +390,21 @@ export default {
             this.$http
               .post("/session/sql/join-session", {
                 email: this.user.data.email,
-                sessionId: this.$route.params.sessionId,
+                sessionId: this.sessionInfo.sessionId,
                 pin: ""
               })
               .then(() => {
+                this.socket.emit(
+                  "new_user_session",
+                  this.user.data.displayName,
+                  this.sessionInfo.sessionId
+                );
+                this.$store.dispatch("updateUser", {
+                  sessionId: this.sessionInfo.sessionId,
+                  username: this.user.data.displayName,
+                  status: "online"
+                });
+                this.verified = true;
                 this.loadState = ENUM.LOADED;
               });
           }
@@ -342,8 +421,64 @@ export default {
     },
     copyLink() {
       this.$clipboard(
-        "https://colearn.tech/join/" + this.sessionInfo.sessionId
+        "https://colearn.tech/learn-sql/" + this.sessionInfo.sessionId
       );
+    },
+    copyToCommandBox() {
+      if (this.shareCommand == "What others type will show up here") {
+        this.$notify({
+          group: "error",
+          title: "<i class='fas fa-ban    '></i> Stop!",
+          text: "What's the point of copying that?",
+          type: "error"
+        });
+      } else {
+        EventBus.$emit("copyToCommand", this.shareCommand);
+      }
+    },
+    watchUsers() {
+      this.socket.on("new_user", username => {
+        setTimeout(() => {
+          this.$store.dispatch("setUsers", this.sessionInfo.sessionId);
+        }, 500);
+        this.$notify({
+          group: "sessionUsers",
+          title: "<i class='fas fa-user-plus    '></i>" + username,
+          text: " Joined the session",
+          type: "joined"
+        });
+      });
+      this.socket.on("user_left", username => {
+        setTimeout(() => {
+          this.$store.dispatch("setUsers", this.sessionInfo.sessionId);
+        }, 500);
+        this.$notify({
+          group: "sessionUsers",
+          title: "<i class='fas fa-user-minus    '></i>" + username,
+          text: "left the session",
+          type: "user-left"
+        });
+      });
+      this.socket.on("receiving", (command, username) => {
+        this.shareCommand = command;
+        if (command != "") this.typedBy = username;
+        if (command == "") {
+          this.shareCommand = "What others type will show up here";
+        }
+      });
+      this.socket.on("get_sql", command => {
+        this.command = command;
+        command == "" ? this.updateResultTable() : this.fetchSqlLocal(command);
+        setTimeout(() => {
+          this.$store.dispatch("getSessionHistory", this.sessionInfo.sessionId);
+        }, 800);
+      });
+      this.socket.on("sync_result", result => {
+        this.messageHandler(result);
+        setTimeout(() => {
+          this.$store.dispatch("getSessionHistory", this.sessionInfo.sessionId);
+        }, 800);
+      });
     }
   },
   watch: {
@@ -351,12 +486,26 @@ export default {
       if (newValue == ENUM.LOADING) this.$refs.topProgress.start();
       if (newValue == ENUM.LOADED) this.$refs.topProgress.done();
       if (newValue == ENUM.ERROR) this.$refs.topProgress.fail();
+    },
+    shareCommand(newValue) {
+      this.rows = newValue.split("\n").length;
+      this.height = this.rows * 1.6;
+      if (newValue == "What others type will show up here") {
+        this.rows = 1;
+        this.height = 1.5;
+        this.typedBy = null;
+      }
     }
   }
 };
 </script>
 
 <style lang="scss">
+$user1: rgba(38, 14, 61, 1);
+$user2: rgba(58, 82, 33, 1);
+$user3: rgba(13, 6, 20, 1);
+$user4: rgba(69, 49, 89, 1);
+$user5: rgba(125, 46, 46, 1);
 #loader {
   margin-top: 15rem;
 }
@@ -388,6 +537,115 @@ export default {
   align-items: center;
   justify-content: center;
   width: 100%;
+  margin-top: 2rem;
+}
+h2 {
+  p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+}
+#shareBox {
+  background-color: white;
+  width: 88%;
+  margin: 0.5rem auto;
+  margin-bottom: 0;
+  padding: 0.5rem;
+
+  white-space: pre-line;
+
+  border-radius: 5px;
+
+  color: var(--sql-lighter-dark);
+
+  transition: 0.8s;
+
+  cursor: pointer;
+  .typed-by {
+    opacity: 0.8;
+    font-size: 0.95rem;
+  }
+}
+
+.border-not-type {
+  border: 3px solid transparent;
+
+  transition: 0.4s;
+}
+
+.border-type {
+  border: 3px solid var(--sql-light-primary);
+}
+.notif {
+  margin-bottom: 4rem;
+}
+.vue-notification {
+  padding: 10px;
+  margin: 0 5px 5px;
+  color: var(--sql-lighter-dark);
+  background: white;
+  box-shadow: 6px 6px 12px 0 rgba(0, 0, 0, 0.2),
+    -6px -6px 12px 0 rgba(255, 255, 255, 0.5);
+
+  .notification-title {
+    font-size: 1rem;
+  }
+
+  .notification-content {
+    font-size: 0.95rem;
+  }
+
+  &.joined {
+    border-left: 5px solid var(--success);
+  }
+
+  &.user-left {
+    border-left: 5px solid var(--danger);
+  }
+  &.error {
+    color: white;
+    .notification-content {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.session-profiles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  background-color: white;
+  width: 90%;
+  margin: 0.5rem;
+
+  padding: 0.5rem 1rem;
+
+  border-radius: 5px;
+
+  color: var(--sql-light-primary);
+  .details {
+    display: block;
+  }
+  transition: border 0.4s;
+  i {
+    transform: scale(1.4);
+    margin-right: 1rem;
+  }
+  p:first-child {
+    font-size: 1.1rem;
+  }
+  p:last-child {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    color: var(--success);
+  }
 }
 
 @media screen and (min-width: 470px) {

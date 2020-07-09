@@ -70,8 +70,8 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          window.sessionStorage.clear();
           this.$store.dispatch("giveAccess", false);
+          this.$store.dispatch("fetchUser", firebase.auth().currentUser);
         });
     }
   },
@@ -107,7 +107,7 @@ export default {
   align-items: center;
 }
 #rightNav {
-  margin-right: 1rem;
+  margin-right: 2rem;
 }
 #rightNav #user {
   margin-right: 0.5rem;

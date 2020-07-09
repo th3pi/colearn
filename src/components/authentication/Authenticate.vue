@@ -153,7 +153,8 @@ export default {
         badPassword: null
       },
       loadState: ENUM.INIT,
-      progress: 0
+      progress: 0,
+      redirectTo: null
     };
   },
   methods: {

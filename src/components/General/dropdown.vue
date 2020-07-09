@@ -90,14 +90,14 @@ export default {
 .dropdown-content {
   display: grid;
 
-  gap: 1rem;
+  gap: 0.45rem;
 
   padding: 0.2rem;
 
   position: absolute;
   top: 2rem;
 
-  background-color: rgba($color: #fff, $alpha: 0.2);
+  background-color: rgba($color: #fff, $alpha: 0.75);
 
   border-radius: 5px;
 

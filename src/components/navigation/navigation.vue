@@ -42,7 +42,7 @@ export default {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 5;
   background-color: white;
 
   display: flex;

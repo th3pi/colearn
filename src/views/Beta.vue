@@ -157,6 +157,7 @@ export default {
           if (res.data) {
             this.loadSate = firebaseENUM.LOADED;
             setTimeout(() => {
+              this.$router.replace({ name: "home" });
               this.$store.dispatch("giveAccess", true);
             }, 500);
           } else {

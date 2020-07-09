@@ -120,9 +120,11 @@ export default {
 }
 
 #sqlResults table {
-  table-layout: fixed;
-  width: 1fr;
+  table-layout: auto;
+  width: 100%;
   white-space: pre;
+
+  overflow: auto;
 
   font-size: 0.9rem;
 
