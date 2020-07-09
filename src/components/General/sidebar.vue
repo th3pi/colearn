@@ -6,12 +6,12 @@
     <button
       id="sidebarButton"
       class="button neumorphic n-active hover"
-      @click="showBar = true"
+      @click="toggle"
       :style="{'opacity' : showBar ? 0 : 1}"
     >
       <i class="fas fa-info" style="color: var(--sql-lighter-dark)"></i>
     </button>
-    <div id="sidebarBody">
+    <div id="sidebarBody" v-touch:swipe.right="toggle">
       <!-- Side bar help guide activation button -->
 
       <!-- Sidebar section -->
@@ -68,6 +68,11 @@ export default {
     showBar(newValue) {
       this.$emit("update:showBar", newValue);
     }
+  },
+  methods: {
+    toggle() {
+      this.showBar = this.showBar ? false : true;
+    }
   }
 };
 </script>
@@ -77,6 +82,8 @@ export default {
 #sidebarBody {
   position: fixed;
   right: 0;
+  overflow: auto;
+  margin-bottom: 5rem;
 }
 
 // Sidebar open button
@@ -128,10 +135,11 @@ export default {
 
 // Sidebar content body
 #content {
-  margin: 0.2rem 0.5rem 0.2rem 0.5rem;
+  margin: 0.2rem 0.5rem 5rem 0.5rem;
   margin-top: 0.2rem;
   margin-left: 0.5rem;
   transition: 0.4s;
+  margin-bottom: 10rem;
 }
 
 // Sidebar header

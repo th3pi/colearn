@@ -22,7 +22,7 @@
             @send-sql="fetchSqlLocal"
             @reset-sql="updateResultTable"
             @focus-sql="showTipOnFocus"
-            @typing="shareCommand = $event == '' ? 'What others type will show up here' : $event"
+            @typing="shareCommand = $event == '' ? 'This sync box is shared by everyone in the session for realtime collaboration' : $event"
           />
         </div>
         <div>
@@ -220,7 +220,8 @@ export default {
       verified: null,
       loadState: ENUM.INIT,
       users: [],
-      shareCommand: "What others type will show up here",
+      shareCommand:
+        "This sync box is shared by everyone in the session for realtime collaboration",
       height: 1.5,
       typedBy: null
     };
@@ -228,7 +229,7 @@ export default {
   created() {
     if (this.user.authenticated) {
       this.sessionInfo.sessionId = this.$route.params.sessionId;
-      this.socket = io("https://colearn-tech.herokuapp.com/");
+      this.socket = io("https://colearn-tech.herokuapp.com/sql");
 
       this.verifySession();
       this.$store.dispatch("getSessionHistory", this.sessionInfo.sessionId);
@@ -425,7 +426,10 @@ export default {
       );
     },
     copyToCommandBox() {
-      if (this.shareCommand == "What others type will show up here") {
+      if (
+        this.shareCommand ==
+        "This sync box is shared by everyone in the session for realtime collaboration"
+      ) {
         this.$notify({
           group: "error",
           title: "<i class='fas fa-ban    '></i> Stop!",
@@ -463,7 +467,8 @@ export default {
         this.shareCommand = command;
         if (command != "") this.typedBy = username;
         if (command == "") {
-          this.shareCommand = "What others type will show up here";
+          this.shareCommand =
+            "This sync box is shared by everyone in the session for realtime collaboration";
         }
       });
       this.socket.on("get_sql", command => {
@@ -490,7 +495,10 @@ export default {
     shareCommand(newValue) {
       this.rows = newValue.split("\n").length;
       this.height = this.rows * 1.6;
-      if (newValue == "What others type will show up here") {
+      if (
+        newValue ==
+        "This sync box is shared by everyone in the session for realtime collaboration"
+      ) {
         this.rows = 1;
         this.height = 1.5;
         this.typedBy = null;

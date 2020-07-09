@@ -8,6 +8,8 @@ import Clipboard from 'v-clipboard'
 import vueTopprogress from 'vue-top-progress'
 import Notifications from 'vue-notification'
 import { vsList, vsIcon } from "vuesax";
+import Vue2TouchEvents from 'vue2-touch-events'
+
 // import "vuesax/dist/vuesax.css";
 
 
@@ -75,6 +77,7 @@ Vue.use(Notifications)
 
 Vue.use(vsList)
 Vue.use(vsIcon)
+Vue.use(Vue2TouchEvents)
 
 new Vue({
   router,
