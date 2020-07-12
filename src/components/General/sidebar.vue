@@ -1,46 +1,25 @@
 <template>
   <div>
-    <!-- Sidebar help guide content - slots generate the content
-          Slots should be overriden in parents
-    -->
-    <button
-      id="sidebarButton"
-      class="button neumorphic n-active hover"
-      @click="toggle"
-      :style="{'opacity' : showBar ? 0 : 1}"
-    >
+    <button id="sidebarButton" class="button neumorphic n-active hover" @click="showBar = true">
       <i class="fas fa-info" style="color: var(--sql-lighter-dark)"></i>
     </button>
-    <div id="sidebarBody" v-touch:swipe.right="toggle">
-      <!-- Side bar help guide activation button -->
 
-      <!-- Sidebar section -->
-      <div
-        class="open-sans"
-        :class="{ 'sidebar' : true, 'showBar' : showBar ? true : false}"
-        :style="getWidth(showBar, '15rem', '30rem','30rem')"
+    <div id="sidebar">
+      <el-drawer
+        title="Info and Settings"
+        :visible.sync="showBar"
+        direction="rtl"
+        @open="con"
+        class="sidebar-body open-sans"
+        custom-class="custom-sidebar"
       >
-        <div id="content" :style="{'opacity' : showBar ? 1 : 0}">
-          <!-- Header section-->
-          <div id="header">
-            <p>
-              <!-- Header prop for language -->
-              Info and Settings
-            </p>
-
-            <!-- Help guide close button -->
-            <i id="closeBarButton" class="far fa-times-circle" @click="showBar = false"></i>
+        <template #title>
+          <div class="title">
+            <slot name="title" />
           </div>
-          <br />
-          <div id="body" class="sql font">
-            <!-- Session info section -->
-            <h3 style="text-align: center; color: var(--dark); margin-bottom: .5rem">
-              <i class="far fa-file-alt"></i>Session Info
-            </h3>
-            <slot class="session-info" name="sessionInfo"></slot>
-          </div>
-        </div>
-      </div>
+        </template>
+        <slot name="sessionInfo"></slot>
+      </el-drawer>
     </div>
   </div>
 </template>
@@ -72,6 +51,9 @@ export default {
   methods: {
     toggle() {
       this.showBar = this.showBar ? false : true;
+    },
+    con() {
+      console.log("OPEN");
     }
   }
 };
@@ -79,11 +61,17 @@ export default {
 
 <style lang="scss">
 // Entire component
-#sidebarBody {
-  position: fixed;
-  right: 0;
-  overflow: auto;
-  margin-bottom: 5rem;
+#sidebar {
+  .title {
+    color: var(--dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+  }
+}
+
+#sidebar > * {
 }
 
 // Sidebar open button
@@ -131,6 +119,19 @@ export default {
 // Sidebar box-shadow class
 .showBar {
   box-shadow: 0 2px 8px rgba($color: #000000, $alpha: 0.2);
+}
+
+.sidebar-body {
+  button {
+    outline: none;
+  }
+  .el-drawer {
+    outline: none;
+  }
+}
+
+.custom-sidebar {
+  min-width: 20rem;
 }
 
 // Sidebar content body

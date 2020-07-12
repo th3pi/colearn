@@ -3,7 +3,7 @@
     <a id="user" class="bold">Hello, {{user.details.firstName + ' ' + user.details.lastName}}</a>
     <a
       id="settings"
-      @click="$router.push({name: 'home'})"
+      @click="$router.push({name: 'home'}).catch(() => {})"
       class="neumorphic n-active"
       style="margin-right:1rem; cursor: pointer;"
     >
@@ -18,7 +18,7 @@
         <a
           class="neumorphic hover n-active"
           :style="{'background-color': bg.account, 'color': color.account + ' !important'}"
-          @click="$router.push({name: 'account'})"
+          @click="$router.push({name: 'account'}).catch(() => {})"
         >
           <i class="fas fa-user-circle"></i>Account
           <span :style="{'color': color.account + ' !important'}">Modify your account details</span>
@@ -26,7 +26,7 @@
         <a
           class="neumorphic hover n-active"
           :style="{'background-color': bg.sessions, 'color': color.sessions + ' !important'}"
-          @click="$router.push({name: 'sessions'})"
+          @click="$router.push({name: 'sessions'}).catch(() => {})"
         >
           <i class="fas fa-history"></i>Sessions
           <span

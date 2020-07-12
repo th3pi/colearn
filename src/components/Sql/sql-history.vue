@@ -1,46 +1,24 @@
 <template>
   <div id="history">
-    <div id="sqlHistory" class="neumorphic">
-      <div
-        id="tableSection"
-        :class="{'center-text': commands.length == 0 ? true : false}"
-        key="loaded"
-      >
-        <slide-x-right-transition mode="out-in">
-          <table v-if="commands.length != 0" key="yesdata">
-            <tr>
-              <th></th>
-              <th>
-                Command
-                <i class="fas fa-redo" @click="getSessionHistory"></i>
-              </th>
-              <th>By</th>
-              <th>When</th>
-            </tr>
-            <tr v-for="(command, index) in commands" :key="index">
-              <td @click="fetchSqlLocal(command.command)" class="run-again">
-                <i class="fas fa-history" v-if="command.command.match(/SELECT/i)"></i>
-              </td>
-              <td class="command" :key="command.ranAt._seconds">
-                <p>{{getCommand(command.command)}}</p>
-                <i
-                  @click="copyCommand(command.command)"
-                  :class="{'fas': clipboard.command == command.command ? true : false, 'far' : clipboard.command != command.command ? true : false,}"
-                  class="fa-copy"
-                ></i>
-              </td>
-              <td>{{command.by}}</td>
-              <td class="time-ran">{{getTimeDifference(new Date((command.ranAt._seconds)* 1000))}}</td>
-            </tr>
-            <!-- Table section -->
-          </table>
-
-          <p v-if="commands.length == 0" style="padding: 2rem 0" key="nodata">
-            There's nothing to show here right now.
-            <br />Your session history will show up here when you or someone else in the session runs a command
-          </p>
-        </slide-x-right-transition>
-      </div>
+    <div>
+      <el-timeline>
+        <el-timeline-item v-for="(command, index) in commands" :key="index">
+          <div class="timeline-card neumorphic border" @click="sendCommand(command.command)">
+            <div class="left-side">
+              <div class="title">
+                <h4>{{command.command}}</h4>
+                <p>{{command.by}}</p>
+              </div>
+              <p class="time">
+                <i @click="fetchSqlLocal(command.command)" class="run-again">
+                  <i class="fas fa-history" style="margin-right: .05rem;"></i>
+                </i>
+                <timeago :auto-update="5" :datetime="new Date((command.ranAt._seconds) * 1000)"></timeago>
+              </p>
+            </div>
+          </div>
+        </el-timeline-item>
+      </el-timeline>
     </div>
     <collapse-transition>
       <div id="historyTableSection" v-if="loaded" class="neumorphic">
@@ -77,12 +55,12 @@
 </template>
 
 <script>
-import ENUM from "@/enums/firebase_enum";
 import loader from "@/mixins/loader";
 import { EventBus } from "@/bus/bus";
 import time from "@/mixins/time";
 import { mapGetters } from "vuex";
-import { SlideXRightTransition, CollapseTransition } from "vue2-transitions";
+import { CollapseTransition } from "vue2-transitions";
+import { Timeline, TimelineItem } from "element-ui";
 
 export default {
   name: "sql-history",
@@ -92,7 +70,11 @@ export default {
       type: String
     }
   },
-  components: { SlideXRightTransition, CollapseTransition },
+  components: {
+    CollapseTransition,
+    "el-timeline": Timeline,
+    "el-timeline-item": TimelineItem
+  },
   computed: {
     ...mapGetters({ commands: "sessionHistory", loadState: "loadState" })
   },
@@ -128,23 +110,8 @@ export default {
       this.clipboard.clip = command;
       this.$clipboard(this.clipboard.clip);
     },
-    getCommand(command) {
-      if (command.length > 30) {
-        return command.substring(0, 30) + "...";
-      } else {
-        return command;
-      }
-    },
     getSessionHistory() {
-      this.loadState = ENUM.LOADING;
-      this.$http
-        .get("/session/sql/get-history", {
-          params: { sessionId: this.$route.params.sessionId }
-        })
-        .then(res => {
-          this.loadState = ENUM.LOADED;
-          this.commands = res.data;
-        });
+      this.$store.getters.getSessionHistory;
     },
     sendCommand(command) {
       EventBus.$emit("copy-command", command);
@@ -192,14 +159,16 @@ export default {
 </script>
 
 <style lang="scss">
-#sqlHistory {
-  display: block;
-
+#history {
   width: 88%;
   margin: 0 auto;
 
-  margin-top: 1rem;
+  .el-timeline {
+    padding: 0;
+  }
+}
 
+#sqlHistory {
   border-radius: 5px;
   border: 2px solid rgba(var(--sql-light-primary), $alpha: 0.1);
 
@@ -211,113 +180,31 @@ export default {
   background-color: white;
 }
 
-#sqlHistory table {
-  table-layout: auto;
-  width: 100%;
-  white-space: pre;
-
-  border-collapse: collapse;
-
-  overflow: auto;
-}
-
-#sqlHistory #tableSection {
-  max-height: 20vh;
-}
-.center-text {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#sqlHistory th {
-  padding: 10px 5px;
-}
-
-#sqlHistory td {
-  padding: 10px 5px;
-  border-bottom: 2px solid white;
-}
-
-#sqlHistory th {
-  position: sticky;
-  top: 0;
+.timeline-card {
   background-color: white;
-  border-bottom: 2px solid whitesmoke;
-
-  cursor: default;
-}
-#sqlHistory tr:last-child td {
-  border-bottom: transparent;
-}
-
-#sqlHistory tr {
+  padding: 1rem;
+  padding-top: 0.2ren;
+  border-radius: 5px;
+  transition: border 0.4s;
   cursor: pointer;
-
-  transition: 0.6s;
-  .run-again {
-    i {
-      transition: color 0.4s;
+  .title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 0;
+    h4 {
       color: var(--sql-lighter-dark);
+      text-align: left;
+      margin-right: 0.5rem;
+      max-width: 15rem;
     }
-    i:hover {
-      color: var(--sql-light-primary);
-    }
+  }
+  .time {
+    opacity: 0.75;
   }
 }
 
-#sqlHistory tr th:first-child {
-  border-radius: 5px 0 0 5px;
-}
-#sqlHistory tr th:last-child {
-  border-radius: 0 5px 5px 0;
-}
-
-#sqlHistory tr:hover {
-  background-color: rgba(var(--sql-primary-v), 0.2);
-}
-
-#sqlHistory tr:hover th {
-  background-color: white;
-}
-#sqlHistory th i {
-  transition: transform 0.3s;
-  transition-delay: 0.25s;
-
-  cursor: pointer;
-}
-#sqlHistory th i:hover {
-  transform: rotate(360deg);
-}
-
-#sqlHistory .command {
-  color: var(--sql-lighter-dark);
-  transition: color 0.5s;
-}
-
-#sqlHistory .command p {
-  display: inline;
-  margin-right: 1rem;
-}
-
-#pastSession .command i {
-  margin: 0;
-}
-
-#sqlHistory .command p:hover {
-  text-decoration: underline;
-}
-
-#sqlHistory .time-ran {
-  font-size: 85%;
-}
-
 #history {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-
   #zoomButtons {
     position: absolute;
     display: grid;

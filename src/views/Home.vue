@@ -112,9 +112,20 @@
       </div>
       <!-- User sessions table -->
       <div v-if="user.authenticated">
-        <h2 class="header">
-          Your past sessions
-          <i v-popover:sessionInfo class="fas fa-info-circle"></i>
+        <h2 v-popover:sessionInfo class="header">
+          Jump back in
+          <i class="fas fa-external-link-alt"></i>
+          <p>
+            Thesse are your two most recently used sessions. Go to
+            <strong>
+              Sessions
+              <i
+                class="fas fa-external-link-alt"
+                style="transform: scale(1)"
+                @click="$router.push({name:'sessions'}).catch(() => {})"
+              ></i>
+            </strong>for the entire list
+          </p>
           <popover
             name="sessionInfo"
             transition="fade"

@@ -9,6 +9,12 @@ import vueTopprogress from 'vue-top-progress'
 import Notifications from 'vue-notification'
 import { vsList, vsIcon } from "vuesax";
 import Vue2TouchEvents from 'vue2-touch-events'
+import VueTimeago from 'vue-timeago'
+import { Drawer } from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css';
+import VueScrollTo from "vue-scroll-to"
+
+
 
 // import "vuesax/dist/vuesax.css";
 
@@ -26,18 +32,13 @@ Vue.config.productionTip = false;
 //Establish to communciate between components
 export const bus = new Vue();
 
-//Establish connection to backend
-// const http = axios.create({
-//   baseURL: "https://us-central1-co-learn-a05d9.cloudfunctions.net/app",
-// });
-
 /**
  * This axios instantiation is for dev-build testing only. Comment out before production
  */
 const http = axios.create({
   baseURL:
-    // "http://localhost:5000/"
-    'https://colearn-tech.herokuapp.com/'
+    "http://localhost:5000/"
+  // 'https://back.colearn.tech'
   ,
 });
 
@@ -78,6 +79,9 @@ Vue.use(Notifications)
 Vue.use(vsList)
 Vue.use(vsIcon)
 Vue.use(Vue2TouchEvents)
+Vue.use(VueTimeago, { locale: 'en' })
+Vue.component(Drawer.name, Drawer)
+Vue.use(VueScrollTo);
 
 new Vue({
   router,

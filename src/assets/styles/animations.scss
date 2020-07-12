@@ -322,3 +322,20 @@
  * ---------------------------------------------- */
 
 @-webkit-keyframes slide-in-fwd-center{0%{-webkit-transform:translateZ(-1400px);transform:translateZ(-1400px);opacity:0}100%{-webkit-transform:translateZ(0);transform:translateZ(0);opacity:1}}@keyframes slide-in-fwd-center{0%{-webkit-transform:translateZ(-1400px);transform:translateZ(-1400px);opacity:0}100%{-webkit-transform:translateZ(0);transform:translateZ(0);opacity:1}}
+
+.spin-enter-active{
+  animation: spin 10s;
+}
+
+.spin-leave-active{
+  animation: spin 10s;
+}
+
+@keyframes spin{
+  0%{
+    transform: rotateZ(0deg) scale(0.75);
+  }
+  100%{
+    transform: rotateZ(3600deg) scale(0.75);
+  }
+}

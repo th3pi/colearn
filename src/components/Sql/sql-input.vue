@@ -111,7 +111,8 @@ export default {
       rows: 1, //Number of rows in the command box
       focus: false, //Focus boolean for the input field
       session: null,
-      placeholder: "Enter a SQL command"
+      placeholder: "Enter a SQL command",
+      tab: 0
     };
   },
   methods: {
@@ -120,6 +121,10 @@ export default {
      * @param data SQL command that is to be sent to the backend to get back a query result
      */
     sendSql(data) {
+      EventBus.$emit("get-tab");
+      EventBus.$on("send-tab", data => {
+        this.tab = data;
+      });
       let name =
         this.user.data.displayName.charAt(0).toUpperCase() +
         this.user.data.displayName.slice(1);
@@ -139,7 +144,8 @@ export default {
             this.socket.emit(
               "get_sql",
               this.sessionInfo.sessionId,
-              this.command
+              this.command,
+              this.tab
             );
           } else {
             this.update();
@@ -156,7 +162,12 @@ export default {
      * Synchronizes session data by sending a post request to firestore
      */
     update() {
-      this.socket.emit("sync_sql", this.sessionInfo.sessionId, this.command);
+      this.socket.emit(
+        "sync_sql",
+        this.sessionInfo.sessionId,
+        this.command,
+        this.tab
+      );
     },
     /**
      * Resets all the parameters to default values

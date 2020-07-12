@@ -1,8 +1,10 @@
 export default {
     methods: {
         getTimeDifference(date) {
+            let past = new Date((date._seconds) * 1000);
             let now = new Date();
-            let difference = (now - date) / 1000;
+            let difference = (now - past) / 1000;
+
             if (difference < 60) {
                 return difference.toFixed(0) + " second(s) ago";
             }

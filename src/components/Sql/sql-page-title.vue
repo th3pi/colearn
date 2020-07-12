@@ -1,28 +1,11 @@
 <template>
   <div id="pageTitle">
-    <transition name="fade-fast" mode="out-in">
-      <!-- When only sql logo is displayed (when cheat sheet is open on small or medium display) -->
-      <div v-if="showBar && (this.$mq == 'sm' || this.$mq == 'md')" key="onlySqlLogo">
-        <img
-          id="onlySqlLogo"
-          src="../../assets/img/titles/language-sql.svg"
-          :style="{width: showTable ? '50%' : ''}"
-        />
-      </div>
-      <!-- When the entire logo is displayed -->
-      <div v-else id="clSqlLogo" key="wholeLogo">
-        <img
-          id="clLogo"
-          src="../../assets/img/titles/co-learn-sql.svg"
-          :style="{width: showTable ? this.$mq == 'sm' ? '10rem' : '15rem' : ''}"
-        />
-        <img
-          id="sqlLogo"
-          src="../../assets/img/titles/language-sql.svg"
-          :style="{width: showTable ? this.$mq == 'sm' ? '10rem' : '15rem' : ''}"
-        />
-      </div>
-    </transition>
+    <!-- When only sql logo is displayed (when cheat sheet is open on small or medium display) -->
+    <!-- When the entire logo is displayed -->
+    <div id="clSqlLogo">
+      <img id="clLogo" src="../../assets/img/titles/co-learn-sql.svg" />
+      <img id="sqlLogo" src="../../assets/img/titles/language-sql.svg" />
+    </div>
   </div>
 </template>
 
@@ -48,9 +31,9 @@ export default {
 
 #clLogo {
   display: block;
-  max-width: 40%;
+  max-width: 30%;
   max-height: 60%;
-  width: 14rem;
+  width: 10rem;
   height: 2rem;
   margin: auto;
   margin-right: 0;
@@ -59,9 +42,9 @@ export default {
 
 #sqlLogo {
   display: block;
-  max-width: 40%;
+  max-width: 30%;
   max-height: 60%;
-  width: 14rem;
+  width: 10rem;
   height: 3rem;
   margin: auto;
   margin-left: 0;

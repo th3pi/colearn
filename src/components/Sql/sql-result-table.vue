@@ -1,5 +1,5 @@
 <template>
-  <div id="sqlResults" class="neumorphic" :style="{'background-color' : background}">
+  <div id="sqlResults" :style="{'background-color' : background}">
     <!-- Query result table -->
     <transition name="dropdown-animation" mode="out-in">
       <!-- Table stats - only shown when results array is populated -->
@@ -39,7 +39,7 @@
       <!-- Empty result box message -->
       <!-- Only shown when results array is empty -->
       <div id="emptyResultBox" v-else>
-        <p v-if="error == ''">Run a SQL command to display result here</p>
+        <p v-if="!error">Run a SQL command to display result here</p>
         <p v-else>{{error}}</p>
       </div>
     </transition>
@@ -74,12 +74,12 @@ export default {
 
 <style lang="scss">
 #sqlResults {
-  display: inline-block;
-  width: 90%;
+  display: block;
+  margin: 0 auto;
   background-color: var(--sql-lighter-dark);
 
   border: 2px solid rgba(var(--sql-dark-v), 0.2);
-  border-radius: var(--border-radius);
+  border-radius: 0 0 5px 5px;
 
   color: white;
 
@@ -91,10 +91,6 @@ export default {
   justify-content: space-between;
   padding: 0.4rem 0.5rem 0.4rem 0.2rem;
   background-color: var(--sql-light-primary);
-
-  border-radius: 10px 10px 0 0;
-  box-shadow: 0 -2px 8px rgba($color: #000000, $alpha: 0.2) inset,
-    0 2px 8px rgba($color: #000000, $alpha: 0.2) inset;
 
   font-size: 0.9rem;
 }
@@ -151,9 +147,7 @@ export default {
 #emptyResultBox {
   padding: 5px 0 5px 0;
 
-  background-color: rgba(var(--sql-light-primary-v), $alpha: 0.2);
-
-  border-radius: 0 10px 10px 0;
+  border-radius: 0 0 5px 5px;
 
   font-size: 0.9rem;
 

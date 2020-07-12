@@ -1,44 +1,31 @@
 <template>
-  <div id="pastSessions" class="neumorphic">
-    <div id="tableSection" v-if="progress == 100" key="loaded">
-      <table v-if="sessions.length != 0">
-        <tr>
-          <th>
-            Sessions
-            <i class="fas fa-redo" @click="getSessions"></i>
-          </th>
-        </tr>
-        <tr id="pastSessionsBody" v-for="(session, index) in sessions" :key="index">
-          <div class="session-card neumorphic">
-            <div>
-              <p
-                class="main-title"
-                @click="joinSession(session.sessionId, session.language)"
-              >{{session.sessionId}}</p>
-              <i
-                @click="copySessionName(session.sessionId)"
-                :class="{'fas': clipboard.sessionId == session.sessionId ? true : false, 'far' : clipboard.sessionId != session.sessionId ? true : false,}"
-                class="fa-copy copy-button"
-              ></i>
-              <p class="secondary-title">Host: {{session.hostname}}</p>
-            </div>
-
-            <div id="date">
-              <i class="far fa-clock"></i>
-              {{getTimeDifference(new Date((session.lastUsed._seconds)* 1000))}}
-            </div>
-          </div>
-          <!-- {{new Date((session.createdOn._seconds)* 1000).toLocaleString()}} -->
-        </tr>
-      </table>
-      <p v-if="sessions.length == 0" style="padding: 2rem 0">
-        There's nothing to show here right now.
-        <br />Your past sessions will show up here as you keep joining sessions or creating new sessions
-      </p>
+  <div id="pastSessions" v-if="progress == 100" key="loaded" class="neumorphic">
+    <div id="pastSessionsBody" v-for="(session, index) in sessions" :key="index">
+      <div
+        class="session-card neumorphic hover n-active"
+        @click="joinSession(session.sessionId, session.language)"
+      >
+        <i class="fas fa-fire popular" v-if="session.colearners.length >= 3"></i>
+        <div class="main-body">
+          <p class="main-title">{{session.sessionId}}</p>
+          <i
+            @click.stop.prevent="copySessionName(session.sessionId)"
+            :class="{'fas': clipboard.sessionId == session.sessionId ? true : false, 'far' : clipboard.sessionId != session.sessionId ? true : false,}"
+            class="fa-copy copy-button"
+          ></i>
+          <p class="secondary-title">Host: {{session.hostname}}</p>
+          <timeago :auto-update="60" :datetime="new Date((session.lastUsed._seconds) * 1000)" />
+        </div>
+      </div>
+      <!-- {{new Date((session.createdOn._seconds)* 1000).toLocaleString()}} -->
     </div>
-    <div class="loader" v-else key="loading">
-      <vue-ellipse-progress :progress="progress" :loading="true" :size="20" />
-    </div>
+    <p v-if="sessions.length == 0" style="padding: 2rem 0">
+      There's nothing to show here right now.
+      <br />Your past sessions will show up here as you keep joining sessions or creating new sessions
+    </p>
+  </div>
+  <div class="loader" v-else key="loading">
+    <vue-ellipse-progress :progress="progress" :loading="true" :size="20" />
   </div>
 </template>
 
@@ -109,7 +96,7 @@ export default {
         .get("/user/user-sessions", {
           params: {
             email: this.user.data.email,
-            limit: "5"
+            limit: "2"
           }
         })
         .then(res => {
@@ -129,70 +116,33 @@ export default {
 
 <style lang="scss">
 #pastSessions {
-  display: block;
+  display: grid;
 
-  margin: 0 0.5rem;
+  gap: 0.25rem;
+
+  grid-template-columns: 1fr 1fr;
+
+  margin: 0 0.1rem;
 
   border-radius: 5px;
+
   border: 2px solid rgba($color: #000000, $alpha: 0.1);
 
-  text-align: center;
-
   color: white;
+
   background-color: var(--sql-light-primary);
-}
-
-#pastSessions table {
-  width: 100%;
-
-  border-collapse: collapse;
-}
-
-#pastSessions #tableSection {
-  overflow: auto;
-}
-
-#pastSessions #pastSessionsBody {
-}
-
-#pastSessions th {
-  padding: 10px 5px;
-  border-bottom: 2px solid whitesmoke;
-}
-
-#pastSessions tr,
-th {
-  transition: 0.6s;
-}
-
-#pastSessions th i {
-  transition: transform 0.3s;
-  transition-delay: 0.25s;
-
-  cursor: pointer;
-}
-#pastSessions th i:hover {
-  transform: rotate(360deg);
-}
-
-#pastSessions tr:hover {
-  background-color: rgba(var(--sql-primary-v), 0.2);
-}
-
-#pastSessions tr:hover th {
-  background-color: rgba(var(--sql-primary-v), 0.5);
 }
 
 #pastSessions .session-card {
   display: flex;
+  justify-content: center;
+  align-items: center;
 
-  flex-direction: row;
-
-  justify-content: space-between;
+  text-align: center;
 
   background-color: white;
 
-  padding: 1rem;
+  padding: 0.15rem 0.3rem;
 
   margin: 0.5rem 0.5rem;
 
@@ -200,18 +150,21 @@ th {
 
   color: var(--sql-light-primary);
 
-  transition: color 0.5s;
+  transition: 0.5s;
+
+  .popular {
+    margin-right: 1rem;
+    color: orangered;
+  }
 }
 
 #pastSessions .session-card .main-title,
 .secondary-title {
-  text-align: left;
   margin-right: 0.4rem;
 }
 
 #pastSessions .session-card .main-title {
   display: inline;
-
   cursor: pointer;
 }
 
@@ -239,10 +192,13 @@ th {
 }
 
 #pastSessions #date {
-  display: block;
-
   color: var(--sql-lighter-dark);
-
   font-size: 0.85rem;
+}
+
+@media screen and (min-width: 470px) {
+  #pastSessions .session-card {
+    padding: 0.85rem 0.95rem;
+  }
 }
 </style>
