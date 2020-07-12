@@ -37,8 +37,8 @@ export const bus = new Vue();
  */
 const http = axios.create({
   baseURL:
-    "http://localhost:5000/"
-  // 'https://back.colearn.tech'
+    // "http://localhost:5000/"
+    'https://back.colearn.tech'
   ,
 });
 

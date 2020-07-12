@@ -3,7 +3,8 @@ import ENUM from "@/enums/firebase_enum"
 import Vue from 'vue'
 const http = axios.create({
     baseURL:
-        "http://localhost:5000/session"
+        // "http://localhost:5000/session"
+        "https://back.colearn.tech/session"
     // 'https://colearn-tech.herokuapp.com/session'
     ,
 });

@@ -2,7 +2,7 @@ import axios from "axios";
 const http = axios.create({
     baseURL:
         // "http://localhost:5000/session"
-        'https://colearn-tech.herokuapp.com/session'
+        'https://back.colearn.tech/session'
     ,
 });
 
