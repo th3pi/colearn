@@ -13,6 +13,8 @@ import VueTimeago from 'vue-timeago'
 import { Drawer } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 import VueScrollTo from "vue-scroll-to"
+import VueHighlightJS from 'vue-highlightjs'
+
 
 
 
@@ -37,8 +39,8 @@ export const bus = new Vue();
  */
 const http = axios.create({
   baseURL:
-    // "http://localhost:5000/"
-    'https://back.colearn.tech'
+    "http://localhost:5000/"
+  // 'https://back.colearn.tech'
   ,
 });
 
@@ -82,6 +84,7 @@ Vue.use(Vue2TouchEvents)
 Vue.use(VueTimeago, { locale: 'en' })
 Vue.component(Drawer.name, Drawer)
 Vue.use(VueScrollTo);
+Vue.use(VueHighlightJS)
 
 new Vue({
   router,

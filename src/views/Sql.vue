@@ -7,10 +7,10 @@
 
     <div v-if="verified" key="loaded">
       <div class="sql font" id="sqlBody">
-        <div id="inputSection" :style="getWidth(showBar, '50%', '60%', '70')">
+        <div id="inputSection">
           <!-- Page title for SQL view -->
           <!-- Display only the language title if on a mobile device or something with a very small display -->
-          <sql-page-title :showBar="showBar" :showTable="showTable" />
+          <sql-page-title />
           <!-- SQL command input box -->
           <sql-input
             class="sqlInput"
@@ -22,44 +22,7 @@
           />
         </div>
         <div>
-          <h2 class="header" style="color: var(--sql-lighter-dark)">
-            Sync box
-            <i v-popover:syncBox class="fas fa-info-circle" style="transform: scale(.75)"></i>
-            <p>Click on the box at anytime to copy its contents to your input field</p>
-            <popover
-              name="syncBox"
-              transition="fade"
-              class="neumorphic"
-              style="font-size: .95rem; font-weight: 300; text-align: left; padding: .5rem 1rem; width: 15rem"
-            >
-              <strong
-                style="font-size: 1.1rem; border-bottom: 2px solid rgba(var(--sql-lighter-dark-v), 0.8);"
-              >More about Sync Box</strong>
-              <br />
-              <br />
-
-              <li>
-                Sync box is
-                <strong>instantly synchronized</strong> between all colearners in a session
-              </li>
-              <br />
-              <li>Click on the box at any time to copy it into your command box</li>
-            </popover>
-          </h2>
-          <div
-            id="shareBox"
-            class="neumorphic hover n-active border-not-type"
-            :class="{'border-type': typedBy != null ? true : false}"
-            :style="{
-            height: height + 'rem',
-          }"
-            @click="copyToCommandBox"
-          >
-            <p>
-              {{shareCommand}}
-              <span v-if="typedBy != null" class="typed-by">// by {{typedBy}}</span>
-            </p>
-          </div>
+          <sql-syncbox :socket="socket" />
           <!-- Result table -->
           <div id="resultSection" class="neumorphic">
             <el-tabs
@@ -148,6 +111,7 @@ import codeSnippet from "@/components/General/code-snippet.vue";
 import sqlResultTable from "@/components/Sql/sql-result-table.vue";
 import sqlHistory from "@/components/Sql/sql-history.vue";
 import sqlSidebar from "@/components/Sql/sql-sidebar.vue";
+import sqlSyncBox from "@/components/Sql/sql-syncbox.vue";
 import io from "socket.io-client";
 import { Tabs, TabPane } from "element-ui";
 
@@ -179,24 +143,18 @@ export default {
     ScaleTransition,
     sqlSidebar,
     "el-tabs": Tabs,
-    "el-tab-pane": TabPane
+    "el-tab-pane": TabPane,
+    "sql-syncbox": sqlSyncBox
   },
   computed: {
     ...mapGetters({
-      user: "user",
-      userSocket: "getSocket"
+      user: "user", // gets current authenticated user
+      userSocket: "getSocket" // gets current sockets connected to the session
     })
   },
   data() {
     return {
       route: "/sql/local-sql-query",
-      results: [],
-      keys: [],
-      showBar: false,
-      showTable: false,
-      width: 0,
-      progress: 0,
-      type: null,
       command: null,
       sessionInfo: {
         sessionId: null
@@ -204,11 +162,10 @@ export default {
       socket: null,
       verified: null,
       loadState: ENUM.INIT,
-      users: [],
       shareCommand:
         "This sync box is shared by everyone in the session for realtime collaboration",
       height: 1.5,
-      typedBy: null,
+      loader: false,
       tables: {
         tables: [
           { results: [], keys: [], error: "" },
@@ -230,7 +187,7 @@ export default {
   created() {
     if (this.user.authenticated) {
       this.sessionInfo.sessionId = this.$route.params.sessionId;
-      this.socket = io("https://back.colearn.tech/sql");
+      this.socket = io("http://localhost:5000/sql");
       // "https://back.colearn.tech/sql"
       // http://localhost:5000/sql
 
@@ -266,13 +223,16 @@ export default {
      * @param {String} command SQL command that is received from the input and send to the backend
      */
     fetchSqlLocal(command) {
+      this.loader = true;
       this.$http
         .get(this.route, {
           params: {
-            query: command
+            query: command,
+            db: this.sessionInfo.sessionId
           }
         })
         .then(res => {
+          this.loader = false;
           //If response is an array, it means successful SELECT command was run
           if (Array.isArray(res.data)) {
             this.$set(this.tables.tables, this.tables.current.index, {
@@ -295,6 +255,7 @@ export default {
             "sync_result",
             this.$route.params.sessionId,
             res.data,
+            command,
             this.tables.name
           );
         })
@@ -446,15 +407,7 @@ export default {
       this.tables.current.name = data.name;
       this.tables.current.index = parseInt(data.index);
     },
-    copyToCommandBox() {
-      if (
-        this.shareCommand ==
-        "This sync box is shared by everyone in the session for realtime collaboration"
-      ) {
-      } else {
-        EventBus.$emit("copyToCommand", this.shareCommand);
-      }
-    },
+
     attachSocketEvents() {
       EventBus.$on("get-tab", () => {
         EventBus.$emit("send-tab", this.tables.name);
@@ -482,14 +435,7 @@ export default {
           type: "user-left"
         });
       });
-      this.socket.on("receiving", (command, username) => {
-        this.shareCommand = command;
-        if (command != "") this.typedBy = username;
-        if (command == "") {
-          this.shareCommand =
-            "This sync box is shared by everyone in the session for realtime collaboration";
-        }
-      });
+
       this.socket.on("get_sql", (command, username, tab) => {
         this.command = command;
         this.tables.current.index = tab;
@@ -507,10 +453,18 @@ export default {
           });
         }
       });
-      this.socket.on("sync_result", (result, username, tab) => {
+      this.socket.on("sync_result", (result, command, username, tab) => {
         console.log(result, username, tab);
         this.tables.name = tab;
         this.messageHandler(result, tab);
+        this.$store.dispatch("addCommand", {
+          command: command,
+          type: "run",
+          by: username,
+          ranAt: {
+            _seconds: new Date() / 1000
+          }
+        });
         this.$notify({
           group: "sync",
           title: "Command executed",
@@ -531,17 +485,9 @@ export default {
       if (newValue == ENUM.LOADED) this.$refs.topProgress.done();
       if (newValue == ENUM.ERROR) this.$refs.topProgress.fail();
     },
-    shareCommand(newValue) {
-      this.rows = newValue.split("\n").length;
-      this.height = this.rows * 1.6;
-      if (
-        newValue ==
-        "This sync box is shared by everyone in the session for realtime collaboration"
-      ) {
-        this.rows = 1;
-        this.height = 1.5;
-        this.typedBy = null;
-      }
+    loader(newValue) {
+      if (newValue) this.$refs.topProgress.start();
+      this.$refs.topProgress.done();
     }
   }
 };
@@ -616,27 +562,6 @@ h2 {
 .result-tabs {
   margin: 0 auto;
 }
-#shareBox {
-  background-color: white;
-  width: 88%;
-  margin: 0.5rem auto;
-  margin-bottom: 0;
-  padding: 0.5rem;
-
-  white-space: pre-line;
-
-  border-radius: 5px;
-
-  color: var(--sql-lighter-dark);
-
-  transition: 0.8s;
-
-  cursor: pointer;
-  .typed-by {
-    opacity: 0.8;
-    font-size: 0.95rem;
-  }
-}
 
 .border-not-type {
   border: 3px solid transparent;
@@ -668,10 +593,12 @@ h2 {
 
   &.joined {
     border-left: 5px solid var(--success);
+    color: var(--sql-lighter-dark);
   }
 
   &.user-left {
     border-left: 5px solid var(--danger);
+    color: var(--sql-lighter-dark);
   }
   &.error {
     .notification-content {

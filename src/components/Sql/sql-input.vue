@@ -1,5 +1,7 @@
 <template>
   <div id="inputBox">
+    <vue-topprogress ref="sqlResultProgress" :height="5"></vue-topprogress>
+
     <!-- Input field for SQL command -->
     <!-- Dynamically binded focus class to determine styling based on focus of the input field -->
     <!-- If field is focused or command is empty focus class is applied -->
@@ -112,7 +114,8 @@ export default {
       focus: false, //Focus boolean for the input field
       session: null,
       placeholder: "Enter a SQL command",
-      tab: 0
+      tab: 0,
+      loading: false
     };
   },
   methods: {
@@ -187,7 +190,7 @@ export default {
     command: {
       immediate: false,
       handler(newValue) {
-        this.$emit("typing", newValue);
+        EventBus.$emit("typing", newValue);
         this.socket.emit(
           "typing",
           newValue,

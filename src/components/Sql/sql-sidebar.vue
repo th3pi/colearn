@@ -81,12 +81,12 @@ export default {
         clip: ""
       },
       sampleTables: [
-        "Artist",
-        "Album",
-        "Customer",
-        "Employee",
-        "Genre",
-        "Invoice"
+        "Artists",
+        "Albums",
+        "Customers",
+        "Employees",
+        "Genres",
+        "Invoices"
       ]
     };
   },
