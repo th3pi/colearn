@@ -25,7 +25,7 @@
       </popover>
     </h2>
 
-    <div id="syncBox">
+    <div id="syncBox" :class="[{'light-mode': !syncBox.dark},{'dark-mode': syncBox.dark}]">
       <pre
         class="sync-box neumorphic n-active"
         v-highlightjs="sqlCommand"
@@ -39,8 +39,8 @@
 
 <script>
 import { EventBus } from "@/bus/bus";
+import "highlight.js/styles/github.css";
 import "highlight.js/styles/github-gist.css";
-// import { Dropdown, DropdownMenu, DropdownItem } from "element-ui";
 
 export default {
   name: "sql-syncBox",
@@ -58,7 +58,8 @@ export default {
       sqlCommand: "",
       typedBy: null,
       syncBox: {
-        height: 1.5
+        height: 1.5,
+        dark: null
       }
     };
   },
@@ -70,6 +71,9 @@ export default {
   computed: {},
   methods: {
     syncBoxListener() {
+      EventBus.$on("syncbox-dark-mode-toggle", value => {
+        this.syncBox.dark = value;
+      });
       EventBus.$on("typing", command => {
         this.sqlCommand = command;
       });
@@ -115,7 +119,7 @@ export default {
   background-color: white;
   width: 88%;
   margin: 0.5rem auto;
-  padding: 1rem;
+  padding: 0 0.75rem;
   border-radius: 5px;
   font-size: 120%;
 
@@ -124,6 +128,166 @@ export default {
   .typed-by {
     font-size: 90%;
     opacity: 0.6;
+  }
+}
+.light-mode {
+  .hljs {
+    display: block;
+    background: white;
+    padding: 0.5em;
+    color: #333333;
+    overflow-x: auto;
+  }
+
+  .hljs-comment,
+  .hljs-meta {
+    color: #969896;
+  }
+
+  .hljs-variable,
+  .hljs-template-variable,
+  .hljs-strong,
+  .hljs-emphasis,
+  .hljs-quote {
+    color: #df5000;
+  }
+
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-type {
+    color: #d73a49;
+  }
+
+  .hljs-literal,
+  .hljs-symbol,
+  .hljs-bullet,
+  .hljs-attribute {
+    color: #0086b3;
+  }
+
+  .hljs-section,
+  .hljs-name {
+    color: #63a35c;
+  }
+
+  .hljs-tag {
+    color: #333333;
+  }
+
+  .hljs-title,
+  .hljs-attr,
+  .hljs-selector-id,
+  .hljs-selector-class,
+  .hljs-selector-attr,
+  .hljs-selector-pseudo {
+    color: #6f42c1;
+  }
+
+  .hljs-addition {
+    color: #55a532;
+    background-color: #eaffea;
+  }
+
+  .hljs-deletion {
+    color: #bd2c00;
+    background-color: #ffecec;
+  }
+
+  .hljs-link {
+    text-decoration: underline;
+  }
+
+  .hljs-number {
+    color: #005cc5;
+  }
+
+  .hljs-string {
+    color: #032f62;
+  }
+}
+
+.dark-mode {
+  .sync-box {
+    background-color: #282c34;
+  }
+  .typed-by {
+    color: #d19a66;
+  }
+  .hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    color: #abb2bf;
+    background: #282c34;
+  }
+
+  .hljs-comment,
+  .hljs-quote {
+    color: #5c6370;
+    font-style: italic;
+  }
+
+  .hljs-doctag,
+  .hljs-keyword,
+  .hljs-formula {
+    color: #c678dd;
+  }
+
+  .hljs-section,
+  .hljs-name,
+  .hljs-selector-tag,
+  .hljs-deletion,
+  .hljs-subst {
+    color: #e06c75;
+  }
+
+  .hljs-literal {
+    color: #56b6c2;
+  }
+
+  .hljs-string,
+  .hljs-regexp,
+  .hljs-addition,
+  .hljs-attribute,
+  .hljs-meta-string {
+    color: #98c379;
+  }
+
+  .hljs-built_in,
+  .hljs-class .hljs-title {
+    color: #e6c07b;
+  }
+
+  .hljs-attr,
+  .hljs-variable,
+  .hljs-template-variable,
+  .hljs-type,
+  .hljs-selector-class,
+  .hljs-selector-attr,
+  .hljs-selector-pseudo,
+  .hljs-number {
+    color: #d19a66;
+  }
+
+  .hljs-symbol,
+  .hljs-bullet,
+  .hljs-link,
+  .hljs-meta,
+  .hljs-selector-id,
+  .hljs-title {
+    color: #61aeee;
+  }
+
+  .hljs-emphasis {
+    font-style: italic;
+  }
+
+  .hljs-strong {
+    font-weight: bold;
+  }
+
+  .hljs-link {
+    text-decoration: underline;
   }
 }
 </style>

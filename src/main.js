@@ -15,13 +15,6 @@ import 'element-ui/lib/theme-chalk/index.css';
 import VueScrollTo from "vue-scroll-to"
 import VueHighlightJS from 'vue-highlightjs'
 
-
-
-
-// import "vuesax/dist/vuesax.css";
-
-
-
 import { auth } from "./firebase";
 //Navigation router
 import { router } from "./router/router";
