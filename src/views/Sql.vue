@@ -187,7 +187,7 @@ export default {
   created() {
     if (this.user.authenticated) {
       this.sessionInfo.sessionId = this.$route.params.sessionId;
-      this.socket = io("http://localhost:5000/sql");
+      this.socket = io("https://back.colearn.tech/sql");
       // "https://back.colearn.tech/sql"
       // http://localhost:5000/sql
 
