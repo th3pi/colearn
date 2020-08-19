@@ -5,6 +5,8 @@ node_modules
 /backend
 .firebase
 
+firebase.js
+
 test.js
 persons_repository.js
 models/
