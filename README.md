@@ -4,20 +4,13 @@ Colearn is an online collaborative learning platform for in-demand programming l
 
 ![Status image](https://imgur.com/Op9g4Cr.png)
 
-### How to sign-up for Beta access
+## Table of Content
+- What is Colearn?
+- Screenshots
+- How to sign-up for Beta access
+- Technology Stack
 
-Colearn is accepting very limited number of beta testers to stress test the technology and the backend. You can sign-up for beta access by following the steps below.
-
-1. Go to https://colearn.tech
-2. On the bottom of the Beta screen look for the "Click here to request access" button 
-![](https://imgur.com/TBtFWLp.png)
-then input your email.
-![](https://imgur.com/J8rPjkX.png)
-3. You should then receive an email from Colearn containing your Beta access code.
-
-***Note*** You should Create an account after the first time you use your Beta access code to confirm your beta participation. Otherwise, the access code will be voided as soon as you close the browser tab.
-
-### What is Colearn?
+## What is Colearn?
 
 Colearn is an online IDE with real-time collaboration features like Google Docs that allows all users in a session to write, modify and run on the same piece of code - all without having to setup a local development environment. No more everyone asking John to change the variable name on screen share!
 
@@ -62,3 +55,30 @@ Colearn is an online IDE with real-time collaboration features like Google Docs 
 #### Input responsive fields
    - Borders become green as input meets each criteria
 ![feedback-gif](https://imgur.com/6NZbWfM.gif)
+
+## How to sign-up for Beta access
+
+Colearn is accepting very limited number of beta testers to stress test the technology and the backend. You can sign-up for beta access by following the steps below.
+
+1. Go to https://colearn.tech
+2. On the bottom of the Beta screen look for the "Click here to request access" button 
+![](https://imgur.com/TBtFWLp.png)
+then input your email.
+![](https://imgur.com/J8rPjkX.png)
+3. You should then receive an email from Colearn containing your Beta access code.
+
+***Note*** You should Create an account after the first time you use your Beta access code to confirm your beta participation. Otherwise, the access code will be voided as soon as you close the browser tab.
+
+## Technology Stack
+1. VueJS
+2. ExpressJS
+3. MongoDB
+4. Heroku
+5. Firebase Hosting
+6. Firestore Database
+7. Firebase ML
+8. HTML/CSS
+9. SQL
+10. C++
+11. Python
+12. Java
