@@ -3,17 +3,17 @@ import App from "./App.vue";
 import axios from "axios";
 import VueMq from "vue-mq";
 import VueEllipseProgress from "vue-ellipse-progress";
-import Popover from 'vue-js-popover'
-import Clipboard from 'v-clipboard'
-import vueTopprogress from 'vue-top-progress'
-import Notifications from 'vue-notification'
+import Popover from "vue-js-popover";
+import Clipboard from "v-clipboard";
+import vueTopprogress from "vue-top-progress";
+import Notifications from "vue-notification";
 import { vsList, vsIcon } from "vuesax";
-import Vue2TouchEvents from 'vue2-touch-events'
-import VueTimeago from 'vue-timeago'
-import { Drawer } from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css';
-import VueScrollTo from "vue-scroll-to"
-import VueHighlightJS from 'vue-highlightjs'
+import Vue2TouchEvents from "vue2-touch-events";
+import VueTimeago from "vue-timeago";
+import { Drawer } from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+import VueScrollTo from "vue-scroll-to";
+import VueHighlightJS from "vue-highlightjs";
 
 import { auth } from "./firebase";
 //Navigation router
@@ -33,8 +33,7 @@ export const bus = new Vue();
 const http = axios.create({
   baseURL:
     // "http://localhost:5000/"
-    'https://back.colearn.tech'
-  ,
+    "https://back.colearn.tech",
 });
 
 Vue.prototype.$http = http;
@@ -61,23 +60,24 @@ Vue.use(VueMq, { breakpoints: { sm: 470, md: 1250, lg: Infinity } });
 Vue.use(VueEllipseProgress);
 
 //Popever for hints and tutorials
-Vue.use(Popover, { tooltip: true })
+Vue.use(Popover, { tooltip: true });
 
 //To copy items to clipboard
-Vue.use(Clipboard)
+Vue.use(Clipboard);
 
 //Top progress bar
-Vue.use(vueTopprogress)
+Vue.use(vueTopprogress);
 
-Vue.use(Notifications)
+//For user join/leave notifications
+Vue.use(Notifications);
 
-Vue.use(vsList)
-Vue.use(vsIcon)
-Vue.use(Vue2TouchEvents)
-Vue.use(VueTimeago, { locale: 'en' })
-Vue.component(Drawer.name, Drawer)
+Vue.use(vsList);
+Vue.use(vsIcon);
+Vue.use(Vue2TouchEvents);
+Vue.use(VueTimeago, { locale: "en" });
+Vue.component(Drawer.name, Drawer);
 Vue.use(VueScrollTo);
-Vue.use(VueHighlightJS)
+Vue.use(VueHighlightJS);
 
 new Vue({
   router,
