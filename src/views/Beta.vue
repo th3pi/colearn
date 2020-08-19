@@ -87,14 +87,22 @@
           </button>
         </popup>
       </transition>
-      <div @click="focus = focus ? false : true">
+      <div>
+        <p v-if="!focus" key="noFocus" style="cursor: not-allowed;">
+          <i class="fas fa-times-circle"></i> Colearn is not accepting any more beta testers
+        </p>
+        <p v-else key="focused" style="color: var(--danger)">
+          <i class="fas fa-times"></i> Close
+        </p>
+      </div>
+      <!-- <div @click="focus = focus ? false : true">
         <p v-if="!focus" key="noFocus">
           <i class="fas fa-plus-circle"></i> Click here to request access
         </p>
         <p v-else key="focused" style="color: var(--danger)">
           <i class="fas fa-times"></i> Close
         </p>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -120,7 +128,7 @@ export default {
   components: {
     clInput,
     logo,
-    popup
+    popup,
   },
   data() {
     return {
@@ -134,10 +142,10 @@ export default {
         // Request form variables
         text: "Request Access",
         requested: false,
-        validEmail: false
+        validEmail: false,
       },
       tooManyValid: false, //Boolean to determine if backend reports this ip had requested too many validations
-      tooManyRequest: false //Boolean to determine if backend reports this ip had requested too many access codes
+      tooManyRequest: false, //Boolean to determine if backend reports this ip had requested too many access codes
     };
   },
   methods: {
@@ -153,7 +161,7 @@ export default {
       }
       this.$http
         .get("/beta/validate-beta", { params: { code: this.code } })
-        .then(res => {
+        .then((res) => {
           if (res.data) {
             this.loadSate = firebaseENUM.LOADED;
             setTimeout(() => {
@@ -189,13 +197,13 @@ export default {
           this.requestProgress = 100;
           this.request.requested = true;
         });
-    }
+    },
   },
   watch: {
     loadSate(newValue) {
       this.validateProgress = this.getProgress(newValue);
-    }
-  }
+    },
+  },
 };
 </script>
 
