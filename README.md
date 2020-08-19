@@ -5,16 +5,18 @@ Colearn is an online collaborative learning platform for in-demand programming l
 ![Status image](https://imgur.com/Op9g4Cr.png)
 
 ## Table of Content
-- What is Colearn?
-- Screenshots
-- How to sign-up for Beta access
-- Technology Stack
+- [What is Colearn?](https://github.com/th3pi/colearn#what-is-colearn)
+- [Screenshots](https://github.com/th3pi/colearn#colearn-screenshots)
+- [How to sign-up for Beta access](https://github.com/th3pi/colearn#how-to-sign-up-for-beta-access)
+- [Technology Stack](https://github.com/th3pi/colearn#technology-stack)
 
 ## What is Colearn?
 
 Colearn is an online IDE with real-time collaboration features like Google Docs that allows all users in a session to write, modify and run on the same piece of code - all without having to setup a local development environment. No more everyone asking John to change the variable name on screen share!
 
-![Collaboration Demo](https://imgur.com/ASdtS4G.gif)
+Colearn also has a beautiful and very user friendly UI with guides, tutorials that makes it so that anyone can get started within a matter of minutes!
+
+[Collaboration Demo](https://imgur.com/ASdtS4G.gif)
 
 ### Colearn Screenshots
 #### Home 
