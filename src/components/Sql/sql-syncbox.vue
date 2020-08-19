@@ -122,7 +122,7 @@ export default {
   padding: 0 0.75rem;
   border-radius: 5px;
   font-size: 120%;
-
+  transition: 0.5s;
   cursor: pointer;
 
   .typed-by {
@@ -137,6 +137,7 @@ export default {
     padding: 0.5em;
     color: #333333;
     overflow-x: auto;
+    transition: 0.5s;
   }
 
   .hljs-comment,
@@ -219,6 +220,7 @@ export default {
     padding: 0.5em;
     color: #abb2bf;
     background: #282c34;
+    transition: 0.5s;
   }
 
   .hljs-comment,
